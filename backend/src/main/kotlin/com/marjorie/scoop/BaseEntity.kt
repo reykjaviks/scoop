@@ -9,8 +9,10 @@ import javax.persistence.Id
 import javax.persistence.MappedSuperclass
 
 /**
- * Base entity class with 'id', 'createdAt' and 'updatedAt' properties.
- * Each mutable variable has a getter and setter automatically created for it.
+ * Base entity class with 'id', 'createdAt' and 'modifiedAt' properties.
+ * Each mutable variable has a getter, setter and toString method
+ * automatically created for it. Immutable variables have a setter and
+ * toString method.
  */
 @MappedSuperclass
 abstract class BaseEntity(
@@ -21,13 +23,11 @@ abstract class BaseEntity(
     @field:CreationTimestamp
     val createdAt: Instant? = null,
 
-    /* todo: implement in the database
     @field:UpdateTimestamp
-    var updatedAt: Instant? = null,
-    */
+    var modifiedAt: Instant? = null,
 ) {
     override fun toString(): String {
-        return "id=$id, createdAt=$createdAt"
+        return "id=$id, createdAt=$createdAt, modifiedAt=$modifiedAt"
     }
 
 }

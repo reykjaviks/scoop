@@ -1,6 +1,5 @@
 package com.marjorie.scoop.home
 
-import com.marjorie.scoop.message.Message
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController

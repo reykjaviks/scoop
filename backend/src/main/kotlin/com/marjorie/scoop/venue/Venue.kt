@@ -1,11 +1,14 @@
 package com.marjorie.scoop.venue
 
+import com.fasterxml.jackson.annotation.JsonManagedReference
 import com.marjorie.scoop.BaseEntity
+import com.marjorie.scoop.review.Review
+import org.hibernate.annotations.Where
 import javax.persistence.*
 import javax.validation.constraints.NotNull
 
 /**
- * Class 'Venue' inherits the BaseEntity's properties and functions
+ * Class 'Venue' inherits the BaseEntity's properties and functions.
  * Variables and values defined in the constructor can be referenced using the property name, e.g. 'venue.name'
  */
 @Entity
