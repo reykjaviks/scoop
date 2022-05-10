@@ -16,7 +16,7 @@ import org.springframework.test.web.servlet.MockMvc;
 /**
  * Tests HTTP requests without starting a server.
  */
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
 class WebApplicationTest {
     @Autowired
