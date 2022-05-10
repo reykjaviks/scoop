@@ -8,7 +8,7 @@ import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.test.web.reactive.server.expectBody
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class VenueControllerTest2 {
+class VenueControllerTest {
 
     @Test
     fun `API returns a venue when queried ID exists`(@Autowired webClient: WebTestClient) {
