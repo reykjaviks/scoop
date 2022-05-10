@@ -17,4 +17,10 @@ class Venue(
         @NotNull
         @Column(name = "name")
         var name: String,
+
+        @OneToMany(fetch = FetchType.LAZY, mappedBy = "venue", cascade = [CascadeType.ALL])
+        @Where(clause = "deleted = false")
+        @JsonManagedReference
+        var reviewList: MutableList<Review>?,
+
 ) : BaseEntity()
