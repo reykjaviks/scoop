@@ -1,5 +1,6 @@
 package com.marjorie.scoop.venue
 
+import com.marjorie.scoop.neighbourhood.Neighbourhood
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
 import org.junit.jupiter.api.BeforeEach
@@ -36,6 +37,7 @@ class VenueControllerTest {
             streetAddress = "Piispansilta 11",
             postalCode = "02230",
             city = "Espoo",
+            neighbourhood = Neighbourhood("Tapiola")
         )
 
         venue2 = Venue(
@@ -43,6 +45,7 @@ class VenueControllerTest {
             streetAddress = "Mannerheimintie 20",
             postalCode = "00100",
             city = "Helsinki",
+            neighbourhood = Neighbourhood("Kallio")
         )
 
         every { venueRepository.findByIdOrNull(1) } returns venue1
@@ -83,6 +86,16 @@ class VenueControllerTest {
     }
 
     @Test
+    fun `API returns at least two results with correct neighbourhood name fields`() {
+        webClient.get()
+            .uri("/api/venue/all")
+            .exchange()
+            .expectStatus().isOk
+            .expectBody()
+            .jsonPath("$[0].neighbourhood.name").isEqualTo("Tapiola")
+            .jsonPath("$[1].neighbourhood.name").isEqualTo("Kallio")
+    }
+    @Test
     fun `API returns the right amount of venues`() {
         webClient.get()
             .uri("/api/venue/all")
@@ -90,7 +103,7 @@ class VenueControllerTest {
             .expectStatus().isOk
             .expectBodyList<Venue>()
             .hasSize(2)
-            //.contains(venue1) todo: fix
+            //.contains(venue1) //todo: find out why this does not work
     }
 
 }

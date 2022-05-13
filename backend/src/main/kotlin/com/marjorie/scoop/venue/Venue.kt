@@ -2,6 +2,7 @@ package com.marjorie.scoop.venue
 
 import com.fasterxml.jackson.annotation.JsonManagedReference
 import com.marjorie.scoop.BaseEntity
+import com.marjorie.scoop.neighbourhood.Neighbourhood
 import com.marjorie.scoop.review.Review
 import org.hibernate.annotations.Where
 import org.jetbrains.annotations.Nullable
@@ -44,6 +45,10 @@ class Venue(
         @Size(max = 50)
         @Column(length = 50)
         var city: String,
+
+        @Nullable
+        @ManyToOne
+        var neighbourhood: Neighbourhood? = null,
 
         @OneToMany(fetch = FetchType.LAZY, mappedBy = "venue", cascade = [CascadeType.ALL])
         @Nullable
