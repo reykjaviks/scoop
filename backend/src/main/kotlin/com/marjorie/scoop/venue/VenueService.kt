@@ -4,7 +4,7 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 
 /**
- * Handles the communication between Venue repository and Venue controller.
+ * Handles the communication between the Venue repository and Venue controller.
  * */
 @Service
 class VenueService(private val venueRepository : VenueRepository) {

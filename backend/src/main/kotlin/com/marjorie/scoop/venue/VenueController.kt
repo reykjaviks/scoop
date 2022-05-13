@@ -16,8 +16,10 @@ class VenueController(private val venueService: VenueService) {
     @GetMapping("/{id}")
     fun getVenue(@PathVariable id: Long): Venue {
         return venueService.getVenue(id)
-            ?: throw ResponseStatusException(HttpStatus.NOT_FOUND,
-                String.format("No resource found for id %s", id))
+            ?: throw ResponseStatusException(
+                HttpStatus.NOT_FOUND,
+                String.format("No venue found for id %s", id)
+            )
     }
 
 }

@@ -10,8 +10,8 @@ import javax.validation.constraints.NotNull
 import javax.validation.constraints.Size
 
 /**
- * Class 'Venue' inherits the BaseEntity's properties and functions.
- * Variables and values defined in the constructor can be referenced using the property name, e.g. 'venue.name'
+ * Class 'Venue' inherits BaseEntity's properties and functions. Variables and values defined
+ * in the constructor can be referenced using the property name, e.g. 'venue.name'
  */
 @Entity
 @Table(name = "venue")
