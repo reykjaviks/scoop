@@ -7,6 +7,7 @@ import org.hibernate.annotations.Where
 import org.jetbrains.annotations.Nullable
 import javax.persistence.*
 import javax.validation.constraints.NotNull
+import javax.validation.constraints.Size
 
 /**
  * Class 'Venue' inherits the BaseEntity's properties and functions.
@@ -16,8 +17,33 @@ import javax.validation.constraints.NotNull
 @Table(name = "venue")
 class Venue(
         @NotNull
-        @Column(name = "name")
         var name: String,
+
+        @Nullable
+        var description: String? = null,
+
+        @Nullable
+        @Column(name = "info_url")
+        var infoUrl: String? = null,
+
+        @Nullable
+        @Column(name = "img_url")
+        var imgUrl: String? = null,
+
+        @NotNull
+        @Size(max = 50)
+        @Column(name = "street_address", length = 50)
+        var streetAddress: String,
+
+        @NotNull
+        @Size(max = 50)
+        @Column(name = "postal_code", length = 5)
+        var postalCode: String,
+
+        @NotNull
+        @Size(max = 50)
+        @Column(length = 50)
+        var city: String,
 
         @OneToMany(fetch = FetchType.LAZY, mappedBy = "venue", cascade = [CascadeType.ALL])
         @Nullable

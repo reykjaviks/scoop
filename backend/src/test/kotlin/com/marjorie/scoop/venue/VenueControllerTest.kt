@@ -28,19 +28,27 @@ class VenueControllerTest {
 
     private lateinit var venue1: Venue
     private lateinit var venue2: Venue
-    private lateinit var venue3: Venue
 
     @BeforeEach
     fun setUp() {
-        venue1 = Venue("Pretty Boy Wingery")
-        venue2 = Venue("More Tea")
-        venue3 = Venue("Pastis")
+        venue1 = Venue(
+            name = "Pretty Boy Wingery",
+            streetAddress = "Piispansilta 11",
+            postalCode = "02230",
+            city = "Espoo",
+        )
+
+        venue2 = Venue(
+            name = "Momochi",
+            streetAddress = "Mannerheimintie 20",
+            postalCode = "00100",
+            city = "Helsinki",
+        )
 
         every { venueRepository.findByIdOrNull(1) } returns venue1
         every { venueRepository.findByIdOrNull(2) } returns venue2
-        every { venueRepository.findByIdOrNull(3) } returns venue3
-        every { venueRepository.findByIdOrNull(4) } returns null
-        every { venueRepository.findAll() } returns listOf(venue1, venue2, venue3)
+        every { venueRepository.findByIdOrNull(3) } returns null
+        every { venueRepository.findAll() } returns listOf(venue1, venue2)
     }
 
     @Test
@@ -57,7 +65,7 @@ class VenueControllerTest {
     @Test
     fun `API returns status code 404 when queried ID does not exist`() {
         webClient.get()
-            .uri("/api/venue/4")
+            .uri("/api/venue/3")
             .exchange()
             .expectStatus().isNotFound
             .expectBody<Unit>()
@@ -81,7 +89,7 @@ class VenueControllerTest {
             .exchange()
             .expectStatus().isOk
             .expectBodyList<Venue>()
-            .hasSize(3)
+            .hasSize(2)
             //.contains(venue1) todo: fix
     }
 
