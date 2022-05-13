@@ -31,6 +31,8 @@ dependencies {
 		exclude(module = "mockito-core")
 	}
 	testImplementation("org.junit.jupiter:junit-jupiter-api")
+	testImplementation("org.testcontainers:junit-jupiter:1.17.1")
+	testImplementation("org.testcontainers:postgresql:1.17.1")
 	testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
 	testImplementation("com.ninja-squad:springmockk:3.1.1")
 }
