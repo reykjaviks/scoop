@@ -22,4 +22,17 @@ class VenueController(private val venueService: VenueService) {
             )
     }
 
+    @Throws(ResponseStatusException::class)
+    @GetMapping("/search")
+    fun findVenue(@RequestParam query: String): Iterable<Venue?> {
+        val venues = venueService.searchVenues(query)
+        if (venues.isNullOrEmpty()) {
+            throw ResponseStatusException(
+                HttpStatus.NOT_FOUND,
+                String.format("No venues found for query %s", query)
+            )
+        }
+        return venues
+    }
+
 }
