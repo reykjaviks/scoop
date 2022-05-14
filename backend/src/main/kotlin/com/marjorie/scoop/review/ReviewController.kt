@@ -1,10 +1,7 @@
 package com.marjorie.scoop.review
 
-import com.marjorie.scoop.venue.Venue
-import org.springframework.data.jpa.domain.AbstractPersistable_.id
 import org.springframework.web.bind.annotation.*
 import java.util.*
-
 
 /**
  * Exposes endpoints that serve information on reviews.
