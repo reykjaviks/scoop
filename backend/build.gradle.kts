@@ -4,10 +4,13 @@ plugins {
 	id("org.springframework.boot") version "2.6.7"
 	id("io.spring.dependency-management") version "1.0.11.RELEASE"
 	id("org.jetbrains.kotlin.plugin.allopen") version "1.6.21"
+	id("org.jetbrains.kotlinx.kover") version "0.5.0"
 	kotlin("jvm") version "1.6.21"
 	kotlin("plugin.spring") version "1.6.21"
 	kotlin("plugin.jpa") version "1.6.21"
 }
+
+//======================= Project Info =============================================
 
 group = "com.marjorie"
 version = "0.0.1-SNAPSHOT"
@@ -17,6 +20,8 @@ repositories {
 	mavenCentral()
 }
 
+//======================= Dependencies =============================================
+
 dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.springframework.boot:spring-boot-starter-validation")
@@ -25,8 +30,8 @@ dependencies {
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-    implementation("org.junit.jupiter:junit-jupiter:5.8.2")
-    runtimeOnly("org.postgresql:postgresql")
+	implementation("org.junit.jupiter:junit-jupiter:5.8.2")
+	runtimeOnly("org.postgresql:postgresql")
 	testImplementation("org.springframework.boot:spring-boot-starter-test") {
 		exclude(module = "mockito-core")
 	}
@@ -36,6 +41,8 @@ dependencies {
 	testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
 	testImplementation("com.ninja-squad:springmockk:3.1.1")
 }
+//======================= Tasks =============================================
+
 
 tasks.withType<KotlinCompile> {
 	kotlinOptions {
