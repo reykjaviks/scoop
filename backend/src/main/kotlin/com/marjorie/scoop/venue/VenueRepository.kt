@@ -19,5 +19,5 @@ interface VenueRepository : JpaRepository<Venue?, Long?> {
             OR LOWER(v.city) LIKE :query
             OR LOWER(n.name) LIKE :query
             """)
-    fun findByNameOrAddressOrPostalCodeOrCityOrNeighbourhood(@Param("query") query: String): List<Venue>
+    fun findByNameOrAddressOrPostalCodeOrCityOrNeighbourhood(@Param("query") query: String): List<Venue>?
 }
