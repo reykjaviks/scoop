@@ -27,12 +27,18 @@ class VenueControllerTest {
     @Autowired
     private lateinit var webClient: WebTestClient
 
-    private lateinit var venue1: Venue
-    private lateinit var venue2: Venue
+    private lateinit var tapiolaVenue: Venue
+    private lateinit var kallioVenue: Venue
+
+    private lateinit var allVenues: List<Venue>
+    private lateinit var kallioVenues: List<Venue>
+
+    private lateinit var kallioQuery: String
+    private lateinit var wackyQuery: String
 
     @BeforeEach
     fun setUp() {
-        venue1 = Venue(
+        tapiolaVenue = Venue(
             name = "Pretty Boy Wingery",
             streetAddress = "Piispansilta 11",
             postalCode = "02230",
@@ -40,7 +46,7 @@ class VenueControllerTest {
             neighbourhood = Neighbourhood("Tapiola")
         )
 
-        venue2 = Venue(
+        kallioVenue = Venue(
             name = "Momochi",
             streetAddress = "Mannerheimintie 20",
             postalCode = "00100",
@@ -48,14 +54,26 @@ class VenueControllerTest {
             neighbourhood = Neighbourhood("Kallio")
         )
 
-        every { venueRepository.findByIdOrNull(1) } returns venue1
-        every { venueRepository.findByIdOrNull(2) } returns venue2
+        allVenues = listOf(tapiolaVenue, kallioVenue)
+        kallioVenues = listOf(kallioVenue)
+
+        kallioQuery = "%kallio%"
+        wackyQuery = "%qwerty1234%"
+
+        every { venueRepository.findByIdOrNull(1) } returns tapiolaVenue
+        every { venueRepository.findByIdOrNull(2) } returns kallioVenue
         every { venueRepository.findByIdOrNull(3) } returns null
-        every { venueRepository.findAll() } returns listOf(venue1, venue2)
+        every { venueRepository.findAll() } returns allVenues
+        every {
+            venueRepository.findByNameOrAddressOrPostalCodeOrCityOrNeighbourhood(kallioQuery)
+        } returns kallioVenues
+        every {
+            venueRepository.findByNameOrAddressOrPostalCodeOrCityOrNeighbourhood(wackyQuery)
+        } returns null
     }
 
     @Test
-    fun `API returns a venue when queried ID exists`() {
+    fun `Get venue returns a venue when queried ID exists`() {
         webClient.get()
             .uri("/api/venue/1")
             .accept(MediaType.APPLICATION_JSON)
@@ -66,7 +84,7 @@ class VenueControllerTest {
     }
 
     @Test
-    fun `API returns status code 404 when queried ID does not exist`() {
+    fun `Get venue returns status code 404 when queried ID does not exist`() {
         webClient.get()
             .uri("/api/venue/3")
             .exchange()
@@ -75,25 +93,25 @@ class VenueControllerTest {
     }
 
     @Test
-    fun `API returns at least two results with correct name fields`() {
+    fun `Get all venues returns at least two results with correct name fields`() {
         webClient.get()
             .uri("/api/venue/all")
             .exchange()
             .expectStatus().isOk
             .expectBody()
-            .jsonPath("$[0].name").isEqualTo(venue1.name)
-            .jsonPath("$[1].name").isEqualTo(venue2.name)
+            .jsonPath("$[0].name").isEqualTo(tapiolaVenue.name)
+            .jsonPath("$[1].name").isEqualTo(kallioVenue.name)
     }
 
     @Test
-    fun `API returns at least two results with correct neighbourhood name fields`() {
+    fun `Get all venues returns at least two results with correct neighbourhood name fields`() {
         webClient.get()
             .uri("/api/venue/all")
             .exchange()
             .expectStatus().isOk
             .expectBody()
-            .jsonPath("$[0].neighbourhood.name").isEqualTo("Tapiola")
-            .jsonPath("$[1].neighbourhood.name").isEqualTo("Kallio")
+            .jsonPath("$[0].neighbourhood.name").isEqualTo(tapiolaVenue.neighbourhood!!.name)
+            .jsonPath("$[1].neighbourhood.name").isEqualTo(kallioVenue.neighbourhood!!.name)
     }
     @Test
     fun `API returns the right amount of venues`() {
@@ -102,8 +120,35 @@ class VenueControllerTest {
             .exchange()
             .expectStatus().isOk
             .expectBodyList<Venue>()
-            .hasSize(2)
+            .hasSize(allVenues.size)
             //.contains(venue1) //todo: find out why this does not work
+    }
+
+    @Test
+    fun `Search returns a list of venues located in Kallio`() {
+        val query = "KALLIO"
+        webClient.get()
+            .uri { uriBuilder ->
+                uriBuilder.path("/api/venue/search")
+                    .queryParam("query", query)
+                    .build()
+            }.exchange()
+            .expectStatus().isOk
+            .expectBody()
+            .jsonPath("$[0].name").isEqualTo(kallioVenue.name)
+    }
+
+    @Test
+    fun `Search returns status code 404 when there are no results for the query`() {
+        val query = "QWERTY1234"
+        webClient.get()
+            .uri { uriBuilder ->
+                uriBuilder.path("/api/venue/search")
+                    .queryParam("query", query)
+                    .build()
+            }.exchange()
+            .expectStatus().isNotFound
+            .expectBody<Unit>()
     }
 
 }

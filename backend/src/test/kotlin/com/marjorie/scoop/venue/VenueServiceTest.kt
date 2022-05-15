@@ -39,15 +39,12 @@ class VenueServiceTest {
         every { venueRepository.findByIdOrNull(1) } returns venue1
         every { venueRepository.findByIdOrNull(2) } returns venue2
         every { venueRepository.findByIdOrNull(3) } returns null
-
         every { venueRepository.findAll() } returns listOf(venue1, venue2)
-
-        every { venueRepository.findByNameOrAddressOrPostalCodeOrCityOrNeighbourhood(
-            "%kaartinkaupunki%")
+        every {
+            venueRepository.findByNameOrAddressOrPostalCodeOrCityOrNeighbourhood("%kaartinkaupunki%")
         } returns listOf(venue2)
-
-        every { venueRepository.findByNameOrAddressOrPostalCodeOrCityOrNeighbourhood(
-            "%reykjavik%")
+        every {
+            venueRepository.findByNameOrAddressOrPostalCodeOrCityOrNeighbourhood("%reykjavik%")
         } returns null
     }
 
