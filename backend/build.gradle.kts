@@ -24,6 +24,9 @@ repositories {
 //======================= Dependencies =============================================
 
 dependencies {
+	implementation("org.springframework.boot:spring-boot-starter-security")
+	implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
+	implementation("com.okta.spring:okta-spring-boot-starter:2.1.5")
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.springframework.boot:spring-boot-starter-validation")
 	implementation("org.springframework.boot:spring-boot-starter-web")
@@ -41,6 +44,7 @@ dependencies {
 	testImplementation("org.testcontainers:postgresql:1.17.1")
 	testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
 	testImplementation("com.ninja-squad:springmockk:3.1.1")
+	testImplementation("org.springframework.security:spring-security-test")
 }
 //======================= Tasks =============================================
 
