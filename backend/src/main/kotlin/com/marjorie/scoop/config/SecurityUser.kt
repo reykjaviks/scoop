@@ -4,11 +4,7 @@ import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 
-class DummyUser(
-    private val username: String,
-    private val password: String
-): UserDetails {
-    
+class SecurityUser(private val user: User): UserDetails {
     override fun getAuthorities(): MutableCollection<out GrantedAuthority> {
         return arrayListOf(
             SimpleGrantedAuthority("READ")
@@ -16,11 +12,11 @@ class DummyUser(
     }
 
     override fun getPassword(): String {
-        return password
+        return user.password
     }
 
     override fun getUsername(): String {
-        return username
+        return user.username
     }
 
     override fun isAccountNonExpired(): Boolean {

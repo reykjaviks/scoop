@@ -16,24 +16,12 @@ class User(
 
     @NotNull
     @Size(max = 50)
-    var email: String,
+    @Column(name = "email")
+    var username: String,
 
     @NotNull
     var password: String,
 
-    /*
-    @Nullable
-    @Type(type = "BigIntArray")
-    @Column(columnDefinition = "bigint[]")
-    var rolelist: Array<Long>? = arrayOf(),
-
-    @Nullable
-    @Type(type = "BigIntArray")
-    @Column(columnDefinition = "bigint[]")
-    var venuelist: Array<Long>? = arrayOf(),
-    */
-
     @NotNull
     var islocked: Boolean,
-
 ) : BaseEntity()
