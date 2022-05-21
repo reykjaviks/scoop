@@ -12,7 +12,7 @@ import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.provisioning.InMemoryUserDetailsManager
 
 @Configuration
-class SecurityConfig: WebSecurityConfigurerAdapter() {
+class UserManagementConfig {
     val pwEncoder: PasswordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder()
 
     @Bean
@@ -30,12 +30,6 @@ class SecurityConfig: WebSecurityConfigurerAdapter() {
             .build()
 
         return InMemoryUserDetailsManager(ella, marja)
-    }
-
-    override fun configure(http: HttpSecurity) {
-        http.httpBasic()
-        http.authorizeRequests()
-            .anyRequest().authenticated()
     }
 
 }
