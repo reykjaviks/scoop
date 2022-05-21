@@ -1,4 +1,4 @@
-package com.marjorie.scoop.auth
+package com.marjorie.scoop.config
 
 import com.marjorie.scoop.BaseEntity
 import javax.persistence.Column

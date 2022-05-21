@@ -1,7 +1,9 @@
-package com.marjorie.scoop.auth
+package com.marjorie.scoop.config
 
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.security.config.annotation.web.builders.HttpSecurity
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
 import org.springframework.security.core.userdetails.User
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
@@ -10,7 +12,7 @@ import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.provisioning.InMemoryUserDetailsManager
 
 @Configuration
-class SecurityConfig {
+class SecurityConfig: WebSecurityConfigurerAdapter() {
     val pwEncoder: PasswordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder()
 
     @Bean
@@ -18,7 +20,7 @@ class SecurityConfig {
         val ella: UserDetails = User.builder()
             .username("Ella")
             .password(pwEncoder.encode("pass"))
-            .roles(("ADMIN"))
+            .roles(("USER"))
             .build()
 
         val marja: UserDetails = User.builder()
@@ -30,5 +32,10 @@ class SecurityConfig {
         return InMemoryUserDetailsManager(ella, marja)
     }
 
+    override fun configure(http: HttpSecurity) {
+        http.httpBasic()
+        http.authorizeRequests()
+            .anyRequest().authenticated()
+    }
 
 }
