@@ -9,7 +9,7 @@ import javax.validation.constraints.Size
 
 @Entity
 @Table(name = "appuser")
-class User (
+class User(
     @NotNull
     @Column(name = "fullname")
     var name: String,

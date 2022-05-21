@@ -11,6 +11,9 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.provisioning.InMemoryUserDetailsManager
 
+/**
+ * User builder for simple applications.
+ */
 @Configuration
 class UserManagementConfig {
     val pwEncoder: PasswordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder()
