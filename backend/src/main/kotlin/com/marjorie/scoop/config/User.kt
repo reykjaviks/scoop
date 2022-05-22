@@ -11,10 +11,6 @@ import javax.validation.constraints.Size
 @Table(name = "appuser")
 class User(
     @NotNull
-    @Column(name = "fullname")
-    var name: String,
-
-    @NotNull
     @Size(max = 50)
     @Column(name = "email")
     var username: String,
@@ -23,5 +19,7 @@ class User(
     var password: String,
 
     @NotNull
-    var islocked: Boolean,
+    @Size(max = 50)
+    var authority: String,
+
 ) : BaseEntity()

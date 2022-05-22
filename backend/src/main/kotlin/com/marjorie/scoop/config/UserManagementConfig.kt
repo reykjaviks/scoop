@@ -8,6 +8,7 @@ import org.springframework.security.core.userdetails.User
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.crypto.factory.PasswordEncoderFactories
+import org.springframework.security.crypto.password.NoOpPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.provisioning.InMemoryUserDetailsManager
 
@@ -16,8 +17,23 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager
  */
 @Configuration
 class UserManagementConfig {
-    val pwEncoder: PasswordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder()
+    //val pwEncoder: PasswordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder()
 
+    @Bean
+    fun passwordEncoder(): PasswordEncoder {
+        return NoOpPasswordEncoder.getInstance()
+    }
+
+    @Bean
+    fun userDetailsService(): UserDetailsService {
+        val user1: UserDetails = SecurityUser(
+            User("ella@gmail.com", "password", "read")
+        )
+        val users: List<UserDetails> = listOf(user1)
+        return InMemoryUserDetailsService(users)
+    }
+
+    /*
     @Bean
     fun authentication(): UserDetailsService {
         val ella: UserDetails = User.builder()
@@ -34,5 +50,6 @@ class UserManagementConfig {
 
         return InMemoryUserDetailsManager(ella, marja)
     }
+     */
 
 }
