@@ -4,6 +4,10 @@ import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 
+/**
+ * Wraps the User entity inside SecurityUser in order to implement's Spring Security's
+ * UserDetails interface.
+ */
 class SecurityUser(private val user: User): UserDetails {
     override fun getAuthorities(): MutableCollection<out GrantedAuthority> {
         return arrayListOf(

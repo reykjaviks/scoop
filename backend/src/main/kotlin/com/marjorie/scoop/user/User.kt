@@ -21,5 +21,4 @@ class User(
     @NotNull
     @Size(max = 50)
     var authority: String,
-
 ) : BaseEntity()
