@@ -1,16 +1,14 @@
 package com.marjorie.scoop.config
 
+import com.marjorie.scoop.user.InMemoryUserDetailsService
+import com.marjorie.scoop.user.SecurityUser
+import com.marjorie.scoop.user.User
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.security.config.annotation.web.builders.HttpSecurity
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
-import org.springframework.security.core.userdetails.User
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
-import org.springframework.security.crypto.factory.PasswordEncoderFactories
 import org.springframework.security.crypto.password.NoOpPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
-import org.springframework.security.provisioning.InMemoryUserDetailsManager
 
 /**
  * User builder for simple applications.
@@ -27,7 +25,7 @@ class UserManagementConfig {
     @Bean
     fun userDetailsService(): UserDetailsService {
         val user1: UserDetails = SecurityUser(
-            User("ella@gmail.com", "password", "read")
+            User("marja@gmail.com", "password", "read")
         )
         val users: List<UserDetails> = listOf(user1)
         return InMemoryUserDetailsService(users)
