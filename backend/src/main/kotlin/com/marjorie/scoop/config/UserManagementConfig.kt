@@ -1,27 +1,37 @@
 package com.marjorie.scoop.config
 
-import com.marjorie.scoop.user.InMemoryUserDetailsService
-import com.marjorie.scoop.user.SecurityUser
-import com.marjorie.scoop.user.User
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.security.core.userdetails.UserDetails
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.crypto.password.NoOpPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
+import org.springframework.security.provisioning.JdbcUserDetailsManager
+import javax.sql.DataSource
 
 /**
  * User builder for simple applications.
  */
 @Configuration
 class UserManagementConfig {
-    //val pwEncoder: PasswordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder()
 
     @Bean
     fun passwordEncoder(): PasswordEncoder {
         return NoOpPasswordEncoder.getInstance()
     }
 
+    @Bean
+    fun userDetailsService(dataSource: DataSource?): UserDetailsService? {
+        val usersByUsernameQuery = "select email, password, isenabled from scoop.appuser where email = ?"
+        val authsByUserQuery = "select email, authority from scoop.appuser where email = ?"
+
+        return JdbcUserDetailsManager(dataSource).also {
+            it.usersByUsernameQuery = usersByUsernameQuery
+            it.setAuthoritiesByUsernameQuery(authsByUserQuery)
+        }
+    }
+
+    /*
     @Bean
     fun userDetailsService(): UserDetailsService {
         val user1: UserDetails = SecurityUser(
@@ -31,7 +41,7 @@ class UserManagementConfig {
         return InMemoryUserDetailsService(users)
     }
 
-    /*
+
     @Bean
     fun authentication(): UserDetailsService {
         val ella: UserDetails = User.builder()
