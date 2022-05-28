@@ -10,7 +10,7 @@ import org.springframework.security.provisioning.JdbcUserDetailsManager
 import javax.sql.DataSource
 
 /**
- * User builder for simple applications.
+ * Manages configuration info regarding users.
  */
 @Configuration
 class UserManagementConfig {
