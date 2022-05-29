@@ -6,7 +6,7 @@ import org.springframework.web.server.ResponseStatusException
 
 /**
  * Exposes endpoints that serve information on venues.
- * */
+ */
 @RestController
 @RequestMapping("/api/venue")
 class VenueController(private val venueService: VenueService) {

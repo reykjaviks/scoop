@@ -6,9 +6,7 @@ import javax.persistence.Table
 import javax.validation.constraints.NotNull
 
 /**
- * Entity 'Neighbourhood' inherits BaseEntity's properties and functions.
- * Variables and values defined in the constructor can be referenced using the
- * property name, e.g. 'neighbourhood.name'
+ * 'Neighbourhood' inherits BaseEntity's properties and functions.
  */
 @Entity
 @Table(name = "neighbourhood")

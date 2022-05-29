@@ -9,7 +9,7 @@ import org.springframework.web.server.ResponseStatusException
 
 /**
  * Exposes endpoints that serve information on neighbourhoods.
- * */
+ */
 @RestController
 @RequestMapping("/api/neighbourhood")
 class NeighbourhoodController(private val neighbourhoodService: NeighbourhoodService) {

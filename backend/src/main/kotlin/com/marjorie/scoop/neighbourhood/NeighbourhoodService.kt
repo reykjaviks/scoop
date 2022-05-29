@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service
 
 /**
  * Handles the communication between the Neighbourhood repository and Neighbourhood controller.
- * */
+ */
 @Service
 class NeighbourhoodService(private val neighbourhoodRepository: NeighbourhoodRepository) {
     fun getNeighbourhoods(): List<Neighbourhood?> = neighbourhoodRepository.findAll()

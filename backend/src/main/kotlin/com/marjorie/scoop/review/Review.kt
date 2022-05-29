@@ -8,9 +8,7 @@ import javax.persistence.*
 import javax.validation.constraints.NotNull
 
 /**
- * Class 'Review' inherits the BaseEntity's properties and functions
- * Variables and values defined in the constructor can be referenced using
- * the property name, e.g. 'review.rating'
+ * 'Review' inherits the BaseEntity's properties and functions.
  */
 @Entity
 @Table(name = "review")

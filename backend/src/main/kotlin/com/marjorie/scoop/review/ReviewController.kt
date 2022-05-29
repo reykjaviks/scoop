@@ -5,7 +5,7 @@ import java.util.*
 
 /**
  * Exposes endpoints that serve information on reviews.
- * */
+ */
 @RestController
 @RequestMapping("/api/review")
 class ReviewController(private val reviewService: ReviewService) {

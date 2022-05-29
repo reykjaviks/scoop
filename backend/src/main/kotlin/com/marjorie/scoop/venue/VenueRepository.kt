@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository
 
 /**
  * API for basic CRUD operations on 'Venue'
- * */
+ */
 @Repository
 interface VenueRepository : JpaRepository<Venue?, Long?> {
     @Query("""

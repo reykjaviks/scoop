@@ -4,8 +4,8 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 
 /**
- * Handles the communication between the Venue repository and Venue controller.
- * */
+ * Handles communication between the Venue repository and Venue controller.
+ */
 @Service
 class VenueService(private val venueRepository: VenueRepository) {
     fun getVenues(): List<Venue?> = venueRepository.findAll()
