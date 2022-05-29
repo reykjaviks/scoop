@@ -3,24 +3,24 @@ package com.marjorie.scoop.user
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
+import java.util.stream.Collectors
 
 /**
- * Wraps the User entity inside SecurityUser in order to implement's Spring Security's
- * UserDetails interface.
+ * Wraps the User entity inside SecurityUser in order to implement's Spring Security's UserDetails interface.
  */
 class SecurityUser(private val user: User): UserDetails {
-    override fun getAuthorities(): MutableCollection<out GrantedAuthority> {
-        return arrayListOf(
-            SimpleGrantedAuthority(user.authority)
-        )
+    override fun getUsername(): String {
+        return user.username
     }
 
     override fun getPassword(): String {
         return user.password
     }
 
-    override fun getUsername(): String {
-        return user.username
+    override fun getAuthorities(): Collection<GrantedAuthority> {
+        return user.authorities.stream()
+            .map { a: Authority -> SimpleGrantedAuthority(a.name) }
+            .collect(Collectors.toList())
     }
 
     override fun isAccountNonExpired(): Boolean {

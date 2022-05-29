@@ -1,8 +1,9 @@
 package com.marjorie.scoop.config
 
+import com.marjorie.scoop.user.AuthenticationProviderService
 import org.springframework.context.annotation.Configuration
-import org.springframework.security.authentication.AuthenticationProvider
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
+import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
 
 /**
@@ -10,9 +11,18 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
  */
 @Configuration
 class WebAuthorizationConfig(
-    private val authenticationProvider: AuthenticationProvider,
+    private val authenticationProvider: AuthenticationProviderService,
 ): WebSecurityConfigurerAdapter() {
+
+    /**
+     * Registers a custom authentication provider to Spring Security's authentication manager.
+     */
     override fun configure(auth: AuthenticationManagerBuilder) {
         auth.authenticationProvider(authenticationProvider)
+    }
+
+    override fun configure(http: HttpSecurity) {
+        http.formLogin().defaultSuccessUrl("/", true)
+        http.authorizeRequests().anyRequest().authenticated()
     }
 }

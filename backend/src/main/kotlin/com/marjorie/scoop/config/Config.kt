@@ -2,19 +2,13 @@ package com.marjorie.scoop.config
 
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
-import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
-import org.springframework.security.crypto.password.NoOpPasswordEncoder
-import org.springframework.security.crypto.password.PasswordEncoder
-import org.springframework.security.provisioning.JdbcUserDetailsManager
-import javax.sql.DataSource
 
 /**
- * Manages configuration info regarding X.
+ * Manages configuration info regarding all that do not fit into Web Authorization category.
  */
 @Configuration
-class UserManagementConfig {
+class Config {
 
     @Bean
     fun bCryptPasswordEncoder(): BCryptPasswordEncoder? {
