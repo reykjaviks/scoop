@@ -14,7 +14,8 @@ class JpaUserDetailsService(
     private val userRepository: UserRepository,
 ): UserDetailsService {
     override fun loadUserByUsername(username: String): SecurityUser {
-        val user = userRepository.findByUsername(username) ?: throw UsernameNotFoundException("Username not found.")
+        val user = userRepository.findByUsername(username)
+            ?: throw UsernameNotFoundException("Username not found.")
         return SecurityUser(user)
       }
 }

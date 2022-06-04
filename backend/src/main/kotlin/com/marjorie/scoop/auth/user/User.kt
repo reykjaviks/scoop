@@ -25,5 +25,4 @@ class User(
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = [CascadeType.ALL])
     var authorities: MutableList<Authority>,
-
-    ) : BaseEntity()
+): BaseEntity()

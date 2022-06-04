@@ -8,7 +8,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 
-
 /**
  * Takes care of the authentication logic, for example validates whether
  * passwords match when using credential based authentication.
@@ -20,8 +19,8 @@ class AuthenticationProviderService(
 ): AuthenticationProvider {
     override fun authenticate(authentication: Authentication): Authentication {
         val username = authentication.name
-        val rawPassword = authentication.credentials.toString()
         val user: SecurityUser = jpaUserDetailsService.loadUserByUsername(username)
+        val rawPassword = authentication.credentials.toString()
         return this.checkPassword(user, rawPassword, bCryptPasswordEncoder)
     }
 
