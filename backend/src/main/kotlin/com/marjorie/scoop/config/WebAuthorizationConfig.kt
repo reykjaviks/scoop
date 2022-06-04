@@ -1,6 +1,6 @@
 package com.marjorie.scoop.config
 
-import com.marjorie.scoop.user.AuthenticationProviderService
+import com.marjorie.scoop.auth.AuthenticationProviderService
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
 import org.springframework.security.config.annotation.web.builders.HttpSecurity

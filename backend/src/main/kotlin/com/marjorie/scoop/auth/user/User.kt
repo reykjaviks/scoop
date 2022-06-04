@@ -1,10 +1,7 @@
-package com.marjorie.scoop.user
+package com.marjorie.scoop.auth.user
 
-import com.fasterxml.jackson.annotation.JsonManagedReference
 import com.marjorie.scoop.BaseEntity
-import com.marjorie.scoop.review.Review
-import org.hibernate.annotations.Where
-import org.jetbrains.annotations.Nullable
+import com.marjorie.scoop.auth.authority.Authority
 import javax.persistence.*
 import javax.validation.constraints.NotNull
 import javax.validation.constraints.Size
@@ -29,4 +26,4 @@ class User(
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = [CascadeType.ALL])
     var authorities: MutableList<Authority>,
 
-) : BaseEntity()
+    ) : BaseEntity()

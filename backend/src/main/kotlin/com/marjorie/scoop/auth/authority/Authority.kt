@@ -1,6 +1,7 @@
-package com.marjorie.scoop.user
+package com.marjorie.scoop.auth.authority
 
 import com.marjorie.scoop.BaseEntity
+import com.marjorie.scoop.auth.user.User
 import javax.persistence.*
 import javax.validation.constraints.NotNull
 

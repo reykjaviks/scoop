@@ -1,5 +1,7 @@
-package com.marjorie.scoop.user
+package com.marjorie.scoop.auth
 
+import com.marjorie.scoop.auth.authority.Authority
+import com.marjorie.scoop.auth.user.User
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
