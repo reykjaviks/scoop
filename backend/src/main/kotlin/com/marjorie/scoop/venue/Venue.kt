@@ -47,11 +47,11 @@ class Venue(
 
         @Nullable
         @ManyToOne
-        var neighbourhood: Neighbourhood? = null,
+        var neighbourhood: Neighbourhood?,
 
         @OneToMany(fetch = FetchType.LAZY, mappedBy = "venue", cascade = [CascadeType.ALL])
         @Nullable
         @Where(clause = "deleted = false")
         @JsonManagedReference
-        var reviewList: MutableList<Review>? = null
+        var reviewList: MutableList<Review>?,
 ) : BaseEntity()

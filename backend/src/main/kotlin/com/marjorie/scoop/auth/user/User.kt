@@ -1,7 +1,9 @@
 package com.marjorie.scoop.auth.user
 
+import com.fasterxml.jackson.annotation.JsonManagedReference
 import com.marjorie.scoop.BaseEntity
 import com.marjorie.scoop.auth.authority.Authority
+import org.jetbrains.annotations.Nullable
 import javax.persistence.*
 import javax.validation.constraints.NotNull
 import javax.validation.constraints.Size
@@ -24,5 +26,6 @@ class User(
     var password: String,
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = [CascadeType.ALL])
+    @JsonManagedReference
     var authorities: MutableList<Authority>,
 ): BaseEntity()

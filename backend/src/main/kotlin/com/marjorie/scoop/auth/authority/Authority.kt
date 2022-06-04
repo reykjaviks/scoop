@@ -1,5 +1,6 @@
 package com.marjorie.scoop.auth.authority
 
+import com.fasterxml.jackson.annotation.JsonBackReference
 import com.marjorie.scoop.BaseEntity
 import com.marjorie.scoop.auth.user.User
 import javax.persistence.*
@@ -14,7 +15,8 @@ class Authority(
     @NotNull
     var name: String,
 
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
-    @ManyToOne
+    @JsonBackReference
     var user: User,
 ): BaseEntity()
