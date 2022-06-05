@@ -19,10 +19,10 @@ class SecurityUser(private val user: User): UserDetails {
         return user.password
     }
 
-    override fun getAuthorities(): Collection<GrantedAuthority> {
-        return user.authorities.stream()
-            .map { a: Authority -> SimpleGrantedAuthority(a.name) }
-            .collect(Collectors.toList())
+    override fun getAuthorities(): MutableList<SimpleGrantedAuthority>? {
+        return user.authorities?.stream()
+            ?.map { a: Authority -> SimpleGrantedAuthority(a.name) }
+            ?.collect(Collectors.toList())
     }
 
     override fun isAccountNonExpired(): Boolean {

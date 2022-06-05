@@ -25,7 +25,8 @@ class User(
     @NotNull
     var password: String,
 
+    @Nullable
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = [CascadeType.ALL])
     @JsonManagedReference
-    var authorities: MutableList<Authority>,
+    var authorities: MutableList<Authority>?,
 ): BaseEntity()
