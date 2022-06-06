@@ -19,8 +19,8 @@ class UserController(private val userService: UserService) {
         logger.info {"Checking if username ${registrationData.username} already exists ..."}
         val usernameExists = userService.usernameExists(registrationData.username)
 
-        if (!usernameExists)
-            userService.createUserWithReadAuthority(registrationData)
+        if (!usernameExists) // todo: käytä dollaria ja try catchaa
+            userService.createUserWithDefaultUserRole(registrationData)
         else throw
             ResponseStatusException(
                 HttpStatus.CONFLICT,
