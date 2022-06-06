@@ -42,7 +42,7 @@ class UserService(
                     role = role
                 )
             )
-        else throw NullPointerException("Role '$roleName' does not exist.")
+        else throw KotlinNullPointerException("Cannot save to UserRole repository because role is null.")
     }
 
     fun usernameExists(username: String): Boolean {

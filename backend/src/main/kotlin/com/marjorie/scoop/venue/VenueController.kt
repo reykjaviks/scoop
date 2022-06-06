@@ -18,7 +18,7 @@ class VenueController(private val venueService: VenueService) {
         return venueService.getVenue(id)
             ?: throw ResponseStatusException(
                 HttpStatus.NOT_FOUND,
-                String.format("No venue found for id %s", id)
+                "No venue found for id $id"
             )
     }
     
@@ -31,7 +31,7 @@ class VenueController(private val venueService: VenueService) {
         else throw
             ResponseStatusException(
                 HttpStatus.NOT_FOUND,
-                String.format("No venues found for query %s", query)
+                "No venues found for query $query"
             )
     }
 

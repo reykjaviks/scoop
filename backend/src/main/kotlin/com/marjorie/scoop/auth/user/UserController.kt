@@ -19,12 +19,12 @@ class UserController(private val userService: UserService) {
         logger.info {"Checking if username ${registrationData.username} already exists ..."}
         val usernameExists = userService.usernameExists(registrationData.username)
 
-        if (!usernameExists) // todo: käytä dollaria ja try catchaa
+        if (!usernameExists)
             userService.createUserWithDefaultUserRole(registrationData)
         else throw
             ResponseStatusException(
                 HttpStatus.CONFLICT,
-                String.format("Username '%s' already exists.", registrationData.username)
+                "Username ${registrationData.username} already exists."
             )
     }
 
@@ -33,7 +33,7 @@ class UserController(private val userService: UserService) {
         return userService.getUser(username)
             ?: throw ResponseStatusException(
                 HttpStatus.NOT_FOUND,
-                String.format("No user found for username '%s'", username)
+                "No user found for username $username"
             )
     }
 

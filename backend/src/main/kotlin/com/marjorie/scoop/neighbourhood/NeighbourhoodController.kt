@@ -21,8 +21,7 @@ class NeighbourhoodController(private val neighbourhoodService: NeighbourhoodSer
         return neighbourhoodService.getNeighbourhood(id)
             ?: throw ResponseStatusException(
                 HttpStatus.NOT_FOUND,
-                String.format("No neighbourhood found for id %s", id)
+                "No neighbourhood found for id $id"
             )
     }
-
 }
