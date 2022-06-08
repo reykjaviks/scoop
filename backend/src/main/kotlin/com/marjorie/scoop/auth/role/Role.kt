@@ -1,5 +1,6 @@
 package com.marjorie.scoop.auth.role
 
+import com.fasterxml.jackson.annotation.JsonBackReference
 import com.marjorie.scoop.BaseEntity
 import com.marjorie.scoop.auth.user.User
 import javax.persistence.*
@@ -14,6 +15,7 @@ class Role(
     @NotNull
     var name: String,
 
-    @ManyToMany(mappedBy = "roles")
+    @ManyToMany(mappedBy = "roles", fetch = FetchType.LAZY)
+    @JsonBackReference
     var users: MutableList<User>?,
 ): BaseEntity()
