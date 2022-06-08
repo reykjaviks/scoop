@@ -3,7 +3,6 @@ package com.marjorie.scoop.auth.user
 import com.fasterxml.jackson.annotation.JsonManagedReference
 import com.marjorie.scoop.BaseEntity
 import com.marjorie.scoop.auth.authority.Authority
-import com.marjorie.scoop.auth.role.Role
 import org.jetbrains.annotations.Nullable
 import javax.persistence.*
 import javax.validation.constraints.NotNull
@@ -27,17 +26,12 @@ class User(
     var password: String,
 
     @Nullable
-    @ManyToMany(fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
+    @ManyToMany(fetch = FetchType.EAGER, cascade = [CascadeType.ALL])
     @JoinTable(
-        name = "userrole",
+        name = "userauthority",
         joinColumns = [JoinColumn(name = "user_id", referencedColumnName = "id")],
-        inverseJoinColumns = [JoinColumn(name = "role_id", referencedColumnName = "id")]
+        inverseJoinColumns = [JoinColumn(name = "authority_id", referencedColumnName = "id")]
     )
     @JsonManagedReference
-    var roles: MutableList<Role>?,
-
-    @Nullable
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = [CascadeType.ALL])
-    @JsonManagedReference
-    var authorities: MutableList<Authority>?, // todo: delete later
+    var authorities: MutableList<Authority>?,
  ): BaseEntity()

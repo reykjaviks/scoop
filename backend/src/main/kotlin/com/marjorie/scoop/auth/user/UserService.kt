@@ -1,8 +1,10 @@
 package com.marjorie.scoop.auth.user
 
-import com.marjorie.scoop.auth.role.RoleRepository
-import com.marjorie.scoop.auth.userrole.UserRole
-import com.marjorie.scoop.auth.userrole.UserRoleRepository
+import com.marjorie.scoop.auth.authority.AuthorityRepository
+import com.marjorie.scoop.auth.authority.AuthorityService
+import com.marjorie.scoop.auth.userauthority.UserAuthority
+import com.marjorie.scoop.auth.userauthority.UserAuthorityRepository
+import com.marjorie.scoop.auth.userauthority.UserAuthorityService
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -13,8 +15,8 @@ import org.springframework.transaction.annotation.Transactional
 @Service
 class UserService(
     private val userRepository: UserRepository,
-    private val userRoleRepository: UserRoleRepository,
-    private val roleRepository: RoleRepository,
+    private val authorityService: AuthorityService,
+    private val userAuthorityService: UserAuthorityService,
     private val passwordEncoder: BCryptPasswordEncoder,
 ) {
     fun getUser(username: String): User? = userRepository.findByUsername(username)
@@ -26,27 +28,15 @@ class UserService(
                 name = registrationData.name,
                 username = registrationData.username,
                 password = this.passwordEncoder.encode(registrationData.password),
-                roles = null,
                 authorities = null
             )
         )
-        this.createUserRoleConnection(newUser, "USER")
-    }
-
-    private fun createUserRoleConnection(user: User, roleName: String): UserRole {
-        val role = roleRepository.findByName(roleName)
-        return if(role != null)
-            userRoleRepository.save(
-                UserRole(
-                    user = user,
-                    role = role
-                )
-            )
-        else throw KotlinNullPointerException("Cannot save to UserRole repository because role is null.")
+        val authority = authorityService.findByName("ROLE_USER")
+        if(authority != null) userAuthorityService.createUserAuthorityConnection(newUser, authority)
+        else throw KotlinNullPointerException("Cannot create an User-Authority connection because authority is null.")
     }
 
     fun usernameExists(username: String): Boolean {
         return userRepository.existsByUsername(username)
     }
-
 }

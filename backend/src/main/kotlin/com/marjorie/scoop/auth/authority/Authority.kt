@@ -15,8 +15,7 @@ class Authority(
     @NotNull
     var name: String,
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "user_id")
+    @ManyToMany(mappedBy = "authorities", fetch = FetchType.LAZY)
     @JsonBackReference
-    var user: User,
+    var users: MutableList<User>?,
 ): BaseEntity()

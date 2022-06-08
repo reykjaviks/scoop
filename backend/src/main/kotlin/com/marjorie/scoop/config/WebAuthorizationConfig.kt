@@ -27,6 +27,7 @@ class WebAuthorizationConfig(
         http.formLogin().defaultSuccessUrl("/auth", true)
 
         http.authorizeRequests()
+            .mvcMatchers(HttpMethod.GET, "/api/user/*").hasAuthority("ROLE_ADMIN")
             .mvcMatchers(HttpMethod.POST, "/api/user").authenticated()
             .mvcMatchers(HttpMethod.DELETE, "/api/user").authenticated()
             .mvcMatchers(HttpMethod.GET, "/api/venue/all").authenticated()
