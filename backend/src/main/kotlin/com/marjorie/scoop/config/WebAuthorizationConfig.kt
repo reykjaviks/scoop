@@ -1,11 +1,14 @@
 package com.marjorie.scoop.config
 
+import com.marjorie.scoop.auth.AuthenticationLoggingFilter
 import com.marjorie.scoop.auth.AuthenticationProviderService
+import com.marjorie.scoop.auth.RequestValidationFilter
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpMethod
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter
 
 /**
  * Manages configuration info regarding web authorization.
@@ -22,15 +25,27 @@ class WebAuthorizationConfig(
         auth.authenticationProvider(authenticationProvider)
     }
 
+    /**
+     * Configures the application to use HTTP Basic as an authentication method. HTTP Basic relies on a username and
+     * password for authentication. Also filters requests that do not contain a request ID in the HTTP headers and if
+     * the request was successful logs requests' ID.
+     */
     override fun configure(http: HttpSecurity) {
         http.httpBasic()
         http.formLogin().defaultSuccessUrl("/auth", true)
 
-        http.authorizeRequests()
+        http.addFilterBefore(
+            RequestValidationFilter(),
+            BasicAuthenticationFilter::class.java
+        ).addFilterAfter(
+            AuthenticationLoggingFilter(),
+            BasicAuthenticationFilter::class.java
+        ).authorizeRequests()
             .mvcMatchers(HttpMethod.GET, "/api/user/*").hasAuthority("ROLE_ADMIN")
             .mvcMatchers(HttpMethod.POST, "/api/user").authenticated()
             .mvcMatchers(HttpMethod.DELETE, "/api/user").authenticated()
-            .mvcMatchers(HttpMethod.GET, "/api/venue/all").authenticated()
+            .mvcMatchers(HttpMethod.POST, "/api/review/*").authenticated()
+            .mvcMatchers(HttpMethod.DELETE, "/api/review/*").authenticated()
             .anyRequest().permitAll()
 
         http.csrf().disable() // disabled while testing
