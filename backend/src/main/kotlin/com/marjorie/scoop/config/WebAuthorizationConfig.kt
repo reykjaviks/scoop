@@ -41,13 +41,27 @@ class WebAuthorizationConfig(
             AuthenticationLoggingFilter(),
             BasicAuthenticationFilter::class.java
         ).authorizeRequests()
+            .mvcMatchers(HttpMethod.GET, "/").permitAll()
+            .and()
+         .authorizeRequests()
+            .mvcMatchers(HttpMethod.GET, "/auth").authenticated()
+            .and()
+        .authorizeRequests()
             .mvcMatchers(HttpMethod.GET, "/api/user/*").hasAuthority("ROLE_ADMIN")
             .mvcMatchers(HttpMethod.POST, "/api/user").authenticated()
             .mvcMatchers(HttpMethod.DELETE, "/api/user").authenticated()
+            .and()
+        .authorizeRequests()
+            .mvcMatchers(HttpMethod.GET, "/api/venue/*").permitAll()
+            .mvcMatchers(HttpMethod.POST, "/api/venue/*").authenticated()
+            .mvcMatchers(HttpMethod.DELETE, "/api/venue/*").authenticated()
+            .and()
+        .authorizeRequests()
+            .mvcMatchers(HttpMethod.GET, "/api/review/*").permitAll()
             .mvcMatchers(HttpMethod.POST, "/api/review/*").authenticated()
             .mvcMatchers(HttpMethod.DELETE, "/api/review/*").authenticated()
-            .anyRequest().permitAll()
+            .and()
 
-        http.csrf().disable() // disabled while testing
+        http.csrf().disable() // disabled for now
     }
 }

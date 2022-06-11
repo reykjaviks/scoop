@@ -23,7 +23,6 @@ class WebApplicationTest {
     private lateinit var mockMvc: MockMvc
 
     @Test
-    @Throws(Exception::class)
     fun `Home contains a greeting message`() {
         mockMvc
             .perform(get("/").header("request-id", "randomID"))
