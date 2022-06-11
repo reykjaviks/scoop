@@ -8,7 +8,7 @@ import javax.persistence.*
 import javax.validation.constraints.NotNull
 
 /**
- * 'Review' inherits the BaseEntity's properties and functions.
+ * Review inherits the BaseEntity's properties and functions.
  */
 @Entity
 @Table(name = "review")
@@ -30,4 +30,4 @@ class Review(
         @JoinColumn(name = "venue_id")
         @JsonBackReference
         var venue: Venue,
-) : BaseEntity()
+): BaseEntity()

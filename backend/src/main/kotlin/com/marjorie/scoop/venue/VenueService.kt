@@ -17,7 +17,7 @@ class VenueService(private val venueRepository: VenueRepository) {
         return venueRepository.findByNameOrAddressOrPostalCodeOrCityOrNeighbourhood(preparedQuery)
     }
 
-    //todo: user ilike instead
+    //todo: use ILIKE instead
     private fun prepareQueryString(query: String): String {
         return "%" + query.lowercase() + "%"
     }

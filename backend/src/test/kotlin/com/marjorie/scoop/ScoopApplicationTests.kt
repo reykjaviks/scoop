@@ -8,13 +8,11 @@ import org.springframework.boot.test.context.SpringBootTest
 
 @SpringBootTest
 class ScoopApplicationTests {
-
 	@Autowired
-	private val homeController: HomeController? = null
+	private lateinit var homeController: HomeController
 
 	@Test
 	fun `Context creates a controller`() {
 		assertThat(homeController).isNotNull;
 	}
-
 }

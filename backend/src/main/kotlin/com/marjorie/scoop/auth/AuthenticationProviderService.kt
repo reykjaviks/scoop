@@ -9,8 +9,8 @@ import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 
 /**
- * Takes care of the authentication logic, for example validates whether
- * passwords match when using credential based authentication.
+ * Takes care of the authentication logic, e.g. validates whether passwords match when using
+ * credential based authentication.
  */
 @Service
 class AuthenticationProviderService(

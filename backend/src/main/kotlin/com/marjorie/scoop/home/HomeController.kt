@@ -21,5 +21,4 @@ class HomeController {
         val auth: Authentication = SecurityContextHolder.getContext().authentication;
         return "Auth info: $auth"
     }
-
 }

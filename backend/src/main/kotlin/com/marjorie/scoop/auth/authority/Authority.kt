@@ -7,7 +7,7 @@ import javax.persistence.*
 import javax.validation.constraints.NotNull
 
 /**
- * 'Authority' inherits BaseEntity's properties and functions.
+ * Authority inherits BaseEntity's properties and functions.
  */
 @Entity
 @Table(name = "authority")

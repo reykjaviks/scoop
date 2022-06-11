@@ -9,11 +9,8 @@ import javax.persistence.Id
 import javax.persistence.MappedSuperclass
 
 /**
- * Base entity class with 'id', 'createdAt' and 'modifiedAt' properties.
- * Each mutable variable has a getter, setter and toString method
- * automatically created for it. Immutable variables have a setter and
- * toString method.
- */
+ * Serves as a base for all other entity classes. Has 'id', 'createdAt' and 'modifiedAt' properties.
+ * */
 @MappedSuperclass
 abstract class BaseEntity(
     @Id

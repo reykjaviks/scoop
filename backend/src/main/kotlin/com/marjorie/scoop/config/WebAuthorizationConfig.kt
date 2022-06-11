@@ -60,7 +60,6 @@ class WebAuthorizationConfig(
             .mvcMatchers(HttpMethod.GET, "/api/review/*").permitAll()
             .mvcMatchers(HttpMethod.POST, "/api/review/*").authenticated()
             .mvcMatchers(HttpMethod.DELETE, "/api/review/*").authenticated()
-            .and()
 
         http.csrf().disable() // disabled for now
     }

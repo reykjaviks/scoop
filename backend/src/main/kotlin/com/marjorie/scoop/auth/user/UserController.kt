@@ -30,11 +30,10 @@ class UserController(private val userService: UserService) {
 
     @GetMapping("/{username}")
     fun getUser(@PathVariable username: String): User {
-        return userService.getUser(username)
-            ?: throw ResponseStatusException(
-                HttpStatus.NOT_FOUND,
-                "No user found for username $username"
-            )
+        return userService.getUser(username) ?: throw ResponseStatusException(
+            HttpStatus.NOT_FOUND,
+            "No user found for username $username"
+        )
     }
 
 }

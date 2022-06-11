@@ -9,7 +9,7 @@ import javax.validation.constraints.NotNull
 import javax.validation.constraints.Size
 
 /**
- * 'User' inherits BaseEntity's properties and functions.
+ * User inherits BaseEntity's properties and functions.
  */
 @Entity
 @Table(name = "user", schema = "scoop")
