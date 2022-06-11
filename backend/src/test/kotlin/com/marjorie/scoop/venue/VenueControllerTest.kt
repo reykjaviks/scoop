@@ -11,6 +11,7 @@ import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest
 import org.springframework.context.annotation.Import
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.MediaType
+import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.test.web.reactive.server.expectBody
@@ -19,6 +20,7 @@ import org.springframework.test.web.reactive.server.expectBodyList
 @ExtendWith(SpringExtension::class)
 @WebFluxTest(controllers = [VenueController::class])
 @Import(VenueService::class)
+@WithMockUser(username="admin", authorities = ["ROLE_USER", "ROLE_ADMIN"])
 class VenueControllerTest {
 
     @MockkBean
@@ -29,10 +31,8 @@ class VenueControllerTest {
 
     private lateinit var tapiolaVenue: Venue
     private lateinit var kallioVenue: Venue
-
     private lateinit var allVenues: List<Venue>
     private lateinit var kallioVenues: List<Venue>
-
     private lateinit var kallioQuery: String
     private lateinit var wackyQuery: String
 
