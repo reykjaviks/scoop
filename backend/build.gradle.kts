@@ -12,7 +12,6 @@ plugins {
 }
 
 //======================= Project Info =============================================
-
 group = "com.marjorie"
 version = "0.0.1-SNAPSHOT"
 java.sourceCompatibility = JavaVersion.VERSION_17
@@ -22,7 +21,6 @@ repositories {
 }
 
 //======================= Dependencies =============================================
-
 dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-security")
 	//implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
@@ -48,8 +46,6 @@ dependencies {
 	testImplementation("org.springframework.security:spring-security-test")
 }
 //======================= Tasks =============================================
-
-
 tasks.withType<KotlinCompile> {
 	kotlinOptions {
 		freeCompilerArgs = listOf("-Xjsr305=strict")
