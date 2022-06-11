@@ -20,25 +20,17 @@ import org.springframework.test.web.servlet.MockMvc;
 @AutoConfigureMockMvc
 class WebApplicationTest {
     @Autowired
-    private val mockMvc: MockMvc? = null
+    private lateinit var mockMvc: MockMvc
 
     @Test
     @Throws(Exception::class)
     fun `Home contains a greeting message`() {
-        mockMvc!!
-            .perform(
-                get("/")
-            )
-            .andDo(
-                print()
-            )
+        mockMvc
+            .perform(get("/").header("request-id", "randomID"))
+            .andDo(print())
+            .andExpect(status().isOk)
             .andExpect(
-                status().isOk
-            )
-            .andExpect(
-                content().string(
-                    containsString("Hello!")
-                )
+                content().string(containsString("Welcome to Scoop"))
             )
     }
 }

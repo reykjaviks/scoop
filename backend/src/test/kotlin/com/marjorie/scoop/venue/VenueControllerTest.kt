@@ -43,7 +43,8 @@ class VenueControllerTest {
             streetAddress = "Piispansilta 11",
             postalCode = "02230",
             city = "Espoo",
-            neighbourhood = Neighbourhood("Tapiola")
+            neighbourhood = Neighbourhood("Tapiola"),
+            reviewList = null,
         )
 
         kallioVenue = Venue(
@@ -51,7 +52,8 @@ class VenueControllerTest {
             streetAddress = "Mannerheimintie 20",
             postalCode = "00100",
             city = "Helsinki",
-            neighbourhood = Neighbourhood("Kallio")
+            neighbourhood = Neighbourhood("Kallio"),
+            reviewList = null,
         )
 
         allVenues = listOf(tapiolaVenue, kallioVenue)

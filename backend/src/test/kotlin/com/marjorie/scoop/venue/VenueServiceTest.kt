@@ -26,6 +26,8 @@ class VenueServiceTest {
             streetAddress = "Piispansilta 11",
             postalCode = "02230",
             city = "Espoo",
+            neighbourhood = Neighbourhood("Tapiola"),
+            reviewList = null,
         )
 
         venue2 = Venue(
@@ -33,7 +35,8 @@ class VenueServiceTest {
             streetAddress = "Pieni Roobertinkatu 2",
             postalCode = "00130",
             city = "Helsinki",
-            neighbourhood = Neighbourhood("Kaartinkaupunki")
+            neighbourhood = Neighbourhood("Kaartinkaupunki"),
+            reviewList = null,
         )
 
         every { venueRepository.findByIdOrNull(1) } returns venue1
