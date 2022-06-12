@@ -7,6 +7,8 @@ import javax.servlet.ServletResponse
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
+private const val REQUEST_ID_NAME = "REQUEST-ID"
+
 /**
  * Used to filter requests that don't contain a request ID in the HTTP headers.
  */
@@ -14,7 +16,7 @@ class RequestValidationFilter: Filter {
     override fun doFilter(request: ServletRequest, response: ServletResponse, chain: FilterChain) {
         val httpRequest: HttpServletRequest = request as HttpServletRequest
         val httpResponse: HttpServletResponse = response as HttpServletResponse
-        val requestID = httpRequest.getHeader("request-id")
+        val requestID = httpRequest.getHeader(REQUEST_ID_NAME)
 
         if (!requestID.isNullOrBlank())
             chain.doFilter(request, response)

@@ -1,16 +1,20 @@
 package com.marjorie.scoop.config
 
-import com.marjorie.scoop.auth.filter.AuthenticationLoggingFilter
 import com.marjorie.scoop.auth.AuthenticationProviderService
+import com.marjorie.scoop.auth.csrf.CustomCsrfTokenRepository
+import com.marjorie.scoop.auth.filter.AuthenticationLoggingFilter
 import com.marjorie.scoop.auth.filter.CsrfTokenLoggingFilter
 import com.marjorie.scoop.auth.filter.RequestValidationFilter
+import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpMethod
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
+import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter
 import org.springframework.security.web.csrf.CsrfFilter
+import org.springframework.security.web.csrf.CsrfTokenRepository
 
 /**
  * Manages configuration info regarding web authorization.
@@ -19,6 +23,10 @@ import org.springframework.security.web.csrf.CsrfFilter
 class WebAuthorizationConfig(
     private val authenticationProvider: AuthenticationProviderService,
 ): WebSecurityConfigurerAdapter() {
+    @Bean
+    fun customTokenRepository(): CsrfTokenRepository {
+        return CustomCsrfTokenRepository()
+    }
 
     /**
      * Registers a custom authentication provider to Spring Security's authentication manager.
@@ -35,6 +43,9 @@ class WebAuthorizationConfig(
     override fun configure(http: HttpSecurity) {
         http.httpBasic()
         http.formLogin().defaultSuccessUrl("/auth", true)
+        http.csrf { csrfConfigurer: CsrfConfigurer<HttpSecurity?> ->
+            csrfConfigurer.csrfTokenRepository(customTokenRepository())
+        }
 
         http.addFilterBefore(
             RequestValidationFilter(),

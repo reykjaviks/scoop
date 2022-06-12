@@ -19,8 +19,7 @@ class UserController(private val userService: UserService) {
         if (!usernameExists) {
             logger.info("Creating a new user '${registrationData.username}'")
             userService.createUserWithDefaultUserRole(registrationData)
-        } else throw
-        ResponseStatusException(
+        } else throw ResponseStatusException(
             HttpStatus.CONFLICT,
             "Username ${registrationData.username} already exists."
         )

@@ -1,9 +1,6 @@
 package com.marjorie.scoop.auth.user
 
-import com.marjorie.scoop.auth.authority.AuthorityRepository
 import com.marjorie.scoop.auth.authority.AuthorityService
-import com.marjorie.scoop.auth.userauthority.UserAuthority
-import com.marjorie.scoop.auth.userauthority.UserAuthorityRepository
 import com.marjorie.scoop.auth.userauthority.UserAuthorityService
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
