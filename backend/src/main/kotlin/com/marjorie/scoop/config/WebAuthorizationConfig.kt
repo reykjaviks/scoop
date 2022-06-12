@@ -1,8 +1,8 @@
 package com.marjorie.scoop.config
 
-import com.marjorie.scoop.auth.AuthenticationLoggingFilter
+import com.marjorie.scoop.auth.filter.AuthenticationLoggingFilter
 import com.marjorie.scoop.auth.AuthenticationProviderService
-import com.marjorie.scoop.auth.RequestValidationFilter
+import com.marjorie.scoop.auth.filter.RequestValidationFilter
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpMethod
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder

@@ -1,4 +1,4 @@
-package com.marjorie.scoop.auth
+package com.marjorie.scoop.auth.filter
 
 import org.springframework.web.filter.OncePerRequestFilter
 import javax.servlet.FilterChain

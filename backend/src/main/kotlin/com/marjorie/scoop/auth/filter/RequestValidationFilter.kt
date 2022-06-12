@@ -1,4 +1,4 @@
-package com.marjorie.scoop.auth
+package com.marjorie.scoop.auth.filter
 
 import javax.servlet.Filter
 import javax.servlet.FilterChain
