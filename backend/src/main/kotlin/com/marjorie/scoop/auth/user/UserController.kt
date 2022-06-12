@@ -13,19 +13,17 @@ private val logger = KotlinLogging.logger {}
 @RestController
 @RequestMapping("/api/user")
 class UserController(private val userService: UserService) {
-
     @PostMapping
     fun createUser(@RequestBody registrationData: User) {
-        logger.info {"Checking if username ${registrationData.username} already exists ..."}
         val usernameExists = userService.usernameExists(registrationData.username)
-
-        if (!usernameExists)
+        if (!usernameExists) {
+            logger.info("Creating a new user '${registrationData.username}'")
             userService.createUserWithDefaultUserRole(registrationData)
-        else throw
-            ResponseStatusException(
-                HttpStatus.CONFLICT,
-                "Username ${registrationData.username} already exists."
-            )
+        } else throw
+        ResponseStatusException(
+            HttpStatus.CONFLICT,
+            "Username ${registrationData.username} already exists."
+        )
     }
 
     @GetMapping("/{username}")

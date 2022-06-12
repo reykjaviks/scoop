@@ -9,10 +9,9 @@ import javax.servlet.http.HttpServletResponse
  * Used to log request IDs after a successful authentication.
  */
 class AuthenticationLoggingFilter: OncePerRequestFilter() {
-    override fun doFilterInternal(req: HttpServletRequest, res: HttpServletResponse, filterChain: FilterChain) {
-        val httpRequest: HttpServletRequest = req as HttpServletRequest
-        val requestID = httpRequest.getHeader("request-id")
+    override fun doFilterInternal(request: HttpServletRequest, response: HttpServletResponse, chain: FilterChain) {
+        val requestID = request.getHeader("request-id")
         logger.info("Successfully authenticated a request with ID '$requestID'")
-        filterChain.doFilter(req, res)
+        chain.doFilter(request, response)
     }
 }
