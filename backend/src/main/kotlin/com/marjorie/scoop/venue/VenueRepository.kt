@@ -6,10 +6,11 @@ import org.springframework.data.repository.query.Param
 import org.springframework.stereotype.Repository
 
 /**
- * API for basic CRUD operations on 'Venue'
+ * API for basic CRUD operations on Venue
  */
 @Repository
-interface VenueRepository : JpaRepository<Venue?, Long?> {
+interface VenueRepository: JpaRepository<Venue?, Long?> {
+    //todo: use ILIKE instead
     @Query("""
             SELECT v FROM Venue v
             INNER JOIN Neighbourhood n ON n.id = v.neighbourhood.id
