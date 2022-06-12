@@ -32,17 +32,16 @@ class Venue(
 
         @NotNull
         @Size(max = 50)
-        @Column(name = "street_address", length = 50)
+        @Column(name = "street_address")
         var streetAddress: String,
 
         @NotNull
-        @Size(max = 50)
-        @Column(name = "postal_code", length = 5)
+        @Size(max = 5)
+        @Column(name = "postal_code")
         var postalCode: String,
 
         @NotNull
         @Size(max = 50)
-        @Column(length = 50)
         var city: String,
 
         @Nullable
