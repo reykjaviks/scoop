@@ -9,7 +9,7 @@ import javax.persistence.Id
 import javax.persistence.MappedSuperclass
 
 /**
- * Serves as a base for all other entity classes. Has 'id', 'createdAt' and 'modifiedAt' properties.
+ * Serves as a base for all other entity classes.
  * */
 @MappedSuperclass
 abstract class BaseEntity(
@@ -26,5 +26,4 @@ abstract class BaseEntity(
     override fun toString(): String {
         return "id=$id, createdAt=$createdAt, modifiedAt=$modifiedAt"
     }
-
 }

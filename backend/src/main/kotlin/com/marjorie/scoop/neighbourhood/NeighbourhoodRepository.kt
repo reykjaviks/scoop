@@ -7,4 +7,4 @@ import org.springframework.stereotype.Repository
  * API for basic CRUD operations on 'Neighbourhood'
  */
 @Repository
-interface NeighbourhoodRepository : JpaRepository<Neighbourhood?, Long?>
+interface NeighbourhoodRepository: JpaRepository<Neighbourhood?, Long?>

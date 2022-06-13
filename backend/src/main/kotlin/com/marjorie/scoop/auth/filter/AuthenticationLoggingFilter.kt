@@ -13,7 +13,7 @@ private const val REQUEST_ID_NAME = "REQUEST-ID"
 class AuthenticationLoggingFilter: OncePerRequestFilter() {
     override fun doFilterInternal(request: HttpServletRequest, response: HttpServletResponse, chain: FilterChain) {
         val requestID = request.getHeader(REQUEST_ID_NAME)
-        logger.info("Successfully authenticated a request with REQUEST-ID: $requestID")
+        logger.info("Successfully authenticated a request with ID '$requestID'")
         chain.doFilter(request, response)
     }
 }

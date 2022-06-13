@@ -16,7 +16,7 @@ private const val CSRF_PARAMETER_NAME = "_csrf"
 private val logger = KotlinLogging.logger {}
 
 /**
- * Uses an injected instance of JpaCsrfTokenRepository to retrieve and save CSRF tokens in the database.
+ * Uses an injected instance of JpaTokenRepository to retrieve and save CSRF tokens in the database.
  */
 class CustomCsrfTokenRepository: CsrfTokenRepository {
     @Autowired
@@ -30,7 +30,7 @@ class CustomCsrfTokenRepository: CsrfTokenRepository {
             logger.info("Identifier $identifier doesn't have an existing CSRF token")
             return null
         }
-        logger.info("Loading an existing CSRF token associated with the the identifier '$identifier'")
+        logger.info("Loading an existing CSRF token associated with the identifier '$identifier'")
         return DefaultCsrfToken(CSRF_HEADER_NAME, CSRF_PARAMETER_NAME, existingToken.value)
 
     }
@@ -49,10 +49,9 @@ class CustomCsrfTokenRepository: CsrfTokenRepository {
             logger.info("Removing a CSRF token associated with the request from the session...")
             request.getSession(false)?.removeAttribute(CSRF_HEADER_NAME)
         } else if (existingToken == null) {
-            logger.info("Saving a new token ${csrfToken.token} to identifier $identifier to the database")
+            logger.info("Saving a new token to identifier $identifier into the database")
             val newToken = Token(identifier = identifier, value = csrfToken.token)
             jpaTokenRepository.save(newToken)
         }
     }
-
 }

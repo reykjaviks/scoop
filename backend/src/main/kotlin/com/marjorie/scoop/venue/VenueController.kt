@@ -14,7 +14,7 @@ class VenueController(private val venueService: VenueService) {
     fun listVenues(): Iterable<Venue?> = venueService.getVenues()
 
     @GetMapping("/{id}")
-    fun getVenue(@PathVariable id: Long): Venue {
+    fun getVenue(@PathVariable id: Long): Venue? {
         return venueService.getVenue(id) ?: throw ResponseStatusException(
             HttpStatus.NOT_FOUND,
             "No venue found for id $id"
@@ -24,7 +24,6 @@ class VenueController(private val venueService: VenueService) {
     @GetMapping("/search")
     fun findVenue(@RequestParam query: String): Iterable<Venue?> {
         val venues = venueService.searchVenues(query)
-
         return if (!venues.isNullOrEmpty())
             venues
         else throw

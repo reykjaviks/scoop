@@ -13,10 +13,6 @@ import javax.validation.constraints.NotNull
 @Entity
 @Table(name = "review")
 class Review(
-        @NotNull
-        @Column(name = "venue_id", updatable = false, insertable = false)
-        var venueId: String,
-
         @Nullable
         @Column(name = "stars")
         var rating: Double,

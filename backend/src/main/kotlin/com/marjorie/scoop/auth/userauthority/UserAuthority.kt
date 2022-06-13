@@ -7,9 +7,6 @@ import com.marjorie.scoop.auth.user.User
 import javax.persistence.*
 import javax.validation.constraints.NotNull
 
-/**
- * 'UserRole' inherits BaseEntity's properties and functions.
- */
 @Entity
 @Table(name = "userauthority")
 class UserAuthority(
