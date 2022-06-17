@@ -13,4 +13,4 @@ class Token (
 
     @Nullable
     var value: String,
-):BaseEntity()
+): BaseEntity()

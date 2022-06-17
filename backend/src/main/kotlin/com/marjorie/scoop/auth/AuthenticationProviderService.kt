@@ -35,7 +35,7 @@ class AuthenticationProviderService(
                 user.password,
                 user.authorities
             )
-        } else throw BadCredentialsException("Bad credentials.") // info: unsafe to inform users that the username was correct but password was not
+        } else throw BadCredentialsException("Bad credentials.")
     }
 
 }

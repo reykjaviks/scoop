@@ -15,6 +15,9 @@ import org.springframework.security.config.annotation.web.configurers.CsrfConfig
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter
 import org.springframework.security.web.csrf.CsrfFilter
 import org.springframework.security.web.csrf.CsrfTokenRepository
+import org.springframework.web.cors.CorsConfiguration
+import org.springframework.web.cors.CorsConfigurationSource
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 
 /**
  * Manages configuration info regarding web authorization.
@@ -35,19 +38,30 @@ class WebAuthorizationConfig(
         auth.authenticationProvider(authenticationProvider)
     }
 
+    @Bean
+    fun corsConfigurationSource(): CorsConfigurationSource {
+        val corsConfig = CorsConfiguration().also {
+            it.allowedOrigins = listOf("https://example.com")
+            it.allowedMethods = listOf("GET", "POST")
+        }
+        return UrlBasedCorsConfigurationSource().also { it.registerCorsConfiguration("/**", corsConfig) }
+    }
+
     /**
      * Configures the application to use HTTP Basic as an authentication method. HTTP Basic relies on a username and
      * password for authentication. Also filters requests that do not contain a request ID in the HTTP headers, and if
      * the request was successful logs requests' ID.
      */
-    override fun configure(http: HttpSecurity) {
-        http.httpBasic()
-        http.formLogin().defaultSuccessUrl("/auth", true)
-        http.csrf { csrfConfigurer: CsrfConfigurer<HttpSecurity?> ->
+    override fun configure(httpSecurity: HttpSecurity) {
+        httpSecurity.httpBasic()
+
+        httpSecurity.formLogin().defaultSuccessUrl("/auth", true)
+
+        httpSecurity.csrf { csrfConfigurer: CsrfConfigurer<HttpSecurity?> ->
             csrfConfigurer.csrfTokenRepository(customTokenRepository())
         }
 
-        http.addFilterBefore(
+        httpSecurity.addFilterBefore(
             RequestValidationFilter(),
             BasicAuthenticationFilter::class.java
         ).addFilterAfter(
@@ -77,6 +91,7 @@ class WebAuthorizationConfig(
             .mvcMatchers(HttpMethod.POST, "/api/review").authenticated()
             .mvcMatchers(HttpMethod.DELETE, "/api/review/*").authenticated()
 
-        //http.csrf().disable()
+        // httpSecurity.csrf().disable()
+        // httpSecurity.cors()
     }
 }

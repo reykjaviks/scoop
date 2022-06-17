@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 /**
- * Handles communication between User repository and User controller.
+ * Handles communication between the user repository and user controller.
  */
 @Service
 class UserService(
@@ -29,8 +29,10 @@ class UserService(
             )
         )
         val authority = authorityService.findByName("ROLE_USER")
-        if(authority != null) userAuthorityService.createUserAuthorityConnection(newUser, authority)
-        else throw KotlinNullPointerException("Cannot create an User-Authority connection because authority is null.")
+        if(authority != null)
+            userAuthorityService.createUserAuthorityConnection(newUser, authority)
+        else
+            throw KotlinNullPointerException("Can't save userAuthority entity to the database because authority is null.")
     }
 
     fun usernameExists(username: String): Boolean {
