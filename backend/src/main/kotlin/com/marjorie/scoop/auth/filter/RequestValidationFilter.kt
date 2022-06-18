@@ -18,9 +18,9 @@ class RequestValidationFilter: Filter {
         val httpResponse: HttpServletResponse = response as HttpServletResponse
         val requestID = httpRequest.getHeader(REQUEST_ID_NAME)
 
-        if (!requestID.isNullOrBlank())
-            chain.doFilter(request, response)
-        else
+        if (requestID.isNullOrBlank())
             httpResponse.status = HttpServletResponse.SC_BAD_REQUEST
+        else
+            chain.doFilter(request, response)
     }
 }
