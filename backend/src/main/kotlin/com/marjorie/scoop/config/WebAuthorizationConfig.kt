@@ -1,6 +1,6 @@
 package com.marjorie.scoop.config
 
-import com.marjorie.scoop.auth.AuthenticationProviderService
+import com.marjorie.scoop.auth.UsernamePasswordAuthProvider
 import com.marjorie.scoop.auth.csrf.CustomCsrfTokenRepository
 import com.marjorie.scoop.auth.filter.AuthenticationLoggingFilter
 import com.marjorie.scoop.auth.filter.CsrfTokenLoggingFilter
@@ -24,7 +24,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource
  */
 @Configuration
 class WebAuthorizationConfig(
-    private val authenticationProvider: AuthenticationProviderService,
+    private val authenticationProvider: UsernamePasswordAuthProvider,
 ): WebSecurityConfigurerAdapter() {
     @Bean
     fun customTokenRepository(): CsrfTokenRepository {

@@ -9,27 +9,27 @@ import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 
 /**
- * Takes care of the authentication logic, e.g. validates whether passwords match when using
- * credential based authentication.
+ * Takes care of authentication logic when using a username and password based authentication method.
  */
 @Service
-class AuthenticationProviderService(
+class UsernamePasswordAuthProvider(
     private val jpaUserDetailsService: JpaUserDetailsService,
-    private val bCryptPasswordEncoder: BCryptPasswordEncoder
+    private val bCryptPasswordEncoder: BCryptPasswordEncoder,
 ): AuthenticationProvider {
     override fun authenticate(authentication: Authentication): Authentication {
-        val username = authentication.name
-        val user: SecurityUser = jpaUserDetailsService.loadUserByUsername(username)
-        val rawPassword = authentication.credentials.toString()
-        return this.checkPassword(user, rawPassword, bCryptPasswordEncoder)
+        val loginUsername = authentication.name
+        val loginPassword = authentication.credentials.toString()
+
+        val user: SecurityUser = jpaUserDetailsService.loadUserByUsername(loginUsername)
+        return this.checkPassword(user, loginPassword, bCryptPasswordEncoder)
     }
 
     override fun supports(authentication: Class<out Any>): Boolean {
         return UsernamePasswordAuthenticationToken::class.java.isAssignableFrom(authentication)
     }
 
-    private fun checkPassword(user: SecurityUser, rawPassword: String, passwordEncoder: PasswordEncoder): Authentication {
-        return if (passwordEncoder.matches(rawPassword, user.password)) {
+    private fun checkPassword(user: SecurityUser, loginPassword: String, passwordEncoder: PasswordEncoder): Authentication {
+        return if (passwordEncoder.matches(loginPassword, user.password)) {
             UsernamePasswordAuthenticationToken(
                 user.username,
                 user.password,
