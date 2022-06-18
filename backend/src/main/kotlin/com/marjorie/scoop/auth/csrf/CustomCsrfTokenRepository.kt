@@ -23,15 +23,9 @@ class CustomCsrfTokenRepository: CsrfTokenRepository {
 
     override fun loadToken(request: HttpServletRequest): CsrfToken? {
         val identifier: String = request.getHeader(CSRF_IDENTIFIER)
-        val existingToken: Token? = jpaTokenRepository.findTokenByIdentifier(identifier)
-
-        if(existingToken == null) {
-            logger.info("Identifier $identifier doesn't have an existing CSRF token")
-            return null
-        }
-        logger.info("Loading an existing CSRF token associated with the identifier '$identifier'")
-        return DefaultCsrfToken(CSRF_HEADER, CSRF_PARAMETER, existingToken.value)
-
+        val csrfToken: Token = jpaTokenRepository.findTokenByIdentifier(identifier)
+            ?: return null
+        return DefaultCsrfToken(CSRF_HEADER, CSRF_PARAMETER, csrfToken.value)
     }
 
     override fun generateToken(request: HttpServletRequest): CsrfToken {
@@ -40,17 +34,28 @@ class CustomCsrfTokenRepository: CsrfTokenRepository {
         return DefaultCsrfToken(CSRF_HEADER, CSRF_PARAMETER, uuid)
     }
 
-    override fun saveToken(csrfToken: CsrfToken?, request: HttpServletRequest, response: HttpServletResponse) {
+    override fun saveToken(expectedToken: CsrfToken?, request: HttpServletRequest, response: HttpServletResponse) {
         val identifier: String = request.getHeader(CSRF_IDENTIFIER)
-        val existingToken: Token? = jpaTokenRepository.findTokenByIdentifier(identifier)
+        val savedToken: Token? = jpaTokenRepository.findTokenByIdentifier(identifier)
 
-        if(csrfToken == null) {
-            logger.info("Removing a CSRF token associated with the request from the session...")
-            request.getSession(false)?.removeAttribute(CSRF_HEADER)
-        } else if (existingToken == null) {
-            logger.info("Saving a new token to identifier $identifier into the database")
-            val newToken = Token(identifier = identifier, value = csrfToken.token)
+        if(shouldDeleteSavedToken(savedToken, expectedToken)) {
+            logger.info("Deleting a saved token...")
+            jpaTokenRepository.delete(savedToken!!)
+        } else if(shouldSaveNewToken(savedToken, expectedToken)) {
+            val newToken = Token(identifier = identifier, value = expectedToken!!.token)
             jpaTokenRepository.save(newToken)
         }
+    }
+
+    /**
+     * Existing token located in the database needs to be deleted if the expected token is null. Old tokens are deleted
+     * when an identifier makes a GET request after an application startup.
+     */
+    private fun shouldDeleteSavedToken(savedToken: Token?, expectedToken: CsrfToken?,): Boolean {
+        return savedToken != null && expectedToken == null
+    }
+
+    private fun shouldSaveNewToken(savedToken: Token?, expectedToken: CsrfToken?): Boolean {
+        return savedToken == null && expectedToken != null
     }
 }

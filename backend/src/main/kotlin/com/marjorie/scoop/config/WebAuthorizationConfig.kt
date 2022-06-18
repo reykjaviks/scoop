@@ -2,16 +2,20 @@ package com.marjorie.scoop.config
 
 import com.marjorie.scoop.auth.UsernamePasswordAuthProvider
 import com.marjorie.scoop.auth.csrf.CustomCsrfTokenRepository
+import com.marjorie.scoop.auth.filter.CsrfIdentifierValidationFilter
+import com.marjorie.scoop.auth.filter.CsrfLoggingFilter
+import com.marjorie.scoop.auth.filter.RequestLoggingFilter
+import com.marjorie.scoop.auth.filter.RequestValidationFilter
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpMethod
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
+import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter
+import org.springframework.security.web.csrf.CsrfFilter
 import org.springframework.security.web.csrf.CsrfTokenRepository
-import org.springframework.web.cors.CorsConfiguration
-import org.springframework.web.cors.CorsConfigurationSource
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 
 /**
  * Manages configuration info regarding web authorization.
@@ -21,50 +25,42 @@ class WebAuthorizationConfig(
     private val usernamePasswordAuthProvider: UsernamePasswordAuthProvider,
 ): WebSecurityConfigurerAdapter() {
     @Bean
-    fun customTokenRepository(): CsrfTokenRepository {
+    fun csrfTokenRepository(): CsrfTokenRepository {
         return CustomCsrfTokenRepository()
     }
 
     /**
      * Registers a custom authentication provider to Spring Security's authentication manager.
      */
-    override fun configure(auth: AuthenticationManagerBuilder) {
-        auth.authenticationProvider(authenticationProvider)
+    override fun configure(authManagerBuilder: AuthenticationManagerBuilder) {
+         authManagerBuilder.authenticationProvider(usernamePasswordAuthProvider)
     }
 
-    @Bean
-    fun corsConfigurationSource(): CorsConfigurationSource {
-        val corsConfig = CorsConfiguration().also {
-            it.allowedOrigins = listOf("https://example.com")
-            it.allowedMethods = listOf("GET", "POST")
-        }
-        return UrlBasedCorsConfigurationSource().also { it.registerCorsConfiguration("/**", corsConfig) }
-    }
-
-    /**
-     * Configures the application to use HTTP Basic as an authentication method. HTTP Basic relies on a username and
-     * password for authentication. Also filters requests that do not contain a request ID in the HTTP headers, and if
-     * the request was successful logs requests' ID.
-     */
     override fun configure(httpSecurity: HttpSecurity) {
+        // General
         httpSecurity.httpBasic()
-
         httpSecurity.formLogin().defaultSuccessUrl("/auth", true)
-
         httpSecurity.csrf { csrfConfigurer: CsrfConfigurer<HttpSecurity?> ->
-            csrfConfigurer.csrfTokenRepository(customTokenRepository())
+            csrfConfigurer.csrfTokenRepository(csrfTokenRepository())
         }
 
+        // Filters
         httpSecurity.addFilterBefore(
+            CsrfIdentifierValidationFilter(),
+            CsrfFilter::class.java
+        ).addFilterAfter(
+            CsrfLoggingFilter(),
+            CsrfFilter::class.java
+        ).addFilterBefore(
             RequestValidationFilter(),
             BasicAuthenticationFilter::class.java
         ).addFilterAfter(
-            CsrfTokenLoggingFilter(),
-            CsrfFilter::class.java
-        ).addFilterAfter(
-            AuthenticationLoggingFilter(),
+            RequestLoggingFilter(),
             BasicAuthenticationFilter::class.java
-        ).authorizeRequests()
+        )
+
+        // Endpoints
+        httpSecurity.authorizeRequests()
             .mvcMatchers(HttpMethod.GET, "/").permitAll()
             .and()
          .authorizeRequests()
@@ -72,20 +68,17 @@ class WebAuthorizationConfig(
             .and()
         .authorizeRequests()
             .mvcMatchers(HttpMethod.GET, "/api/user/*").hasAuthority("ROLE_ADMIN")
-            .mvcMatchers(HttpMethod.POST, "/api/user").authenticated()
+            .mvcMatchers(HttpMethod.POST, "/api/user/add").authenticated()
             .mvcMatchers(HttpMethod.DELETE, "/api/user/*").authenticated()
             .and()
         .authorizeRequests()
             .mvcMatchers(HttpMethod.GET, "/api/venue/*").permitAll()
-            .mvcMatchers(HttpMethod.POST, "/api/venue").authenticated()
+            .mvcMatchers(HttpMethod.POST, "/api/venue/add").authenticated()
             .mvcMatchers(HttpMethod.DELETE, "/api/venue/*").authenticated()
             .and()
         .authorizeRequests()
             .mvcMatchers(HttpMethod.GET, "/api/review/*").permitAll()
-            .mvcMatchers(HttpMethod.POST, "/api/review").authenticated()
+            .mvcMatchers(HttpMethod.POST, "/api/review/add").authenticated()
             .mvcMatchers(HttpMethod.DELETE, "/api/review/*").authenticated()
-
-        // httpSecurity.csrf().disable()
-        // httpSecurity.cors()
     }
 }

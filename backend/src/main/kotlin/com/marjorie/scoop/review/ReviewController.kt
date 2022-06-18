@@ -17,9 +17,7 @@ class ReviewController(private val reviewService: ReviewService) {
 
     @GetMapping("/{id}")
     fun getReview(@PathVariable id: Long): Review? {
-        return reviewService.getReview(id) ?: throw ResponseStatusException(
-            HttpStatus.NOT_FOUND,
-            "No review found for id $id"
-        )
+        return reviewService.getReview(id)
+            ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "No review found for id $id")
     }
 }

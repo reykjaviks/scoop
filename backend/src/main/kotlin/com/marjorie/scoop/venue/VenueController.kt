@@ -15,10 +15,8 @@ class VenueController(private val venueService: VenueService) {
 
     @GetMapping("/{id}")
     fun getVenue(@PathVariable id: Long): Venue? {
-        return venueService.getVenue(id) ?: throw ResponseStatusException(
-            HttpStatus.NOT_FOUND,
-            "No venue found for id $id"
-        )
+        return venueService.getVenue(id)
+            ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "No venue found for id $id")
     }
     
     @GetMapping("/search")
@@ -27,9 +25,6 @@ class VenueController(private val venueService: VenueService) {
         return if (!venues.isNullOrEmpty())
             venues
         else throw
-            ResponseStatusException(
-                HttpStatus.NOT_FOUND,
-                "No venues found for query $query"
-            )
+            ResponseStatusException(HttpStatus.NOT_FOUND, "No venues found for query $query")
     }
 }
