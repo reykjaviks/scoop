@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpMethod
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
 import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer
@@ -21,14 +22,10 @@ import org.springframework.security.web.csrf.CsrfTokenRepository
  * Manages configuration info regarding web authorization.
  */
 @Configuration
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 class WebAuthorizationConfig(
     private val usernamePasswordAuthProvider: UsernamePasswordAuthProvider,
 ): WebSecurityConfigurerAdapter() {
-    @Bean
-    fun csrfTokenRepository(): CsrfTokenRepository {
-        return CustomCsrfTokenRepository()
-    }
-
     /**
      * Registers a custom authentication provider to Spring Security's authentication manager.
      */
@@ -37,14 +34,18 @@ class WebAuthorizationConfig(
     }
 
     override fun configure(httpSecurity: HttpSecurity) {
-        // General
+        /**
+         * General configuration info (login type, CSRF, CORS...)
+         */
         httpSecurity.httpBasic()
         httpSecurity.formLogin().defaultSuccessUrl("/auth", true)
         httpSecurity.csrf { csrfConfigurer: CsrfConfigurer<HttpSecurity?> ->
             csrfConfigurer.csrfTokenRepository(csrfTokenRepository())
         }
 
-        // Filters
+        /**
+         * Filter chain
+         */
         httpSecurity.addFilterBefore(
             CsrfIdentifierValidationFilter(),
             CsrfFilter::class.java
@@ -59,26 +60,32 @@ class WebAuthorizationConfig(
             BasicAuthenticationFilter::class.java
         )
 
-        // Endpoints
+        /**
+         * Access rules for various endpoints. Please note that the application uses a combination of
+         * web security and method security.
+         */
         httpSecurity.authorizeRequests()
             .mvcMatchers(HttpMethod.GET, "/").permitAll()
-            .and()
-         .authorizeRequests()
+            .mvcMatchers(HttpMethod.POST, "/").denyAll()
+            .mvcMatchers(HttpMethod.DELETE, "/").denyAll()
+
             .mvcMatchers(HttpMethod.GET, "/auth").authenticated()
-            .and()
-        .authorizeRequests()
-            .mvcMatchers(HttpMethod.GET, "/api/user/*").hasAuthority("ROLE_ADMIN")
+
+            .mvcMatchers(HttpMethod.GET, "/api/user/*").authenticated()
             .mvcMatchers(HttpMethod.POST, "/api/user/add").authenticated()
             .mvcMatchers(HttpMethod.DELETE, "/api/user/*").authenticated()
-            .and()
-        .authorizeRequests()
+
             .mvcMatchers(HttpMethod.GET, "/api/venue/*").permitAll()
             .mvcMatchers(HttpMethod.POST, "/api/venue/add").authenticated()
             .mvcMatchers(HttpMethod.DELETE, "/api/venue/*").authenticated()
-            .and()
-        .authorizeRequests()
+
             .mvcMatchers(HttpMethod.GET, "/api/review/*").permitAll()
             .mvcMatchers(HttpMethod.POST, "/api/review/add").authenticated()
             .mvcMatchers(HttpMethod.DELETE, "/api/review/*").authenticated()
+    }
+
+    @Bean
+    fun csrfTokenRepository(): CsrfTokenRepository {
+        return CustomCsrfTokenRepository()
     }
 }

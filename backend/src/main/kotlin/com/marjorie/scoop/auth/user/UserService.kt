@@ -2,6 +2,7 @@ package com.marjorie.scoop.auth.user
 
 import com.marjorie.scoop.auth.authority.AuthorityService
 import com.marjorie.scoop.auth.userauthority.UserAuthorityService
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -16,6 +17,8 @@ class UserService(
     private val userAuthorityService: UserAuthorityService,
     private val passwordEncoder: BCryptPasswordEncoder,
 ) {
+
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or #username == authentication.name")
     fun getUser(username: String): User? = userRepository.findByUsername(username)
 
     @Transactional
