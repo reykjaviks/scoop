@@ -2,6 +2,7 @@ package com.marjorie.scoop.review
 
 import com.fasterxml.jackson.annotation.JsonBackReference
 import com.marjorie.scoop.BaseEntity
+import com.marjorie.scoop.auth.user.User
 import com.marjorie.scoop.venue.Venue
 import org.jetbrains.annotations.Nullable
 import javax.persistence.*
@@ -14,11 +15,9 @@ import javax.validation.constraints.NotNull
 @Table(name = "review")
 class Review(
         @Nullable
-        @Column(name = "stars")
         var rating: Double,
 
         @Nullable
-        @Column(name = "review")
         var review: String,
 
         @ManyToOne(fetch = FetchType.LAZY)
@@ -26,4 +25,10 @@ class Review(
         @JoinColumn(name = "venue_id")
         @JsonBackReference
         var venue: Venue,
+
+        @ManyToOne(fetch = FetchType.LAZY)
+        @NotNull
+        @JoinColumn(name = "user_id")
+        @JsonBackReference
+        var user: User,
 ): BaseEntity()

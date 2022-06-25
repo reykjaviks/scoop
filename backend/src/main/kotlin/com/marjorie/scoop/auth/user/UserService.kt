@@ -25,7 +25,8 @@ class UserService(
                 name = registrationData.name,
                 username = registrationData.username,
                 password = this.passwordEncoder.encode(registrationData.password),
-                authorities = null
+                authorities = null,
+                reviewList = null,
             )
         )
         val authority = authorityService.findByName("ROLE_USER")

@@ -1,15 +1,16 @@
 package com.marjorie.scoop.review
 
-import com.marjorie.scoop.venue.Venue
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
-import java.util.*
 
 /**
  * Handles the communication between Review repository and Review controller.
  */
 @Service
-class ReviewService(private val reviewRepository: ReviewRepository) {
-    fun getReviews(): List<Review?> = reviewRepository.findAll()
+class ReviewService(
+    private val reviewRepository: ReviewRepository,
+) {
     fun getReview(id: Long): Review? = reviewRepository.findByIdOrNull(id)
+    fun getAllReviews(): List<Review?> = reviewRepository.findAll()
+    fun addReview(review: Review) = reviewRepository.save(review)
 }

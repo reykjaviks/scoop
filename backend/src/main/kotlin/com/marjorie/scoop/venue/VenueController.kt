@@ -11,7 +11,7 @@ import org.springframework.web.server.ResponseStatusException
 @RequestMapping("/api/venue")
 class VenueController(private val venueService: VenueService) {
     @GetMapping("/all")
-    fun listVenues(): Iterable<Venue?> = venueService.getVenues()
+    fun listVenues(): Iterable<Venue?> = venueService.getAllVenues()
 
     @GetMapping("/{id}")
     fun getVenue(@PathVariable id: Long): Venue? {
