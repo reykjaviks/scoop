@@ -20,5 +20,5 @@ class ReviewController(private val reviewService: ReviewService) {
     fun getAllReviews(): Iterable<Review?> = reviewService.getAllReviews()
 
     @PostMapping("/add")
-    fun addReview(@RequestBody review: Review) = reviewService.addReview(review)
+    fun addReview(@RequestBody reviewDTO: ReviewDTO) = reviewService.addReview(reviewDTO)
 }

@@ -17,7 +17,6 @@ class UserService(
     private val userAuthorityService: UserAuthorityService,
     private val passwordEncoder: BCryptPasswordEncoder,
 ) {
-
     @PreAuthorize("hasAuthority('ROLE_ADMIN') or #username == authentication.name")
     fun getUser(username: String): User? = userRepository.findByUsername(username)
 
@@ -36,7 +35,7 @@ class UserService(
         if(authority != null)
             userAuthorityService.createUserAuthorityConnection(newUser, authority)
         else
-            throw KotlinNullPointerException("Can't save userAuthority entity to the database because authority is null.")
+            throw KotlinNullPointerException("Can't save userAuthority to the database because authority is null.")
     }
 
     fun usernameExists(username: String): Boolean {
