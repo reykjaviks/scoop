@@ -1,4 +1,4 @@
-package com.marjorie.scoop
+package com.marjorie.scoop.common
 
 import org.hibernate.annotations.CreationTimestamp
 import org.hibernate.annotations.UpdateTimestamp

@@ -1,7 +1,7 @@
 package com.marjorie.scoop.review
 
 import com.fasterxml.jackson.annotation.JsonBackReference
-import com.marjorie.scoop.BaseEntity
+import com.marjorie.scoop.common.BaseEntity
 import com.marjorie.scoop.auth.user.User
 import com.marjorie.scoop.venue.Venue
 import org.jetbrains.annotations.Nullable

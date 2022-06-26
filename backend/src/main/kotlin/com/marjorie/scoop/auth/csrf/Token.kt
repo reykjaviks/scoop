@@ -1,6 +1,6 @@
 package com.marjorie.scoop.auth.csrf
 
-import com.marjorie.scoop.BaseEntity
+import com.marjorie.scoop.common.BaseEntity
 import org.jetbrains.annotations.Nullable
 import javax.persistence.Entity
 import javax.persistence.Table

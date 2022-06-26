@@ -1,7 +1,7 @@
 package com.marjorie.scoop.auth.user
 
 import com.fasterxml.jackson.annotation.JsonManagedReference
-import com.marjorie.scoop.BaseEntity
+import com.marjorie.scoop.common.BaseEntity
 import com.marjorie.scoop.auth.authority.Authority
 import com.marjorie.scoop.review.Review
 import org.hibernate.annotations.Where

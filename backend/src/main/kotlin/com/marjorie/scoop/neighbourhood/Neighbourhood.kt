@@ -1,6 +1,6 @@
 package com.marjorie.scoop.neighbourhood
 
-import com.marjorie.scoop.BaseEntity
+import com.marjorie.scoop.common.BaseEntity
 import javax.persistence.Entity
 import javax.persistence.Table
 import javax.validation.constraints.NotNull

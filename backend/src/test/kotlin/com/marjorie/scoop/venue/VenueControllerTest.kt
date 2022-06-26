@@ -22,7 +22,6 @@ import org.springframework.test.web.reactive.server.expectBodyList
 @Import(VenueService::class)
 @WithMockUser(username="admin", authorities = ["ROLE_USER", "ROLE_ADMIN"])
 class VenueControllerTest {
-
     @MockkBean
     private lateinit var venueRepository: VenueRepository
 
