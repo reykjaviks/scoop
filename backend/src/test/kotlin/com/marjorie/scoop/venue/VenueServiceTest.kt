@@ -12,7 +12,6 @@ import org.springframework.data.repository.findByIdOrNull
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class VenueServiceTest {
-
     private var venueRepository: VenueRepository = mockk()
     private var venueService = VenueService(venueRepository)
 

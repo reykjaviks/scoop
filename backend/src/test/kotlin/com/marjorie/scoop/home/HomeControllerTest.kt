@@ -1,5 +1,7 @@
-package com.marjorie.scoop
+package com.marjorie.scoop.home
 
+import com.marjorie.scoop.common.Constants.CSRF_IDENTIFIER
+import com.marjorie.scoop.common.Constants.REQUEST_ID
 import org.hamcrest.Matchers.containsString
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
@@ -18,14 +20,17 @@ import org.springframework.test.web.servlet.MockMvc;
  */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
-class WebApplicationTest {
+class HomeControllerTest {
     @Autowired
     private lateinit var mockMvc: MockMvc
 
     @Test
     fun `Home contains a greeting message`() {
         mockMvc
-            .perform(get("/").header("request-id", "randomID"))
+            .perform(get("/")
+                .header(REQUEST_ID, "request-id-500")
+                .header(CSRF_IDENTIFIER, "csrf-identifier-600")
+            )
             .andDo(print())
             .andExpect(status().isOk)
             .andExpect(
