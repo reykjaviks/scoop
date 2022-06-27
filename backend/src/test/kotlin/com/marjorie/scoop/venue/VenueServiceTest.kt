@@ -51,31 +51,42 @@ class VenueServiceTest {
     @Test
     fun `getVenue returns a venue when queried ID exists`() {
         val venueId: Long = 1
-        var resultVenue: Venue? = venueService.getVenue(venueId)
+        val expectedName = venue1.name
+        val actualName = venueService.getVenue(venueId)!!.name
 
         verify(exactly = 1) { venueRepository.findByIdOrNull(venueId) };
-        assertEquals(resultVenue?.name, venue1.name)
+        assertEquals(expectedName, actualName)
     }
 
     @Test
     fun `getVenue returns null when queried ID does not exist`() {
         val venueId: Long = 3
-        var resultVenue: Venue? = venueService.getVenue(venueId)
+        val venue: Venue? = venueService.getVenue(venueId)
 
         verify(exactly = 1) { venueRepository.findByIdOrNull(venueId) };
-        assertNull(resultVenue)
+        assertNull(venue)
+    }
+
+    @Test
+    fun `getAllVenus returns a list of venues`() {
+        val expectedList = listOf(venue1, venue2)
+        val actualList = venueService.getAllVenues()
+
+        verify(exactly = 1) { venueRepository.findAll() }
+        assertEquals(expectedList, actualList)
     }
 
     @Test
     fun `searchVenues returns a list of venues located in the queried neighbourhood `() {
         val query = "KAARTINKAUPUNKI"
-        val venues = venueService.searchVenues(query)
+        val expectedVenues = listOf(venue2)
+        val actualVenue = venueService.searchVenues(query)
 
-        assertEquals(venues, listOf(venue2))
+        assertEquals(expectedVenues, actualVenue)
     }
 
     @Test
-    fun `result of searchVenues does not contain a venue located in a different city`() {
+    fun `Result of searchVenues does not contain a venue located in a different city`() {
         val query = "KAARTINKAUPUNKI"
         val venues = venueService.searchVenues(query)
 
@@ -89,5 +100,4 @@ class VenueServiceTest {
 
         assertNull(venues)
     }
-
 }
