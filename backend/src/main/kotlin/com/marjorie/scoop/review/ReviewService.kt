@@ -20,11 +20,11 @@ class ReviewService(
     fun getAllReviews(): List<Review?> = reviewRepository.findAll()
 
     @PreAuthorize("#reviewDTO.writer == authentication.name")
-    fun addReview(reviewDTO: ReviewDTO) {
+    fun addReview(reviewDTO: ReviewDTO): Review {
         val venue = venueService.getVenue(reviewDTO.venueId)
         val user = userService.getUser(reviewDTO.writer)
         if (venue != null && user != null) {
-            reviewRepository.save(
+            return reviewRepository.save(
                 Review(
                     review = reviewDTO.review,
                     rating = reviewDTO.rating,
