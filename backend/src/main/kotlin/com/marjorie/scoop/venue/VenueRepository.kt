@@ -10,7 +10,6 @@ import org.springframework.stereotype.Repository
  */
 @Repository
 interface VenueRepository: JpaRepository<Venue?, Long?> {
-    //todo: use ILIKE instead
     @Query("""
             SELECT v FROM Venue v
             INNER JOIN Neighbourhood n ON n.id = v.neighbourhood.id

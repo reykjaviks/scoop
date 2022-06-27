@@ -26,7 +26,6 @@ class VenueServiceTest {
             postalCode = "02230",
             city = "Espoo",
             neighbourhood = Neighbourhood("Tapiola"),
-            reviewList = null,
         )
 
         venue2 = Venue(
