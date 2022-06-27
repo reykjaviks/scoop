@@ -14,20 +14,20 @@ import javax.validation.constraints.NotNull
 @Entity
 @Table(name = "review")
 class Review(
-        @Nullable
+        @NotNull
         var rating: Double,
 
-        @Nullable
+        @NotNull
         var review: String,
 
-        @ManyToOne(fetch = FetchType.LAZY)
         @NotNull
+        @ManyToOne(fetch = FetchType.LAZY)
         @JoinColumn(name = "venue_id")
         @JsonBackReference
         var venue: Venue,
 
-        @ManyToOne(fetch = FetchType.LAZY)
         @NotNull
+        @ManyToOne(fetch = FetchType.LAZY)
         @JoinColumn(name = "user_id")
         @JsonBackReference
         var user: User,

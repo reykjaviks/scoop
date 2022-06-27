@@ -35,7 +35,6 @@ class VenueServiceTest {
             postalCode = "00130",
             city = "Helsinki",
             neighbourhood = Neighbourhood("Kaartinkaupunki"),
-            reviewList = null,
         )
 
         every { venueRepository.findByIdOrNull(1) } returns venue1

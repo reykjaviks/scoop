@@ -18,7 +18,6 @@ class User(
 
     @NotNull
     @Size(max = 50)
-    @Column(name = "username")
     var username: String,
 
     @NotNull
@@ -32,11 +31,11 @@ class User(
         inverseJoinColumns = [JoinColumn(name = "authority_id", referencedColumnName = "id")]
     )
     @JsonManagedReference
-    var authorities: MutableList<Authority>?,
+    var authorities: MutableList<Authority>? = null,
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = [CascadeType.ALL])
     @Nullable
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = [CascadeType.ALL])
     @Where(clause = "deleted = false")
     @JsonManagedReference
-    var reviewList: MutableList<Review>?,
+    var reviewList: MutableList<Review>? = null,
  ): BaseEntity()

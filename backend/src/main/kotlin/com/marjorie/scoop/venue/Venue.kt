@@ -14,6 +14,7 @@ import javax.validation.constraints.Size
 @Table(name = "venue")
 class Venue(
         @NotNull
+        @Column(unique = true)
         var name: String,
 
         @Nullable
@@ -43,11 +44,11 @@ class Venue(
 
         @Nullable
         @ManyToOne
-        var neighbourhood: Neighbourhood?,
+        var neighbourhood: Neighbourhood? = null,
 
         @OneToMany(fetch = FetchType.LAZY, mappedBy = "venue", cascade = [CascadeType.ALL])
         @Nullable
         @Where(clause = "deleted = false")
         @JsonManagedReference
-        var reviewList: MutableList<Review>?,
+        var reviewList: MutableList<Review>? = null,
 ): BaseEntity()
