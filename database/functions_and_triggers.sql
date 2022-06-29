@@ -1,14 +1,16 @@
-/*---------------------- Functions ----------------------*/
+/*======================= Functions =======================*/
+
 -- Updating modified_at
 create function scoop.update_modified_at()
 returns trigger as $$
-	begin
-		new.modified_at = now();
-		return new;
-	end;
+   begin
+      new.modified_at = now();
+      return new;
+   end;
 $$ language plpgsql;
 
-/*---------------------- Triggers ----------------------*/
+/*======================= Triggers =======================*/
+
 -- User
 create trigger before_update
 before update on scoop.user 
