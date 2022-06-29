@@ -20,7 +20,7 @@ class VenueController(private val venueService: VenueService) {
     }
     
     @GetMapping("/search")
-    fun findVenue(@RequestParam query: String): Iterable<Venue?> {
+    fun searchVenues(@RequestParam query: String): Iterable<Venue?> {
         val venues = venueService.searchVenues(query)
         return if (!venues.isNullOrEmpty())
             venues

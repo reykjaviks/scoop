@@ -81,6 +81,7 @@ class WebAuthorizationConfig(
 
             .mvcMatchers(HttpMethod.GET, "/api/review/*").permitAll()
             .mvcMatchers(HttpMethod.POST, "/api/review/add").authenticated()
+            .mvcMatchers(HttpMethod.PATCH, "/api/review/*").authenticated()
             .mvcMatchers(HttpMethod.DELETE, "/api/review/*").authenticated()
     }
 

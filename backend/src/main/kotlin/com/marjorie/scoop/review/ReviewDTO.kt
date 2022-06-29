@@ -6,6 +6,6 @@ package com.marjorie.scoop.review
 data class ReviewDTO(
     var review: String,
     var rating: Double,
-    var venueId: Long,
-    var writer: String
+    var venueId: Long? = null,
+    var writer: String,
 )

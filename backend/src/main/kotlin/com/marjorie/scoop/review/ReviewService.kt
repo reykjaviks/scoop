@@ -17,14 +17,15 @@ class ReviewService(
 ) {
     fun getReview(id: Long): Review? = reviewRepository.findByIdOrNull(id)
 
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     fun getAllReviews(): List<Review?> = reviewRepository.findAll()
 
     @PreAuthorize("#reviewDTO.writer == authentication.name")
     fun addReview(reviewDTO: ReviewDTO): Review {
-        val venue = venueService.getVenue(reviewDTO.venueId)
+        val venue = reviewDTO.venueId?.let { venueService.getVenue(it) }
         val user = userService.getUser(reviewDTO.writer)
-        if (venue != null && user != null) {
-            return reviewRepository.save(
+        return if (venue != null && user != null) {
+            reviewRepository.save(
                 Review(
                     review = reviewDTO.review,
                     rating = reviewDTO.rating,
@@ -33,5 +34,10 @@ class ReviewService(
                 )
             )
         } else throw KotlinNullPointerException("Can't save the review because venue or user is null.")
+    }
+
+    @PreAuthorize("#reviewDTO.writer == authentication.name")
+    fun updateReview(id: Long, reviewDTO: ReviewDTO) {
+        reviewRepository.updateReviewById(reviewDTO.review, reviewDTO.rating, id)
     }
 }
