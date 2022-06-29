@@ -21,7 +21,7 @@ class ReviewService(
     fun getAllReviews(): List<Review?> = reviewRepository.findAll()
 
     @PreAuthorize("#reviewDTO.writer == authentication.name")
-    fun addReview(reviewDTO: ReviewDTO): Review {
+    fun createReview(reviewDTO: ReviewDTO): Review {
         val venue = reviewDTO.venueId?.let { venueService.getVenue(it) }
         val user = userService.getUser(reviewDTO.writer)
         return if (venue != null && user != null) {

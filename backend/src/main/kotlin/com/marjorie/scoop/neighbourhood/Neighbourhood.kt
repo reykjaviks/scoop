@@ -1,6 +1,7 @@
 package com.marjorie.scoop.neighbourhood
 
 import com.marjorie.scoop.common.BaseEntity
+import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.Table
 import javax.validation.constraints.NotNull
@@ -9,5 +10,6 @@ import javax.validation.constraints.NotNull
 @Table(name = "neighbourhood")
 class Neighbourhood(
     @NotNull
+    @Column(unique = true)
     var name: String,
 ): BaseEntity()

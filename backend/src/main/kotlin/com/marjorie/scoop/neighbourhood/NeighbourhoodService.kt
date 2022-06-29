@@ -8,6 +8,6 @@ import org.springframework.stereotype.Service
  */
 @Service
 class NeighbourhoodService(private val neighbourhoodRepository: NeighbourhoodRepository) {
-    fun getNeighbourhoods(): List<Neighbourhood?> = neighbourhoodRepository.findAll()
+    fun getAllNeighbourhoods(): List<Neighbourhood?> = neighbourhoodRepository.findAll()
     fun getNeighbourhood(id: Long): Neighbourhood? = neighbourhoodRepository.findByIdOrNull(id)
 }

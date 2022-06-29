@@ -13,15 +13,12 @@ import org.springframework.web.server.ResponseStatusException
 @RestController
 @RequestMapping("/api/neighbourhood")
 class NeighbourhoodController(private val neighbourhoodService: NeighbourhoodService) {
-    @GetMapping("/all")
-    fun listNeighbourhoods(): Iterable<Neighbourhood?> = neighbourhoodService.getNeighbourhoods()
-
     @GetMapping("/{id}")
     fun getNeighbourhood(@PathVariable id: Long): Neighbourhood {
         return neighbourhoodService.getNeighbourhood(id)
-            ?: throw ResponseStatusException(
-                HttpStatus.NOT_FOUND,
-                "No neighbourhood found for id $id"
-            )
+            ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "No neighbourhood found for id $id")
     }
+
+    @GetMapping("/all")
+    fun getAllNeighbourhoods(): Iterable<Neighbourhood?> = neighbourhoodService.getAllNeighbourhoods()
 }

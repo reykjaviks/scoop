@@ -13,15 +13,17 @@ import org.springframework.web.server.ResponseStatusException
 @Transactional
 class ReviewController(private val reviewService: ReviewService) {
     @GetMapping("/{id}")
-    fun getReview(@PathVariable id: Long): Review? = reviewService.getReview(id)
-        ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "No review found for id $id")
+    fun getReview(@PathVariable id: Long): Review? {
+        return reviewService.getReview(id)
+            ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "No review found for id $id")
+    }
 
     @GetMapping("/all")
     fun getAllReviews(): Iterable<Review?> = reviewService.getAllReviews()
 
     @PostMapping("/add")
-    fun addReview(@RequestBody reviewDTO: ReviewDTO): Review = try {
-        reviewService.addReview(reviewDTO)
+    fun createReview(@RequestBody reviewDTO: ReviewDTO): Review = try {
+        reviewService.createReview(reviewDTO)
     } catch (npe: KotlinNullPointerException) {
         throw ResponseStatusException(
             HttpStatus.INTERNAL_SERVER_ERROR,
@@ -30,6 +32,5 @@ class ReviewController(private val reviewService: ReviewService) {
     }
 
     @PatchMapping("/{id}")
-    fun updateReview(@PathVariable id: Long, @RequestBody reviewDTO: ReviewDTO) =
-        reviewService.updateReview(id, reviewDTO)
+    fun updateReview(@PathVariable id: Long, @RequestBody reviewDTO: ReviewDTO) = reviewService.updateReview(id, reviewDTO)
 }

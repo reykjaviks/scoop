@@ -75,7 +75,7 @@ class ReviewServiceTest {
 
     @Test
     fun `addReview saves review`() {
-        val savedReview = reviewService.addReview(review1Dto)
+        val savedReview = reviewService.createReview(review1Dto)
         val expectedReview = review1
 
         assertEquals(expectedReview, savedReview)
@@ -85,7 +85,7 @@ class ReviewServiceTest {
     fun `addReview does not save review`() {
         val expectedMessage = "Can't save the review because venue or user is null."
         try {
-            reviewService.addReview(review2Dto)
+            reviewService.createReview(review2Dto)
         } catch (npe: KotlinNullPointerException) {
             assertEquals(expectedMessage, npe.message)
         }

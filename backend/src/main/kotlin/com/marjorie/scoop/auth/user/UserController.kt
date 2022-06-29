@@ -13,6 +13,12 @@ private val logger = KotlinLogging.logger {}
 @RestController
 @RequestMapping("/api/user")
 class UserController(private val userService: UserService) {
+    @GetMapping("/{username}")
+    fun getUser(@PathVariable username: String): User? {
+        return userService.getUser(username)
+            ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "No user found for username $username")
+    }
+
     @PostMapping("/add")
     fun createUser(@RequestBody registrationData: User) {
         val usernameExists: Boolean = userService.usernameExists(registrationData.username)
@@ -23,11 +29,4 @@ class UserController(private val userService: UserService) {
             userService.createUserWithDefaultUserRole(registrationData)
         }
     }
-
-    @GetMapping("/{username}")
-    fun getUser(@PathVariable username: String): User {
-        return userService.getUser(username) ?:
-        throw ResponseStatusException(HttpStatus.NOT_FOUND, "No user found for username $username")
-    }
-
 }

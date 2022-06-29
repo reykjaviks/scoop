@@ -8,9 +8,6 @@ import org.jetbrains.annotations.Nullable
 import javax.persistence.*
 import javax.validation.constraints.NotNull
 
-/**
- * Review inherits the BaseEntity's properties and functions.
- */
 @Entity
 @Table(name = "review")
 class Review(

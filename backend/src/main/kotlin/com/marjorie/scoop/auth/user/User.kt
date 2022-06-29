@@ -18,6 +18,7 @@ class User(
 
     @NotNull
     @Size(max = 50)
+    @Column(unique = true)
     var username: String,
 
     @NotNull
