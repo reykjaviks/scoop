@@ -10,7 +10,6 @@ import org.springframework.web.server.ResponseStatusException
  */
 @RestController
 @RequestMapping("/api/review")
-@Transactional
 class ReviewController(private val reviewService: ReviewService) {
     @GetMapping("/{id}")
     fun getReview(@PathVariable id: Long): Review? {
