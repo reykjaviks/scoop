@@ -11,7 +11,6 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
@@ -22,57 +21,27 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
 @AutoConfigureMockMvc
 class VenueControllerTest {
     @MockkBean
-    private lateinit var venueRepository: VenueRepository
+    private lateinit var venueService: VenueService
 
     @Autowired
     private lateinit var mockMvc: MockMvc
 
     private lateinit var tapiolaVenue: Venue
     private lateinit var kallioVenue: Venue
-    private lateinit var allVenues: List<Venue>
-    private lateinit var kallioVenues: List<Venue>
-    private lateinit var kallioQuery: String
-    private lateinit var wackyQuery: String
-
+    private val kallioQuery = "kallio"
+    private val wackyQuery = "qwerty1234"
     private val requestId = "01_01_001"
     private val csrfIdentifier = "scoop-client"
 
     @BeforeEach
     fun setUp() {
-        tapiolaVenue = Venue(
-            name = "Pretty Boy Wingery",
-            streetAddress = "Piispansilta 11",
-            postalCode = "02230",
-            city = "Espoo",
-            neighbourhood = Neighbourhood("Tapiola"),
-            reviewList = null,
-        )
-
-        kallioVenue = Venue(
-            name = "Momochi",
-            streetAddress = "Mannerheimintie 20",
-            postalCode = "00100",
-            city = "Helsinki",
-            neighbourhood = Neighbourhood("Kallio"),
-            reviewList = null,
-        )
-
-        allVenues = listOf(tapiolaVenue, kallioVenue)
-        kallioVenues = listOf(kallioVenue)
-
-        kallioQuery = "%kallio%"
-        wackyQuery = "%qwerty1234%"
-
-        every { venueRepository.findByIdOrNull(1) } returns tapiolaVenue
-        every { venueRepository.findByIdOrNull(2) } returns kallioVenue
-        every { venueRepository.findByIdOrNull(3) } returns null
-        every { venueRepository.findAll() } returns allVenues
-        every {
-            venueRepository.findByNameOrAddressOrPostalCodeOrCityOrNeighbourhood(kallioQuery)
-        } returns kallioVenues
-        every {
-            venueRepository.findByNameOrAddressOrPostalCodeOrCityOrNeighbourhood(wackyQuery)
-        } returns null
+        this.initTestData()
+        every { venueService.getVenue(1) } returns tapiolaVenue
+        every { venueService.getVenue(2) } returns kallioVenue
+        every { venueService.getVenue(3) } returns null
+        every { venueService.getAllVenues() } returns listOf(tapiolaVenue, kallioVenue)
+        every { venueService.searchVenues(kallioQuery) } returns listOf(kallioVenue)
+        every { venueService.searchVenues(wackyQuery) } returns null
     }
 
     @Test
@@ -94,24 +63,6 @@ class VenueControllerTest {
             .accept(MediaType.APPLICATION_JSON)
         ).andDo(print())
             .andExpect(status().isNotFound)
-    }
-
-    @Test
-    fun `Get venue returns status code 400 when headers do not contain a request id`() {
-        mockMvc.perform(get("/api/venue/1")
-            .header(CSRF_IDENTIFIER, csrfIdentifier)
-            .accept(MediaType.APPLICATION_JSON)
-        ).andDo(print())
-            .andExpect(status().isBadRequest)
-    }
-
-    @Test
-    fun `Get venue returns status code 400 when headers do not contain a csrf identifier`() {
-        mockMvc.perform(get("/api/venue/1")
-            .header(REQUEST_ID, requestId)
-            .accept(MediaType.APPLICATION_JSON)
-        ).andDo(print())
-            .andExpect(status().isBadRequest)
     }
 
     @Test
@@ -148,9 +99,8 @@ class VenueControllerTest {
 
     @Test
     fun `Search returns a list of venues located in Kallio`() {
-        val query = "KALLIO"
         mockMvc.perform(get("/api/venue/search")
-            .queryParam("query", query)
+            .queryParam("query", kallioQuery)
             .header(REQUEST_ID, requestId)
             .header(CSRF_IDENTIFIER, csrfIdentifier)
             .accept(MediaType.APPLICATION_JSON)
@@ -162,13 +112,30 @@ class VenueControllerTest {
 
     @Test
     fun `Search returns status code 404 when there are no results for the query`() {
-        val query = "QWERTY1234"
         mockMvc.perform(get("/api/venue/search")
-            .queryParam("query", query)
+            .queryParam("query", wackyQuery)
             .header(REQUEST_ID, requestId)
             .header(CSRF_IDENTIFIER, csrfIdentifier)
             .accept(MediaType.APPLICATION_JSON)
         ).andDo(print())
             .andExpect(status().isNotFound)
+    }
+
+    private fun initTestData() {
+        tapiolaVenue = Venue(
+            name = "Pretty Boy Wingery",
+            streetAddress = "Piispansilta 11",
+            postalCode = "02230",
+            city = "Espoo",
+            neighbourhood = Neighbourhood("Tapiola"),
+        )
+
+        kallioVenue = Venue(
+            name = "Momochi",
+            streetAddress = "Mannerheimintie 20",
+            postalCode = "00100",
+            city = "Helsinki",
+            neighbourhood = Neighbourhood("Kallio"),
+        )
     }
 }
