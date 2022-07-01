@@ -15,31 +15,31 @@ class ReviewService(
     private val venueService: VenueService,
     private val userService: UserService,
 ) {
-    fun getReview(id: Long): Review? = reviewRepository.findByIdOrNull(id)
+    fun getReview(id: Long): ReviewEntity? = reviewRepository.findByIdOrNull(id)
 
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    fun getAllReviews(): List<Review?> = reviewRepository.findAll()
+    fun getAllReviews(): List<ReviewEntity?> = reviewRepository.findAll()
 
-    @PreAuthorize("#reviewDTO.writer == authentication.name")
-    fun createReview(reviewDTO: ReviewDTO): Review {
-        val venue = reviewDTO.venueId?.let { venueService.getVenue(it) }
-        val user = userService.getUser(reviewDTO.writer)
-        when {
-            venue == null -> throw KotlinNullPointerException("could not find a venue associated with the id '${reviewDTO.venueId}'")
-            user == null -> throw KotlinNullPointerException("could not find a user associated with username '${reviewDTO.writer}'")
-            else -> return reviewRepository.save(
-                Review(
-                    review = reviewDTO.review,
-                    rating = reviewDTO.rating,
-                    venue = venue,
-                    user = user
-                )
+    @PreAuthorize("#reviewData.writer == authentication.name")
+    fun createReview(reviewData: ReviewData): ReviewEntity {
+        val venue = reviewData.venueId?.let { venueService.getVenue(it) }
+        val user = reviewData.writer?.let { userService.getUser(it) }
+        if (venue == null)
+            throw KotlinNullPointerException("Error in saving the review: could not find a venue with an id '${reviewData.venueId}'")
+        else return reviewRepository.save(
+            ReviewEntity(
+                review = reviewData.review!!,
+                rating = reviewData.rating!!,
+                venue = venue,
+                user = user!!
             )
-        }
+        )
     }
 
-    @PreAuthorize("#reviewDTO.writer == authentication.name")
-    fun updateReview(id: Long, reviewDTO: ReviewDTO) {
-        reviewRepository.updateReviewById(reviewDTO.review, reviewDTO.rating, id)
+    @PreAuthorize("#reviewData.writer == authentication.name")
+    fun updateReview(review: ReviewEntity, reviewData: ReviewData) {
+        reviewData.review?.let { review.review = reviewData.review }
+        reviewData.rating?.let { review.rating = reviewData.rating }
+        reviewRepository.save(review)
     }
 }

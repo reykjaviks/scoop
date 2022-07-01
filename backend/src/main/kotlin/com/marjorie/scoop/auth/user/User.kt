@@ -3,7 +3,7 @@ package com.marjorie.scoop.auth.user
 import com.fasterxml.jackson.annotation.JsonManagedReference
 import com.marjorie.scoop.common.BaseEntity
 import com.marjorie.scoop.auth.authority.Authority
-import com.marjorie.scoop.review.Review
+import com.marjorie.scoop.review.ReviewEntity
 import org.hibernate.annotations.Where
 import org.jetbrains.annotations.Nullable
 import javax.persistence.*
@@ -38,5 +38,5 @@ class User(
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = [CascadeType.ALL])
     @Where(clause = "deleted = false")
     @JsonManagedReference
-    var reviewList: MutableList<Review>? = null,
+    var reviewList: MutableList<ReviewEntity>? = null,
  ): BaseEntity()

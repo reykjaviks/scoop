@@ -15,39 +15,41 @@ import org.springframework.data.repository.findByIdOrNull
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class ReviewServiceTest {
-    private var reviewRepository: ReviewRepository = mockk()
-    private var venueService: VenueService = mockk()
-    private var userService: UserService = mockk()
-    private var reviewService = ReviewService(reviewRepository, venueService, userService)
+    var reviewRepository: ReviewRepository = mockk()
+    var venueService: VenueService = mockk()
+    var userService: UserService = mockk()
+    var reviewService = ReviewService(reviewRepository, venueService, userService)
 
-    private lateinit var review1Dto: ReviewDTO
-    private lateinit var review2Dto: ReviewDTO
-    private lateinit var review1: Review
-    private lateinit var review2: Review
+    lateinit var reviewData1: ReviewData
+    lateinit var reviewData2: ReviewData
+    lateinit var reviewEntity1: ReviewEntity
+    lateinit var reviewEntity2: ReviewEntity
 
-    private lateinit var venue: Venue
-    private lateinit var userMarjorie: User
+    lateinit var venue: Venue
+    lateinit var userMarjorie: User
 
-    private var venueIdExisting: Long = 67
-    private var venueIdNonExisting: Long =  90
+    var venueId: Long = 67
+    var venueIdNonExisting: Long =  90
 
     @BeforeEach
     fun setUp() {
         this.initTestData()
-        every { reviewRepository.findByIdOrNull(1) } returns review1
-        every { reviewRepository.findByIdOrNull(2) } returns review2
+        every { reviewRepository.findByIdOrNull(1) } returns reviewEntity1
+        every { reviewRepository.findByIdOrNull(2) } returns reviewEntity2
         every { reviewRepository.findByIdOrNull(3) } returns null
-        every { reviewRepository.findAll() } returns listOf(review1, review2)
-        every { reviewRepository.save(any()) } returns review1
-        every { venueService.getVenue(venueIdExisting) } returns venue
+        every { reviewRepository.findAll() } returns listOf(reviewEntity1, reviewEntity2)
+        every { reviewRepository.save(any()) } returns reviewEntity1
+
+        every { venueService.getVenue(venueId) } returns venue
         every { venueService.getVenue(venueIdNonExisting) } returns null
+
         every { userService.getUser("Marjorie") } returns userMarjorie
     }
 
     @Test
     fun `getReview returns a review when queried ID exists`() {
         val reviewId: Long = 1
-        val expectedReview = review1.review
+        val expectedReview = reviewEntity1.review
         val actualReview = reviewService.getReview(reviewId)!!.review
 
         verify(exactly = 1) { reviewRepository.findByIdOrNull(reviewId) };
@@ -57,34 +59,35 @@ class ReviewServiceTest {
     @Test
     fun `getReview returns null when queried ID does not exist`() {
         val reviewId: Long = 3
-        val review: Review? = reviewService.getReview(reviewId)
+        val reviewEntity: ReviewEntity? = reviewService.getReview(reviewId)
 
         verify(exactly = 1) { reviewRepository.findByIdOrNull(reviewId) }
-        assertNull(review)
+        assertNull(reviewEntity)
     }
 
     @Test
     fun `getAllReviews returns a list of reviews`() {
-        val expectedList = listOf(review1, review2)
-        val actualList: List<Review?> = reviewService.getAllReviews()
+        val expectedList = listOf(reviewEntity1, reviewEntity2)
+        val actualList: List<ReviewEntity?> = reviewService.getAllReviews()
 
         verify(exactly = 1) { reviewRepository.findAll() }
         assertEquals(expectedList, actualList)
     }
 
     @Test
-    fun `addReview saves review`() {
-        val savedReview = reviewService.createReview(review1Dto)
-        val expectedReview = review1
+    fun `createReview saves review`() {
+        val savedReview = reviewService.createReview(reviewData1)
+        val expectedReview = reviewEntity1
 
         assertEquals(expectedReview, savedReview)
     }
 
     @Test
-    fun `addReview does not save review`() {
-        val expectedMessage = "Can't save the review because venue or user is null."
+    fun `createReview does not save review`() {
+        val reviewData = ReviewData(review = "Cool place.", 1.0, venueId = null, writer = "Marjorie")
+        val expectedMessage = "Error in saving the review: could not find a venue with an id 'null'"
         try {
-            reviewService.createReview(review2Dto)
+            reviewService.createReview(reviewData)
         } catch (npe: KotlinNullPointerException) {
             assertEquals(expectedMessage, npe.message)
         }
@@ -104,28 +107,28 @@ class ReviewServiceTest {
             city = "Espoo",
         )
 
-        review1 = Review(
+        reviewEntity1 = ReviewEntity(
             review = "It was okay, I guess.",
             rating = 3.0,
             venue = venue,
             user = userMarjorie,
         )
 
-        review2 = Review(
+        reviewEntity2 = ReviewEntity(
             review = "I appreciated how the staff was friendly without being overly chatty.",
             rating = 4.0,
             venue = venue,
             user = userMarjorie,
         )
 
-        review1Dto = ReviewDTO(
+        reviewData1 = ReviewData(
             review = "It was okay, I guess.",
             rating = 3.0,
-            venueId = venueIdExisting,
+            venueId = venueId,
             writer = userMarjorie.username,
         )
 
-        review2Dto= ReviewDTO(
+        reviewData2= ReviewData(
             review = "I appreciated how the staff was friendly without being overly chatty.",
             rating = 4.0,
             venueId = venueIdNonExisting,

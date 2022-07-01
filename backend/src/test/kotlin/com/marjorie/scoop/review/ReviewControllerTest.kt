@@ -1,5 +1,6 @@
 package com.marjorie.scoop.review
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.marjorie.scoop.auth.user.User
 import com.marjorie.scoop.common.Constants.CSRF_IDENTIFIER
 import com.marjorie.scoop.common.Constants.REQUEST_ID
@@ -13,8 +14,10 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType
+import org.springframework.security.test.context.support.WithMockUser
+import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers.print
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
 
@@ -22,23 +25,30 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
 @AutoConfigureMockMvc
 class ReviewControllerTest {
     @MockkBean
-    private lateinit var reviewService: ReviewService
+    lateinit var reviewService: ReviewService
 
     @Autowired
-    private lateinit var mockMvc: MockMvc
+    lateinit var mockMvc: MockMvc
 
-    private lateinit var review1: Review
-    private lateinit var review2: Review
-    private val requestId = "01_01_001"
-    private val csrfIdentifier = "scoop-client"
+    @Autowired
+    lateinit var objectMapper: ObjectMapper
+
+    lateinit var reviewEntity1: ReviewEntity
+    lateinit var reviewEntity2: ReviewEntity
+    lateinit var user: User
+
+    val requestId = "01_01_001"
+    val csrfIdentifier = "scoop-client"
 
     @BeforeEach
     fun setUp() {
         this.initTestData()
-        every { reviewService.getReview(1) } returns review1
-        every { reviewService.getReview(2) } returns review1
+        every { reviewService.getReview(1) } returns reviewEntity1
+        every { reviewService.getReview(2) } returns reviewEntity1
         every { reviewService.getReview(3) } returns null
-        every { reviewService.getAllReviews() } returns listOf(review1, review2)
+        every { reviewService.getAllReviews() } returns listOf(reviewEntity1, reviewEntity2)
+        every { reviewService.createReview(any()) } returns reviewEntity1
+        every { reviewService.updateReview(any(), any()) } returns Unit
     }
 
     @Test
@@ -49,7 +59,7 @@ class ReviewControllerTest {
             .accept(MediaType.APPLICATION_JSON)
         ).andDo(print())
             .andExpect(status().isOk)
-            .andExpect(content().string(containsString(review1.review)))
+            .andExpect(content().string(containsString(reviewEntity1.review)))
     }
 
     @Test
@@ -72,8 +82,8 @@ class ReviewControllerTest {
             .andExpect(status().isOk)
             .andExpect(jsonPath("$[*].review").value(
                 containsInAnyOrder(
-                    review1.review,
-                    review2.review
+                    reviewEntity1.review,
+                    reviewEntity2.review
                 )
             ))
     }
@@ -88,10 +98,70 @@ class ReviewControllerTest {
             .andExpect(status().isOk)
             .andExpect(jsonPath("$[*].rating").value(
                 containsInAnyOrder(
-                    review1.rating,
-                    review2.rating
+                    reviewEntity1.rating,
+                    reviewEntity2.rating
                 )
             ))
+    }
+
+    @Test
+    @WithMockUser(username="Marjorie", authorities = ["ROLE_USER", "ROLE_ADMIN"])
+    fun `Create review return status code 201 when review is saved`() {
+        val data = ReviewData(
+            review = "It was okay, I guess.",
+            rating = 3.0,
+            venueId = 1,
+            writer = "Marjorie",
+        )
+        mockMvc.perform(post("/api/review/add")
+            .with(csrf())
+            .contentType(MediaType.APPLICATION_JSON)
+            .header(REQUEST_ID, requestId)
+            .header(CSRF_IDENTIFIER, csrfIdentifier)
+            .content(objectMapper.writeValueAsString(data))
+            .accept(MediaType.APPLICATION_JSON)
+        ).andDo(print())
+            .andExpect(status().isCreated)
+    }
+
+    @Test
+    @WithMockUser(username="Marjorie", authorities = ["ROLE_USER", "ROLE_ADMIN"])
+    fun `Update review returns status code 200 when review is updated`() {
+        val data = ReviewData(
+            review = "It was okay, I guess.",
+            rating = 3.0,
+            writer = "Marjorie",
+        )
+        mockMvc.perform(
+            patch("/api/review/1")
+            .with(csrf())
+            .contentType(MediaType.APPLICATION_JSON)
+            .header(REQUEST_ID, requestId)
+            .header(CSRF_IDENTIFIER, csrfIdentifier)
+            .content(objectMapper.writeValueAsString(data))
+            .accept(MediaType.APPLICATION_JSON)
+        ).andDo(print())
+            .andExpect(status().isOk)
+    }
+
+    @Test
+    @WithMockUser(username="Marjorie", authorities = ["ROLE_USER", "ROLE_ADMIN"])
+    fun `Update review returns status code 200 (success) when review is updated`() {
+        val data = ReviewData(
+            review = "New review",
+            rating = 1.0,
+            writer = "Marjorie"
+        )
+        mockMvc.perform(
+            patch("/api/review/1")
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .header(REQUEST_ID, requestId)
+                .header(CSRF_IDENTIFIER, csrfIdentifier)
+                .content(objectMapper.writeValueAsString(data))
+                .accept(MediaType.APPLICATION_JSON)
+        ).andDo(print())
+            .andExpect(status().isOk)
     }
 
     private fun initTestData() {
@@ -102,20 +172,20 @@ class ReviewControllerTest {
             city = "Espoo",
         )
 
-        val user = User(
+        user = User(
             name = "Marjorie Moore",
             username = "Marjorie",
             password = "12345",
         )
 
-        review1 = Review(
+        reviewEntity1 = ReviewEntity(
             review = "It was okay, I guess.",
             rating = 3.0,
             venue = venue,
             user = user
         )
 
-        review2 = Review(
+        reviewEntity2 = ReviewEntity(
             review = "I appreciated how the staff was friendly without being overly chatty.",
             rating = 4.0,
             venue = venue,

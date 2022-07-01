@@ -21,17 +21,17 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
 @AutoConfigureMockMvc
 class VenueControllerTest {
     @MockkBean
-    private lateinit var venueService: VenueService
+    lateinit var venueService: VenueService
 
     @Autowired
-    private lateinit var mockMvc: MockMvc
+    lateinit var mockMvc: MockMvc
 
-    private lateinit var tapiolaVenue: Venue
-    private lateinit var kallioVenue: Venue
-    private val kallioQuery = "kallio"
-    private val wackyQuery = "qwerty1234"
-    private val requestId = "01_01_001"
-    private val csrfIdentifier = "scoop-client"
+    lateinit var tapiolaVenue: Venue
+    lateinit var kallioVenue: Venue
+    val kallioQuery = "kallio"
+    val wackyQuery = "qwerty1234"
+    val requestId = "01_01_001"
+    val csrfIdentifier = "scoop-client"
 
     @BeforeEach
     fun setUp() {

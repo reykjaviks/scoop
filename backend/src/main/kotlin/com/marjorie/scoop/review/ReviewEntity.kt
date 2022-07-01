@@ -4,13 +4,12 @@ import com.fasterxml.jackson.annotation.JsonBackReference
 import com.marjorie.scoop.common.BaseEntity
 import com.marjorie.scoop.auth.user.User
 import com.marjorie.scoop.venue.Venue
-import org.jetbrains.annotations.Nullable
 import javax.persistence.*
 import javax.validation.constraints.NotNull
 
 @Entity
 @Table(name = "review")
-class Review(
+class ReviewEntity(
         @NotNull
         var rating: Double,
 
