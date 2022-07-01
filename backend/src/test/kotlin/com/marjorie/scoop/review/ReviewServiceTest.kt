@@ -39,7 +39,6 @@ class ReviewServiceTest {
         every { reviewRepository.findByIdOrNull(3) } returns null
         every { reviewRepository.findAll() } returns listOf(review1, review2)
         every { reviewRepository.save(any()) } returns review1
-
         every { venueService.getVenue(venueIdExisting) } returns venue
         every { venueService.getVenue(venueIdNonExisting) } returns null
         every { userService.getUser("Marjorie") } returns userMarjorie

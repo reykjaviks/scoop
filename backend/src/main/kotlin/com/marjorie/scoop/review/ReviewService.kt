@@ -24,8 +24,10 @@ class ReviewService(
     fun createReview(reviewDTO: ReviewDTO): Review {
         val venue = reviewDTO.venueId?.let { venueService.getVenue(it) }
         val user = userService.getUser(reviewDTO.writer)
-        return if (venue != null && user != null) {
-            reviewRepository.save(
+        when {
+            venue == null -> throw KotlinNullPointerException("could not find a venue associated with the id '${reviewDTO.venueId}'")
+            user == null -> throw KotlinNullPointerException("could not find a user associated with username '${reviewDTO.writer}'")
+            else -> return reviewRepository.save(
                 Review(
                     review = reviewDTO.review,
                     rating = reviewDTO.rating,
@@ -33,7 +35,7 @@ class ReviewService(
                     user = user
                 )
             )
-        } else throw KotlinNullPointerException("Can't save the review because venue or user is null.")
+        }
     }
 
     @PreAuthorize("#reviewDTO.writer == authentication.name")

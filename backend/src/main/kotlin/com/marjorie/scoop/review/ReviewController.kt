@@ -21,12 +21,13 @@ class ReviewController(private val reviewService: ReviewService) {
     fun getAllReviews(): Iterable<Review?> = reviewService.getAllReviews()
 
     @PostMapping("/add")
+    @ResponseStatus(HttpStatus.CREATED)
     fun createReview(@RequestBody reviewDTO: ReviewDTO): Review = try {
         reviewService.createReview(reviewDTO)
     } catch (npe: KotlinNullPointerException) {
         throw ResponseStatusException(
             HttpStatus.INTERNAL_SERVER_ERROR,
-            "Error in adding a review: ${npe.message}"
+            "Error in saving a review: ${npe.message}"
         )
     }
 
