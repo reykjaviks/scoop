@@ -2,7 +2,6 @@ package com.marjorie.scoop.venue
 
 import com.marjorie.scoop.common.Constants.CSRF_IDENTIFIER
 import com.marjorie.scoop.common.Constants.REQUEST_ID
-import com.marjorie.scoop.neighbourhood.Neighbourhood
 import com.marjorie.scoop.neighbourhood.NeighbourhoodDTO
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
@@ -27,12 +26,11 @@ class VenueControllerTest {
     @Autowired
     lateinit var mockMvc: MockMvc
 
-    lateinit var tapiolaEntity: VenueEntity
-    lateinit var kallioEntity: VenueEntity
     lateinit var tapiolaDTO: VenueDTO
     lateinit var kallioDTO: VenueDTO
     lateinit var simpleTapiolaDTO: SimpleVenueDTO
     lateinit var simpleKallioDTO: SimpleVenueDTO
+
     val kallioQuery = "kallio"
     val wackyQuery = "qwerty1234"
     val requestId = "01_01_001"
@@ -44,7 +42,7 @@ class VenueControllerTest {
         every { venueService.getVenueNew(1) } returns tapiolaDTO
         every { venueService.getVenueNew(2) } returns kallioDTO
         every { venueService.getVenueNew(3) } returns null
-        every { venueService.getAllVenues() } returns listOf(tapiolaEntity, kallioEntity)
+        every { venueService.getAllVenues() } returns listOf(simpleTapiolaDTO, simpleKallioDTO)
         every { venueService.searchVenues(kallioQuery) } returns listOf(simpleKallioDTO)
         every { venueService.searchVenues(wackyQuery) } returns null
     }
@@ -80,8 +78,8 @@ class VenueControllerTest {
             .andExpect(status().isOk)
             .andExpect(jsonPath("$[*].name").value(
                 containsInAnyOrder(
-                    tapiolaEntity.name,
-                    kallioEntity.name
+                    simpleKallioDTO.name,
+                    simpleTapiolaDTO.name
                 )
             ))
     }
@@ -96,8 +94,8 @@ class VenueControllerTest {
             .andExpect(status().isOk)
             .andExpect(jsonPath("$[*].neighbourhood.name").value(
                 containsInAnyOrder(
-                    tapiolaEntity.neighbourhood!!.name,
-                    kallioEntity.neighbourhood!!.name
+                    simpleKallioDTO.neighbourhood?.name,
+                    simpleTapiolaDTO.neighbourhood?.name
                 )
             ))
     }
@@ -111,8 +109,8 @@ class VenueControllerTest {
             .accept(MediaType.APPLICATION_JSON)
         ).andDo(print())
             .andExpect(status().isOk)
-            .andExpect(jsonPath("$[*].name").value(contains(kallioEntity.name)))
-            .andExpect(jsonPath("$[*].name").value(not(contains(tapiolaEntity.name))))
+            .andExpect(jsonPath("$[*].name").value(contains(simpleKallioDTO.name)))
+            .andExpect(jsonPath("$[*].name").value(not(contains(simpleTapiolaDTO.name))))
     }
 
     @Test
@@ -127,22 +125,6 @@ class VenueControllerTest {
     }
 
     private fun initTestData() {
-        tapiolaEntity = VenueEntity(
-            name = "Pretty Boy Wingery",
-            streetAddress = "Piispansilta 11",
-            postalCode = "02230",
-            city = "Espoo",
-            neighbourhood = Neighbourhood("Tapiola"),
-        )
-
-        kallioEntity = VenueEntity(
-            name = "Momochi",
-            streetAddress = "Mannerheimintie 20",
-            postalCode = "00100",
-            city = "Helsinki",
-            neighbourhood = Neighbourhood("Kallio"),
-        )
-
         tapiolaDTO = VenueDTO(
             name = "Pretty Boy Wingery",
             streetAddress = "Piispansilta 11",
@@ -164,6 +146,7 @@ class VenueControllerTest {
             streetAddress = "Piispansilta 11",
             postalCode = "02230",
             city = "Espoo",
+            neighbourhood = NeighbourhoodDTO(name = "Tapiola"),
         )
 
         simpleKallioDTO = SimpleVenueDTO(
@@ -171,6 +154,7 @@ class VenueControllerTest {
             streetAddress = "Mannerheimintie 20",
             postalCode = "00100",
             city = "Helsinki",
+            neighbourhood = NeighbourhoodDTO(name = "Kallio"),
         )
     }
 }

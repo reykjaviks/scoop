@@ -17,7 +17,10 @@ class VenueController(private val venueService: VenueService) {
     }
 
     @GetMapping("/all")
-    fun getAllVenues(): Iterable<VenueEntity?> = venueService.getAllVenues()
+    fun getAllVenues(): Iterable<SimpleVenueDTO> {
+        return venueService.getAllVenues()
+            ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "The result of getting all venues was empty.")
+    }
 
     @GetMapping("/search")
     fun searchVenues(@RequestParam query: String): Iterable<SimpleVenueDTO> {

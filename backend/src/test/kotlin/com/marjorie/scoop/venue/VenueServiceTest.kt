@@ -14,15 +14,15 @@ import org.springframework.data.repository.findByIdOrNull
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 //@ContextConfiguration(classes = [VenueMapperImpl::class, ])
 class VenueServiceTest {
-    private val venueRepository: VenueRepository = mockk()
-    private val venueMapper: VenueMapper = mockk()
-    private val venueService = VenueService(venueRepository, venueMapper)
+    val venueRepository: VenueRepository = mockk()
+    val venueMapper: VenueMapper = mockk()
+    val venueService = VenueService(venueRepository, venueMapper)
 
-    private lateinit var wingeryEntity: VenueEntity
-    private lateinit var pastisEntity: VenueEntity
-    private lateinit var wingeryDTO: VenueDTO
-    private lateinit var wingerySearchDTO: SimpleVenueDTO
-    private lateinit var pastisSearchDTO: SimpleVenueDTO
+    lateinit var wingeryEntity: VenueEntity
+    lateinit var pastisEntity: VenueEntity
+    lateinit var wingeryDTO: VenueDTO
+    lateinit var simpleWingeryDTO: SimpleVenueDTO
+    lateinit var simplePastistDTO: SimpleVenueDTO
 
     @BeforeEach
     fun setUp() {
@@ -35,7 +35,8 @@ class VenueServiceTest {
         every { venueRepository.findByNameOrAddressOrPostalCodeOrCityOrNeighbourhood("%kaartinkaupunki%") } returns listOf(pastisEntity)
         every { venueRepository.findByNameOrAddressOrPostalCodeOrCityOrNeighbourhood("%reykjavik%") } returns null
         every { venueMapper.venueEntityToVenueDTO(wingeryEntity) } returns wingeryDTO
-        every { venueMapper.venueEntitiesToSimpleVenueDTOs(listOf(pastisEntity)) } returns listOf(pastisSearchDTO)
+        every { venueMapper.venueEntitiesToSimpleVenueDTOs(listOf(pastisEntity)) } returns listOf(simplePastistDTO)
+        every { venueMapper.venueEntitiesToSimpleVenueDTOs(listOf(wingeryEntity, pastisEntity)) } returns listOf(simpleWingeryDTO, simplePastistDTO)
     }
 
     @Test
@@ -59,7 +60,7 @@ class VenueServiceTest {
 
     @Test
     fun `getAllVenus returns a list of venues`() {
-        val expectedList = listOf(wingeryEntity, pastisEntity)
+        val expectedList = listOf(simpleWingeryDTO, simplePastistDTO)
         val actualList = venueService.getAllVenues()
 
         verify(exactly = 1) { venueRepository.findAll() }
@@ -69,7 +70,7 @@ class VenueServiceTest {
     @Test
     fun `searchVenues returns a list of venues located in the queried neighbourhood `() {
         val query = "KAARTINKAUPUNKI"
-        val expectedVenues = listOf(pastisSearchDTO)
+        val expectedVenues = listOf(simplePastistDTO)
         val actualVenues = venueService.searchVenues(query)
 
         assertEquals(expectedVenues, actualVenues)
@@ -80,7 +81,7 @@ class VenueServiceTest {
         val query = "KAARTINKAUPUNKI"
         val venues = venueService.searchVenues(query)
 
-        venues?.let { assertFalse(it.contains(wingerySearchDTO)) }
+        venues?.let { assertFalse(it.contains(simpleWingeryDTO)) }
     }
 
     @Test
@@ -116,14 +117,14 @@ class VenueServiceTest {
             neighbourhood = NeighbourhoodDTO(name = "Tapiola"),
         )
 
-        wingerySearchDTO = SimpleVenueDTO(
+        simpleWingeryDTO = SimpleVenueDTO(
             name = "Pretty Boy Wingery",
             streetAddress = "Piispansilta 11",
             postalCode = "02230",
             city = "Espoo",
         )
 
-        pastisSearchDTO = SimpleVenueDTO(
+        simplePastistDTO = SimpleVenueDTO(
             name = "Pastis",
             streetAddress = "Pieni Roobertinkatu 2",
             postalCode = "00130",

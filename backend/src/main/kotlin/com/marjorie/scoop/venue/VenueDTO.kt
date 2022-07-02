@@ -12,5 +12,5 @@ data class VenueDTO(
     var postalCode: String,
     var city: String,
     var neighbourhood: NeighbourhoodDTO? = null,
-    var reviewList: List<ReviewDTO>? = ArrayList()
+    var reviewList: List<ReviewDTO>? = null,
 )

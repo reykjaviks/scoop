@@ -17,8 +17,14 @@ class VenueService(private val venueRepository: VenueRepository, private val ven
         }
     }
 
-    // todo: refactor to return simple venues
-    fun getAllVenues(): List<VenueEntity?> = venueRepository.findAll()
+    fun getAllVenues(): List<SimpleVenueDTO>? {
+        val venueEntities = venueRepository.findAll() as List<VenueEntity>
+        return if (venueEntities.isEmpty()) {
+            null
+        } else {
+            venueMapper.venueEntitiesToSimpleVenueDTOs(venueEntities)
+        }
+    }
 
     fun searchVenues(query: String): List<SimpleVenueDTO>? {
         val preparedQuery: String = prepareQueryString(query)
@@ -36,4 +42,5 @@ class VenueService(private val venueRepository: VenueRepository, private val ven
 
     // todo: remove once refactoring is done
     fun getVenue(id: Long): VenueEntity? = venueRepository.findByIdOrNull(id)
+
 }
