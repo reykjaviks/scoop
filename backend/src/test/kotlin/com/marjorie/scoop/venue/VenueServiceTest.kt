@@ -18,27 +18,30 @@ class VenueServiceTest {
     private val venueMapper: VenueMapper = mockk()
     private val venueService = VenueService(venueRepository, venueMapper)
 
-    private lateinit var prettyBoyWingeryDTO: VenueDTO
-    private lateinit var prettyBoyWingery: VenueEntity
-    private lateinit var pastis: VenueEntity
+    private lateinit var wingeryEntity: VenueEntity
+    private lateinit var pastisEntity: VenueEntity
+    private lateinit var wingeryDTO: VenueDTO
+    private lateinit var wingerySearchDTO: SimpleVenueDTO
+    private lateinit var pastisSearchDTO: SimpleVenueDTO
 
     @BeforeEach
     fun setUp() {
         this.initTestData()
 
-        every { venueRepository.findByIdOrNull(1) } returns prettyBoyWingery
-        every { venueRepository.findByIdOrNull(2) } returns pastis
+        every { venueRepository.findByIdOrNull(1) } returns wingeryEntity
+        every { venueRepository.findByIdOrNull(2) } returns pastisEntity
         every { venueRepository.findByIdOrNull(3) } returns null
-        every { venueRepository.findAll() } returns listOf(prettyBoyWingery, pastis)
-        every { venueRepository.findByNameOrAddressOrPostalCodeOrCityOrNeighbourhood("%kaartinkaupunki%") } returns listOf(pastis)
+        every { venueRepository.findAll() } returns listOf(wingeryEntity, pastisEntity)
+        every { venueRepository.findByNameOrAddressOrPostalCodeOrCityOrNeighbourhood("%kaartinkaupunki%") } returns listOf(pastisEntity)
         every { venueRepository.findByNameOrAddressOrPostalCodeOrCityOrNeighbourhood("%reykjavik%") } returns null
-        every { venueMapper.venueEntityToVenueDTO(prettyBoyWingery) } returns prettyBoyWingeryDTO
+        every { venueMapper.venueEntityToVenueDTO(wingeryEntity) } returns wingeryDTO
+        every { venueMapper.venueEntitiesToSimpleVenueDTOs(listOf(pastisEntity)) } returns listOf(pastisSearchDTO)
     }
 
     @Test
     fun `getVenue returns a venue when queried ID exists`() {
         val venueId: Long = 1
-        val expectedName: String = prettyBoyWingery.name
+        val expectedName: String = wingeryEntity.name
         val actualName: String? = venueService.getVenueNew(venueId)?.name
 
         verify(exactly = 1) { venueRepository.findByIdOrNull(venueId) };
@@ -56,7 +59,7 @@ class VenueServiceTest {
 
     @Test
     fun `getAllVenus returns a list of venues`() {
-        val expectedList = listOf(prettyBoyWingery, pastis)
+        val expectedList = listOf(wingeryEntity, pastisEntity)
         val actualList = venueService.getAllVenues()
 
         verify(exactly = 1) { venueRepository.findAll() }
@@ -66,10 +69,10 @@ class VenueServiceTest {
     @Test
     fun `searchVenues returns a list of venues located in the queried neighbourhood `() {
         val query = "KAARTINKAUPUNKI"
-        val expectedVenues = listOf(pastis)
-        val actualVenue = venueService.searchVenues(query)
+        val expectedVenues = listOf(pastisSearchDTO)
+        val actualVenues = venueService.searchVenues(query)
 
-        assertEquals(expectedVenues, actualVenue)
+        assertEquals(expectedVenues, actualVenues)
     }
 
     @Test
@@ -77,7 +80,7 @@ class VenueServiceTest {
         val query = "KAARTINKAUPUNKI"
         val venues = venueService.searchVenues(query)
 
-        venues?.let { assertFalse(it.contains(prettyBoyWingery)) }
+        venues?.let { assertFalse(it.contains(wingerySearchDTO)) }
     }
 
     @Test
@@ -89,7 +92,7 @@ class VenueServiceTest {
     }
 
     private fun initTestData() {
-        prettyBoyWingery = VenueEntity(
+        wingeryEntity = VenueEntity(
             name = "Pretty Boy Wingery",
             streetAddress = "Piispansilta 11",
             postalCode = "02230",
@@ -97,7 +100,15 @@ class VenueServiceTest {
             neighbourhood = Neighbourhood("Tapiola"),
         )
 
-        prettyBoyWingeryDTO = VenueDTO(
+        pastisEntity = VenueEntity(
+            name = "Pastis",
+            streetAddress = "Pieni Roobertinkatu 2",
+            postalCode = "00130",
+            city = "Helsinki",
+            neighbourhood = Neighbourhood("Kaartinkaupunki"),
+        )
+
+        wingeryDTO = VenueDTO(
             name = "Pretty Boy Wingery",
             streetAddress = "Piispansilta 11",
             postalCode = "02230",
@@ -105,12 +116,18 @@ class VenueServiceTest {
             neighbourhood = NeighbourhoodDTO(name = "Tapiola"),
         )
 
-        pastis = VenueEntity(
+        wingerySearchDTO = SimpleVenueDTO(
+            name = "Pretty Boy Wingery",
+            streetAddress = "Piispansilta 11",
+            postalCode = "02230",
+            city = "Espoo",
+        )
+
+        pastisSearchDTO = SimpleVenueDTO(
             name = "Pastis",
             streetAddress = "Pieni Roobertinkatu 2",
             postalCode = "00130",
             city = "Helsinki",
-            neighbourhood = Neighbourhood("Kaartinkaupunki"),
         )
     }
 }

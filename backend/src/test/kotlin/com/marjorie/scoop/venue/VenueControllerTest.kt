@@ -31,6 +31,8 @@ class VenueControllerTest {
     lateinit var kallioEntity: VenueEntity
     lateinit var tapiolaDTO: VenueDTO
     lateinit var kallioDTO: VenueDTO
+    lateinit var simpleTapiolaDTO: SimpleVenueDTO
+    lateinit var simpleKallioDTO: SimpleVenueDTO
     val kallioQuery = "kallio"
     val wackyQuery = "qwerty1234"
     val requestId = "01_01_001"
@@ -43,7 +45,7 @@ class VenueControllerTest {
         every { venueService.getVenueNew(2) } returns kallioDTO
         every { venueService.getVenueNew(3) } returns null
         every { venueService.getAllVenues() } returns listOf(tapiolaEntity, kallioEntity)
-        every { venueService.searchVenues(kallioQuery) } returns listOf(kallioEntity)
+        every { venueService.searchVenues(kallioQuery) } returns listOf(simpleKallioDTO)
         every { venueService.searchVenues(wackyQuery) } returns null
     }
 
@@ -155,6 +157,20 @@ class VenueControllerTest {
             postalCode = "00100",
             city = "Helsinki",
             neighbourhood = NeighbourhoodDTO(name = "Kallio"),
+        )
+
+        simpleTapiolaDTO = SimpleVenueDTO(
+            name = "Pretty Boy Wingery",
+            streetAddress = "Piispansilta 11",
+            postalCode = "02230",
+            city = "Espoo",
+        )
+
+        simpleKallioDTO = SimpleVenueDTO(
+            name = "Momochi",
+            streetAddress = "Mannerheimintie 20",
+            postalCode = "00100",
+            city = "Helsinki",
         )
     }
 }

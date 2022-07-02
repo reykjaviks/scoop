@@ -20,11 +20,8 @@ class VenueController(private val venueService: VenueService) {
     fun getAllVenues(): Iterable<VenueEntity?> = venueService.getAllVenues()
 
     @GetMapping("/search")
-    fun searchVenues(@RequestParam query: String): Iterable<VenueEntity?> {
-        val venues = venueService.searchVenues(query)
-        return if (!venues.isNullOrEmpty())
-            venues
-        else throw
-            ResponseStatusException(HttpStatus.NOT_FOUND, "No venues found for query $query")
+    fun searchVenues(@RequestParam query: String): Iterable<SimpleVenueDTO> {
+        return venueService.searchVenues(query)
+            ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "No venues found for query $query")
     }
 }

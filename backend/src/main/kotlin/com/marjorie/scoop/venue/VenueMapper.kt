@@ -1,7 +1,5 @@
 package com.marjorie.scoop.venue
 
-import com.marjorie.scoop.venue.VenueDTO
-import com.marjorie.scoop.venue.VenueEntity
 import org.mapstruct.Mapper
 import org.mapstruct.ReportingPolicy
 
@@ -12,4 +10,5 @@ import org.mapstruct.ReportingPolicy
 interface VenueMapper {
     fun venueEntityToVenueDTO(venueEntity: VenueEntity): VenueDTO
     fun venueDTOToVenueEntity(venueDTO: VenueDTO): VenueEntity
+    fun venueEntitiesToSimpleVenueDTOs(venueEntities: List<VenueEntity>): List<SimpleVenueDTO>
 }

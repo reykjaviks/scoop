@@ -8,27 +8,32 @@ import org.springframework.stereotype.Service
  */
 @Service
 class VenueService(private val venueRepository: VenueRepository, private val venueMapper: VenueMapper) {
-    // todo: remove once refactoring is done
-    fun getVenue(id: Long): VenueEntity? = venueRepository.findByIdOrNull(id)
-
     fun getVenueNew(id: Long): VenueDTO? {
         val venue = venueRepository.findByIdOrNull(id)
-        return if (venue == null)
+        return if (venue == null) {
             null
-        else
+        } else {
             venueMapper.venueEntityToVenueDTO(venue)
+        }
     }
 
-    // todo: refactor to return venuedtos
+    // todo: refactor to return simple venues
     fun getAllVenues(): List<VenueEntity?> = venueRepository.findAll()
 
-    // todo: refactor to return venuedtos
-    fun searchVenues(query: String): List<VenueEntity>? {
+    fun searchVenues(query: String): List<SimpleVenueDTO>? {
         val preparedQuery: String = prepareQueryString(query)
-        return venueRepository.findByNameOrAddressOrPostalCodeOrCityOrNeighbourhood(preparedQuery)
+        val venueEntities = venueRepository.findByNameOrAddressOrPostalCodeOrCityOrNeighbourhood(preparedQuery)
+        return if (venueEntities.isNullOrEmpty()) {
+            null
+        } else {
+            venueMapper.venueEntitiesToSimpleVenueDTOs(venueEntities)
+        }
     }
 
     private fun prepareQueryString(query: String): String {
         return "%" + query.lowercase() + "%"
     }
+
+    // todo: remove once refactoring is done
+    fun getVenue(id: Long): VenueEntity? = venueRepository.findByIdOrNull(id)
 }
