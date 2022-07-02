@@ -9,3 +9,5 @@ data class ReviewData(
     val venueId: Long? = null,
     val writer: String? = null,
 )
+
+//todo: val -> var, ReviewData -> ReviewPostDTO

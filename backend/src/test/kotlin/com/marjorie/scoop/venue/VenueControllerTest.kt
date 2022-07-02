@@ -3,6 +3,7 @@ package com.marjorie.scoop.venue
 import com.marjorie.scoop.common.Constants.CSRF_IDENTIFIER
 import com.marjorie.scoop.common.Constants.REQUEST_ID
 import com.marjorie.scoop.neighbourhood.Neighbourhood
+import com.marjorie.scoop.neighbourhood.NeighbourhoodDTO
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
 import org.hamcrest.Matchers.*
@@ -26,8 +27,10 @@ class VenueControllerTest {
     @Autowired
     lateinit var mockMvc: MockMvc
 
-    lateinit var tapiolaVenueEntity: VenueEntity
-    lateinit var kallioVenueEntity: VenueEntity
+    lateinit var tapiolaEntity: VenueEntity
+    lateinit var kallioEntity: VenueEntity
+    lateinit var tapiolaDTO: VenueDTO
+    lateinit var kallioDTO: VenueDTO
     val kallioQuery = "kallio"
     val wackyQuery = "qwerty1234"
     val requestId = "01_01_001"
@@ -36,11 +39,11 @@ class VenueControllerTest {
     @BeforeEach
     fun setUp() {
         this.initTestData()
-        every { venueService.getVenue(1) } returns tapiolaVenueEntity
-        every { venueService.getVenue(2) } returns kallioVenueEntity
-        every { venueService.getVenue(3) } returns null
-        every { venueService.getAllVenues() } returns listOf(tapiolaVenueEntity, kallioVenueEntity)
-        every { venueService.searchVenues(kallioQuery) } returns listOf(kallioVenueEntity)
+        every { venueService.getVenueNew(1) } returns tapiolaDTO
+        every { venueService.getVenueNew(2) } returns kallioDTO
+        every { venueService.getVenueNew(3) } returns null
+        every { venueService.getAllVenues() } returns listOf(tapiolaEntity, kallioEntity)
+        every { venueService.searchVenues(kallioQuery) } returns listOf(kallioEntity)
         every { venueService.searchVenues(wackyQuery) } returns null
     }
 
@@ -52,7 +55,7 @@ class VenueControllerTest {
             .accept(MediaType.APPLICATION_JSON)
         ).andDo(print())
             .andExpect(status().isOk)
-            .andExpect(content().string(containsString(tapiolaVenueEntity.name)))
+            .andExpect(content().string(containsString(tapiolaDTO.name)))
     }
 
     @Test
@@ -75,8 +78,8 @@ class VenueControllerTest {
             .andExpect(status().isOk)
             .andExpect(jsonPath("$[*].name").value(
                 containsInAnyOrder(
-                    tapiolaVenueEntity.name,
-                    kallioVenueEntity.name
+                    tapiolaEntity.name,
+                    kallioEntity.name
                 )
             ))
     }
@@ -91,8 +94,8 @@ class VenueControllerTest {
             .andExpect(status().isOk)
             .andExpect(jsonPath("$[*].neighbourhood.name").value(
                 containsInAnyOrder(
-                    tapiolaVenueEntity.neighbourhood!!.name,
-                    kallioVenueEntity.neighbourhood!!.name
+                    tapiolaEntity.neighbourhood!!.name,
+                    kallioEntity.neighbourhood!!.name
                 )
             ))
     }
@@ -106,8 +109,8 @@ class VenueControllerTest {
             .accept(MediaType.APPLICATION_JSON)
         ).andDo(print())
             .andExpect(status().isOk)
-            .andExpect(jsonPath("$[*].name").value(contains(kallioVenueEntity.name)))
-            .andExpect(jsonPath("$[*].name").value(not(contains(tapiolaVenueEntity.name))))
+            .andExpect(jsonPath("$[*].name").value(contains(kallioEntity.name)))
+            .andExpect(jsonPath("$[*].name").value(not(contains(tapiolaEntity.name))))
     }
 
     @Test
@@ -122,7 +125,7 @@ class VenueControllerTest {
     }
 
     private fun initTestData() {
-        tapiolaVenueEntity = VenueEntity(
+        tapiolaEntity = VenueEntity(
             name = "Pretty Boy Wingery",
             streetAddress = "Piispansilta 11",
             postalCode = "02230",
@@ -130,12 +133,28 @@ class VenueControllerTest {
             neighbourhood = Neighbourhood("Tapiola"),
         )
 
-        kallioVenueEntity = VenueEntity(
+        kallioEntity = VenueEntity(
             name = "Momochi",
             streetAddress = "Mannerheimintie 20",
             postalCode = "00100",
             city = "Helsinki",
             neighbourhood = Neighbourhood("Kallio"),
+        )
+
+        tapiolaDTO = VenueDTO(
+            name = "Pretty Boy Wingery",
+            streetAddress = "Piispansilta 11",
+            postalCode = "02230",
+            city = "Espoo",
+            neighbourhood = NeighbourhoodDTO(name = "Tapiola"),
+        )
+
+        kallioDTO = VenueDTO(
+            name = "Momochi",
+            streetAddress = "Mannerheimintie 20",
+            postalCode = "00100",
+            city = "Helsinki",
+            neighbourhood = NeighbourhoodDTO(name = "Kallio"),
         )
     }
 }

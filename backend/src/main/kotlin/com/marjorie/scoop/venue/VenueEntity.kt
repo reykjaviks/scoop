@@ -50,5 +50,5 @@ class VenueEntity(
     @Nullable
     @Where(clause = "deleted = false")
     @JsonManagedReference
-    var reviewList: MutableList<ReviewEntity>? = null,
+    var reviewList: MutableList<ReviewEntity>? = ArrayList(),
 ): BaseEntity()

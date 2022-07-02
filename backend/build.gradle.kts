@@ -9,6 +9,7 @@ plugins {
 	kotlin("jvm") version "1.6.21"
 	kotlin("plugin.spring") version "1.6.21"
 	kotlin("plugin.jpa") version "1.6.21"
+	kotlin("kapt") version "1.7.0"
 }
 
 //======================= Project Info =============================================
@@ -20,11 +21,17 @@ repositories {
 	mavenCentral()
 }
 
+allOpen {
+	annotation("javax.persistence.Entity")
+	annotation("javax.persistence.MappedSuperclass")
+	annotation("javax.persistence.Embeddable")
+}
+
 //======================= Dependencies =============================================
 dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-security")
 	//implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
-	//implementation("com.okta.spring:okta-spring-boot-starter:2.1.5")
+	//implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.springframework.boot:spring-boot-starter-validation")
 	implementation("org.springframework.boot:spring-boot-starter-web")
@@ -34,16 +41,19 @@ dependencies {
 	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 	implementation("org.junit.jupiter:junit-jupiter:5.8.2")
 	implementation("io.github.microutils:kotlin-logging-jvm:2.1.21")
+	implementation("org.mapstruct:mapstruct:1.5.1.Final")
+	annotationProcessor("org.mapstruct:mapstruct-processor:1.5.1.Final")
 	runtimeOnly("org.postgresql:postgresql")
 	testImplementation("org.springframework.boot:spring-boot-starter-test") {
 		exclude(module = "mockito-core")
 	}
 	testImplementation("org.junit.jupiter:junit-jupiter-api")
-	testImplementation("org.testcontainers:junit-jupiter:1.17.1")
-	testImplementation("org.testcontainers:postgresql:1.17.1")
 	testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
 	testImplementation("com.ninja-squad:springmockk:3.1.1")
 	testImplementation("org.springframework.security:spring-security-test")
+	kapt("org.mapstruct:mapstruct-processor:1.5.2.Final")
+	kapt("org.springframework.boot:spring-boot-configuration-processor")
+	//kapt("org.hibernate:hibernate-jpamodelgen:6.1.0.Final")
 }
 //======================= Tasks =============================================
 tasks.withType<KotlinCompile> {
@@ -55,10 +65,4 @@ tasks.withType<KotlinCompile> {
 
 tasks.withType<Test> {
 	useJUnitPlatform()
-}
-
-allOpen {
-	annotation("javax.persistence.Entity")
-	annotation("javax.persistence.MappedSuperclass")
-	annotation("javax.persistence.Embeddable")
 }

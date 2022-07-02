@@ -20,6 +20,7 @@ class ReviewService(
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     fun getAllReviews(): List<ReviewEntity?> = reviewRepository.findAll()
 
+    // todo: fix
     @PreAuthorize("#reviewData.writer == authentication.name")
     fun createReview(reviewData: ReviewData): ReviewEntity {
         val venue = reviewData.venueId?.let { venueService.getVenue(it) }

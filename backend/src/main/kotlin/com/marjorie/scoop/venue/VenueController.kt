@@ -11,8 +11,8 @@ import org.springframework.web.server.ResponseStatusException
 @RequestMapping("/api/venue")
 class VenueController(private val venueService: VenueService) {
     @GetMapping("/{id}")
-    fun getVenue(@PathVariable id: Long): VenueEntity? {
-        return venueService.getVenue(id)
+    fun getVenue(@PathVariable id: Long): VenueDTO {
+        return venueService.getVenueNew(id)
             ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "No venue found for id $id")
     }
 
