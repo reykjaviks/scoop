@@ -8,11 +8,11 @@ import org.springframework.stereotype.Service
  */
 @Service
 class VenueService(private val venueRepository: VenueRepository) {
-    fun getVenue(id: Long): Venue? = venueRepository.findByIdOrNull(id)
+    fun getVenue(id: Long): VenueEntity? = venueRepository.findByIdOrNull(id)
 
-    fun getAllVenues(): List<Venue?> = venueRepository.findAll()
+    fun getAllVenues(): List<VenueEntity?> = venueRepository.findAll()
 
-    fun searchVenues(query: String): List<Venue>? {
+    fun searchVenues(query: String): List<VenueEntity>? {
         val preparedQuery: String = prepareQueryString(query)
         return venueRepository.findByNameOrAddressOrPostalCodeOrCityOrNeighbourhood(preparedQuery)
     }

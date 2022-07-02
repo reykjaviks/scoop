@@ -11,16 +11,16 @@ import org.springframework.web.server.ResponseStatusException
 @RequestMapping("/api/venue")
 class VenueController(private val venueService: VenueService) {
     @GetMapping("/{id}")
-    fun getVenue(@PathVariable id: Long): Venue? {
+    fun getVenue(@PathVariable id: Long): VenueEntity? {
         return venueService.getVenue(id)
             ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "No venue found for id $id")
     }
 
     @GetMapping("/all")
-    fun getAllVenues(): Iterable<Venue?> = venueService.getAllVenues()
+    fun getAllVenues(): Iterable<VenueEntity?> = venueService.getAllVenues()
 
     @GetMapping("/search")
-    fun searchVenues(@RequestParam query: String): Iterable<Venue?> {
+    fun searchVenues(@RequestParam query: String): Iterable<VenueEntity?> {
         val venues = venueService.searchVenues(query)
         return if (!venues.isNullOrEmpty())
             venues

@@ -15,12 +15,12 @@ class VenueServiceTest {
     private var venueRepository: VenueRepository = mockk()
     private var venueService = VenueService(venueRepository)
 
-    private lateinit var venue1: Venue
-    private lateinit var venue2: Venue
+    private lateinit var venueEntity1: VenueEntity
+    private lateinit var venueEntity2: VenueEntity
 
     @BeforeEach
     fun setUp() {
-        venue1 = Venue(
+        venueEntity1 = VenueEntity(
             name = "Pretty Boy Wingery",
             streetAddress = "Piispansilta 11",
             postalCode = "02230",
@@ -28,7 +28,7 @@ class VenueServiceTest {
             neighbourhood = Neighbourhood("Tapiola"),
         )
 
-        venue2 = Venue(
+        venueEntity2 = VenueEntity(
             name = "Pastis",
             streetAddress = "Pieni Roobertinkatu 2",
             postalCode = "00130",
@@ -36,13 +36,13 @@ class VenueServiceTest {
             neighbourhood = Neighbourhood("Kaartinkaupunki"),
         )
 
-        every { venueRepository.findByIdOrNull(1) } returns venue1
-        every { venueRepository.findByIdOrNull(2) } returns venue2
+        every { venueRepository.findByIdOrNull(1) } returns venueEntity1
+        every { venueRepository.findByIdOrNull(2) } returns venueEntity2
         every { venueRepository.findByIdOrNull(3) } returns null
-        every { venueRepository.findAll() } returns listOf(venue1, venue2)
+        every { venueRepository.findAll() } returns listOf(venueEntity1, venueEntity2)
         every {
             venueRepository.findByNameOrAddressOrPostalCodeOrCityOrNeighbourhood("%kaartinkaupunki%")
-        } returns listOf(venue2)
+        } returns listOf(venueEntity2)
         every {
             venueRepository.findByNameOrAddressOrPostalCodeOrCityOrNeighbourhood("%reykjavik%")
         } returns null
@@ -51,7 +51,7 @@ class VenueServiceTest {
     @Test
     fun `getVenue returns a venue when queried ID exists`() {
         val venueId: Long = 1
-        val expectedName = venue1.name
+        val expectedName = venueEntity1.name
         val actualName = venueService.getVenue(venueId)!!.name
 
         verify(exactly = 1) { venueRepository.findByIdOrNull(venueId) };
@@ -61,15 +61,15 @@ class VenueServiceTest {
     @Test
     fun `getVenue returns null when queried ID does not exist`() {
         val venueId: Long = 3
-        val venue: Venue? = venueService.getVenue(venueId)
+        val venueEntity: VenueEntity? = venueService.getVenue(venueId)
 
         verify(exactly = 1) { venueRepository.findByIdOrNull(venueId) };
-        assertNull(venue)
+        assertNull(venueEntity)
     }
 
     @Test
     fun `getAllVenus returns a list of venues`() {
-        val expectedList = listOf(venue1, venue2)
+        val expectedList = listOf(venueEntity1, venueEntity2)
         val actualList = venueService.getAllVenues()
 
         verify(exactly = 1) { venueRepository.findAll() }
@@ -79,7 +79,7 @@ class VenueServiceTest {
     @Test
     fun `searchVenues returns a list of venues located in the queried neighbourhood `() {
         val query = "KAARTINKAUPUNKI"
-        val expectedVenues = listOf(venue2)
+        val expectedVenues = listOf(venueEntity2)
         val actualVenue = venueService.searchVenues(query)
 
         assertEquals(expectedVenues, actualVenue)
@@ -90,7 +90,7 @@ class VenueServiceTest {
         val query = "KAARTINKAUPUNKI"
         val venues = venueService.searchVenues(query)
 
-        venues?.let { assertFalse(it.contains(venue1)) }
+        venues?.let { assertFalse(it.contains(venueEntity1)) }
     }
 
     @Test

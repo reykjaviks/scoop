@@ -30,7 +30,7 @@ class ReviewService(
             ReviewEntity(
                 review = reviewData.review!!,
                 rating = reviewData.rating!!,
-                venue = venue,
+                venueEntity = venue,
                 user = user!!
             )
         )

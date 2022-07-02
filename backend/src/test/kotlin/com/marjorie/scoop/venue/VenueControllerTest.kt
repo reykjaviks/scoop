@@ -26,8 +26,8 @@ class VenueControllerTest {
     @Autowired
     lateinit var mockMvc: MockMvc
 
-    lateinit var tapiolaVenue: Venue
-    lateinit var kallioVenue: Venue
+    lateinit var tapiolaVenueEntity: VenueEntity
+    lateinit var kallioVenueEntity: VenueEntity
     val kallioQuery = "kallio"
     val wackyQuery = "qwerty1234"
     val requestId = "01_01_001"
@@ -36,11 +36,11 @@ class VenueControllerTest {
     @BeforeEach
     fun setUp() {
         this.initTestData()
-        every { venueService.getVenue(1) } returns tapiolaVenue
-        every { venueService.getVenue(2) } returns kallioVenue
+        every { venueService.getVenue(1) } returns tapiolaVenueEntity
+        every { venueService.getVenue(2) } returns kallioVenueEntity
         every { venueService.getVenue(3) } returns null
-        every { venueService.getAllVenues() } returns listOf(tapiolaVenue, kallioVenue)
-        every { venueService.searchVenues(kallioQuery) } returns listOf(kallioVenue)
+        every { venueService.getAllVenues() } returns listOf(tapiolaVenueEntity, kallioVenueEntity)
+        every { venueService.searchVenues(kallioQuery) } returns listOf(kallioVenueEntity)
         every { venueService.searchVenues(wackyQuery) } returns null
     }
 
@@ -52,7 +52,7 @@ class VenueControllerTest {
             .accept(MediaType.APPLICATION_JSON)
         ).andDo(print())
             .andExpect(status().isOk)
-            .andExpect(content().string(containsString(tapiolaVenue.name)))
+            .andExpect(content().string(containsString(tapiolaVenueEntity.name)))
     }
 
     @Test
@@ -75,8 +75,8 @@ class VenueControllerTest {
             .andExpect(status().isOk)
             .andExpect(jsonPath("$[*].name").value(
                 containsInAnyOrder(
-                    tapiolaVenue.name,
-                    kallioVenue.name
+                    tapiolaVenueEntity.name,
+                    kallioVenueEntity.name
                 )
             ))
     }
@@ -91,8 +91,8 @@ class VenueControllerTest {
             .andExpect(status().isOk)
             .andExpect(jsonPath("$[*].neighbourhood.name").value(
                 containsInAnyOrder(
-                    tapiolaVenue.neighbourhood!!.name,
-                    kallioVenue.neighbourhood!!.name
+                    tapiolaVenueEntity.neighbourhood!!.name,
+                    kallioVenueEntity.neighbourhood!!.name
                 )
             ))
     }
@@ -106,8 +106,8 @@ class VenueControllerTest {
             .accept(MediaType.APPLICATION_JSON)
         ).andDo(print())
             .andExpect(status().isOk)
-            .andExpect(jsonPath("$[*].name").value(contains(kallioVenue.name)))
-            .andExpect(jsonPath("$[*].name").value(not(contains(tapiolaVenue.name))))
+            .andExpect(jsonPath("$[*].name").value(contains(kallioVenueEntity.name)))
+            .andExpect(jsonPath("$[*].name").value(not(contains(tapiolaVenueEntity.name))))
     }
 
     @Test
@@ -122,7 +122,7 @@ class VenueControllerTest {
     }
 
     private fun initTestData() {
-        tapiolaVenue = Venue(
+        tapiolaVenueEntity = VenueEntity(
             name = "Pretty Boy Wingery",
             streetAddress = "Piispansilta 11",
             postalCode = "02230",
@@ -130,7 +130,7 @@ class VenueControllerTest {
             neighbourhood = Neighbourhood("Tapiola"),
         )
 
-        kallioVenue = Venue(
+        kallioVenueEntity = VenueEntity(
             name = "Momochi",
             streetAddress = "Mannerheimintie 20",
             postalCode = "00100",

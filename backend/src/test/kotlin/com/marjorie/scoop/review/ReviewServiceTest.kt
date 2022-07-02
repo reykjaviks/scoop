@@ -2,7 +2,7 @@ package com.marjorie.scoop.review
 
 import com.marjorie.scoop.auth.user.User
 import com.marjorie.scoop.auth.user.UserService
-import com.marjorie.scoop.venue.Venue
+import com.marjorie.scoop.venue.VenueEntity
 import com.marjorie.scoop.venue.VenueService
 import io.mockk.every
 import io.mockk.mockk
@@ -25,7 +25,7 @@ class ReviewServiceTest {
     lateinit var reviewEntity1: ReviewEntity
     lateinit var reviewEntity2: ReviewEntity
 
-    lateinit var venue: Venue
+    lateinit var venueEntity: VenueEntity
     lateinit var userMarjorie: User
 
     var venueId: Long = 67
@@ -40,7 +40,7 @@ class ReviewServiceTest {
         every { reviewRepository.findAll() } returns listOf(reviewEntity1, reviewEntity2)
         every { reviewRepository.save(any()) } returns reviewEntity1
 
-        every { venueService.getVenue(venueId) } returns venue
+        every { venueService.getVenue(venueId) } returns venueEntity
         every { venueService.getVenue(venueIdNonExisting) } returns null
 
         every { userService.getUser("Marjorie") } returns userMarjorie
@@ -100,7 +100,7 @@ class ReviewServiceTest {
             password = "12345",
         )
 
-        venue = Venue(
+        venueEntity = VenueEntity(
             name = "Pretty Boy Wingery",
             streetAddress = "Piispansilta 11",
             postalCode = "02230",
@@ -110,14 +110,14 @@ class ReviewServiceTest {
         reviewEntity1 = ReviewEntity(
             review = "It was okay, I guess.",
             rating = 3.0,
-            venue = venue,
+            venueEntity = venueEntity,
             user = userMarjorie,
         )
 
         reviewEntity2 = ReviewEntity(
             review = "I appreciated how the staff was friendly without being overly chatty.",
             rating = 4.0,
-            venue = venue,
+            venueEntity = venueEntity,
             user = userMarjorie,
         )
 

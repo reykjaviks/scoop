@@ -12,7 +12,7 @@ import javax.validation.constraints.Size
 
 @Entity
 @Table(name = "venue")
-class Venue(
+class VenueEntity(
     @NotNull
     @Column(unique = true)
     var name: String,
@@ -46,7 +46,7 @@ class Venue(
     @ManyToOne
     var neighbourhood: Neighbourhood? = null,
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "venue", cascade = [CascadeType.ALL])
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "venueEntity", cascade = [CascadeType.ALL])
     @Nullable
     @Where(clause = "deleted = false")
     @JsonManagedReference

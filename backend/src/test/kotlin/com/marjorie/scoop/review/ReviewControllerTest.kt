@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.marjorie.scoop.auth.user.User
 import com.marjorie.scoop.common.Constants.CSRF_IDENTIFIER
 import com.marjorie.scoop.common.Constants.REQUEST_ID
-import com.marjorie.scoop.venue.Venue
+import com.marjorie.scoop.venue.VenueEntity
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
 import org.hamcrest.Matchers.*
@@ -165,7 +165,7 @@ class ReviewControllerTest {
     }
 
     private fun initTestData() {
-        val venue = Venue(
+        val venueEntity = VenueEntity(
             name = "Pretty Boy Wingery",
             streetAddress = "Piispansilta 11",
             postalCode = "02230",
@@ -181,14 +181,14 @@ class ReviewControllerTest {
         reviewEntity1 = ReviewEntity(
             review = "It was okay, I guess.",
             rating = 3.0,
-            venue = venue,
+            venueEntity = venueEntity,
             user = user
         )
 
         reviewEntity2 = ReviewEntity(
             review = "I appreciated how the staff was friendly without being overly chatty.",
             rating = 4.0,
-            venue = venue,
+            venueEntity = venueEntity,
             user = user
         )
     }
