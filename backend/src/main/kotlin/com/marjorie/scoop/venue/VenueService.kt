@@ -64,5 +64,4 @@ class VenueService(private val venueRepository: VenueRepository, private val ven
 
     // todo: remove once refactoring is done
     fun getVenue(id: Long): VenueEntity? = venueRepository.findByIdOrNull(id)
-
 }

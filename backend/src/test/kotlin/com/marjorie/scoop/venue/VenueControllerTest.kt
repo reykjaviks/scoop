@@ -26,8 +26,10 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
 class VenueControllerTest {
     @MockkBean
     lateinit var venueService: VenueService
+
     @Autowired
     lateinit var mockMvc: MockMvc
+
     @Autowired
     lateinit var objectMapper: ObjectMapper
 
