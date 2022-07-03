@@ -1,5 +1,6 @@
 package com.marjorie.scoop.venue
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.marjorie.scoop.common.Constants.CSRF_IDENTIFIER
 import com.marjorie.scoop.common.Constants.REQUEST_ID
 import com.marjorie.scoop.neighbourhood.NeighbourhoodDTO
@@ -12,7 +13,10 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType
+import org.springframework.security.test.context.support.WithMockUser
+import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf
 import org.springframework.test.web.servlet.MockMvc
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers.print
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
@@ -22,14 +26,16 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
 class VenueControllerTest {
     @MockkBean
     lateinit var venueService: VenueService
-
     @Autowired
     lateinit var mockMvc: MockMvc
+    @Autowired
+    lateinit var objectMapper: ObjectMapper
 
     lateinit var tapiolaDTO: VenueDTO
     lateinit var kallioDTO: VenueDTO
     lateinit var simpleTapiolaDTO: SimpleVenueDTO
     lateinit var simpleKallioDTO: SimpleVenueDTO
+    lateinit var simpleWackyDTO: SimpleVenueDTO
 
     val kallioQuery = "kallio"
     val wackyQuery = "qwerty1234"
@@ -45,6 +51,10 @@ class VenueControllerTest {
         every { venueService.getAllVenues() } returns listOf(simpleTapiolaDTO, simpleKallioDTO)
         every { venueService.searchVenues(kallioQuery) } returns listOf(simpleKallioDTO)
         every { venueService.searchVenues(wackyQuery) } returns null
+        every { venueService.createVenue(simpleKallioDTO) } returns kallioDTO
+        every { venueService.createVenue(simpleTapiolaDTO) } returns null
+        every { venueService.updateVenue(1, simpleTapiolaDTO) } returns tapiolaDTO
+        every { venueService.updateVenue(3, simpleWackyDTO) } returns null
     }
 
     @Test
@@ -114,12 +124,72 @@ class VenueControllerTest {
     }
 
     @Test
-    fun `Search returns status code 404 when there are no results for the query`() {
+    fun `Search returns status code 404 Not Found when there are no results for the query`() {
         mockMvc.perform(get("/api/venue/search")
             .queryParam("query", wackyQuery)
             .header(REQUEST_ID, requestId)
             .header(CSRF_IDENTIFIER, csrfIdentifier)
             .accept(MediaType.APPLICATION_JSON)
+        ).andDo(print())
+            .andExpect(status().isNotFound)
+    }
+
+    @Test
+    @WithMockUser(username="Marjorie", authorities = ["ROLE_USER", "ROLE_ADMIN"])
+    fun `Create venue returns status code 201 Created when new venue is created`() {
+        mockMvc.perform(
+            MockMvcRequestBuilders.post("/api/venue/add")
+            .with(csrf())
+            .contentType(MediaType.APPLICATION_JSON)
+            .header(REQUEST_ID, requestId)
+            .header(CSRF_IDENTIFIER, csrfIdentifier)
+            .content(objectMapper.writeValueAsString(simpleKallioDTO))
+            .accept(MediaType.APPLICATION_JSON)
+        ).andDo(print())
+            .andExpect(status().isCreated)
+    }
+
+    @Test
+    @WithMockUser(username="Marjorie", authorities = ["ROLE_USER", "ROLE_ADMIN"])
+    fun `Create venue returns status code 209 Conflict when venue already exists`() {
+        mockMvc.perform(
+            MockMvcRequestBuilders.post("/api/venue/add")
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .header(REQUEST_ID, requestId)
+                .header(CSRF_IDENTIFIER, csrfIdentifier)
+                .content(objectMapper.writeValueAsString(simpleTapiolaDTO))
+                .accept(MediaType.APPLICATION_JSON)
+        ).andDo(print())
+            .andExpect(status().isConflict)
+    }
+
+    @Test
+    @WithMockUser(username="Marjorie", authorities = ["ROLE_USER", "ROLE_ADMIN"])
+    fun `Update venue returns status code 200 OK when an existing venue is updated`() {
+        mockMvc.perform(
+            MockMvcRequestBuilders.patch("/api/venue/1")
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .header(REQUEST_ID, requestId)
+                .header(CSRF_IDENTIFIER, csrfIdentifier)
+                .content(objectMapper.writeValueAsString(simpleTapiolaDTO))
+                .accept(MediaType.APPLICATION_JSON)
+        ).andDo(print())
+            .andExpect(status().isOk)
+    }
+
+    @Test
+    @WithMockUser(username="Marjorie", authorities = ["ROLE_USER", "ROLE_ADMIN"])
+    fun `Update venue returns status code 404 Not Found when the venue does not exist`() {
+        mockMvc.perform(
+            MockMvcRequestBuilders.patch("/api/venue/3")
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .header(REQUEST_ID, requestId)
+                .header(CSRF_IDENTIFIER, csrfIdentifier)
+                .content(objectMapper.writeValueAsString(simpleWackyDTO))
+                .accept(MediaType.APPLICATION_JSON)
         ).andDo(print())
             .andExpect(status().isNotFound)
     }
@@ -155,6 +225,13 @@ class VenueControllerTest {
             postalCode = "00100",
             city = "Helsinki",
             neighbourhood = NeighbourhoodDTO(name = "Kallio"),
+        )
+
+        simpleWackyDTO = SimpleVenueDTO(
+            name = "Wacky-Venue",
+            streetAddress = "Nowhere",
+            postalCode = "77777",
+            city = "Imagiland"
         )
     }
 }

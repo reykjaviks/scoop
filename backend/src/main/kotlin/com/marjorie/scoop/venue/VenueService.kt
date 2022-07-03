@@ -36,22 +36,23 @@ class VenueService(private val venueRepository: VenueRepository, private val ven
         }
     }
 
-    fun createVenue(simpleVenueDTO: SimpleVenueDTO): SimpleVenueDTO? {
+    fun createVenue(simpleVenueDTO: SimpleVenueDTO): VenueDTO? {
         val venueExists = venueRepository.existsByName(simpleVenueDTO.name)
         return if (venueExists) {
             null
         } else {
-            venueRepository.save(venueMapper.simpleVenueDTOToVenueEntity(simpleVenueDTO))
-            simpleVenueDTO
+            venueMapper.venueEntityToVenueDTO(
+                venueRepository.save(venueMapper.simpleVenueDTOToVenueEntity(simpleVenueDTO))
+            )
         }
     }
 
-    fun updateVenue(id: Long, simpleVenueDTO: SimpleVenueDTO): SimpleVenueDTO? {
+    fun updateVenue(id: Long, simpleVenueDTO: SimpleVenueDTO): VenueDTO? {
         val venue = venueRepository.findByIdOrNull(id)
         return if (venue == null) {
             null
         } else {
-            venueMapper.venueEntityToSimpleVenueDTO(
+            venueMapper.venueEntityToVenueDTO(
                 venueMapper.updateVenueEntityFromSimpleVenueDTO(simpleVenueDTO, venue)
             )
         }

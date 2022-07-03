@@ -33,14 +33,14 @@ class VenueController(private val venueService: VenueService) {
 
     @PostMapping("/add")
     @ResponseStatus(HttpStatus.CREATED)
-    fun createVenue(@RequestBody simpleVenueDTO: SimpleVenueDTO): SimpleVenueDTO {
+    fun createVenue(@RequestBody simpleVenueDTO: SimpleVenueDTO): VenueDTO {
         return venueService.createVenue(simpleVenueDTO)
             ?: throw ResponseStatusException(HttpStatus.CONFLICT, "Venue '${simpleVenueDTO.name}' already exists")
     }
 
     @PatchMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    fun updateVenue(@PathVariable id: Long, @RequestBody simpleVenueDTO: SimpleVenueDTO): SimpleVenueDTO {
+    fun updateVenue(@PathVariable id: Long, @RequestBody simpleVenueDTO: SimpleVenueDTO): VenueDTO {
         return venueService.updateVenue(id, simpleVenueDTO)
             ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "Could not update the review because review $id does not exist")
     }

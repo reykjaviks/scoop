@@ -27,39 +27,35 @@ class VenueServiceTest {
     @BeforeEach
     fun setUp() {
         this.initTestData()
-
-        every { venueRepository.findByIdOrNull(1) } returns wingeryEntity
-        every { venueRepository.findByIdOrNull(2) } returns pastisEntity
-        every { venueRepository.findByIdOrNull(3) } returns null
-        every { venueRepository.findAll() } returns listOf(wingeryEntity, pastisEntity)
-        every { venueRepository.findByNameOrAddressOrPostalCodeOrCityOrNeighbourhood("%kaartinkaupunki%") } returns listOf(pastisEntity)
-        every { venueRepository.findByNameOrAddressOrPostalCodeOrCityOrNeighbourhood("%reykjavik%") } returns null
-        every { venueMapper.venueEntityToVenueDTO(wingeryEntity) } returns wingeryDTO
-        every { venueMapper.venueEntitiesToSimpleVenueDTOs(listOf(pastisEntity)) } returns listOf(simplePastistDTO)
-        every { venueMapper.venueEntitiesToSimpleVenueDTOs(listOf(wingeryEntity, pastisEntity)) } returns listOf(simpleWingeryDTO, simplePastistDTO)
     }
 
     @Test
     fun `getVenue returns a venue when queried ID exists`() {
-        val venueId: Long = 1
-        val expectedName: String = wingeryEntity.name
-        val actualName: String? = venueService.getVenueNew(venueId)?.name
+        every { venueRepository.findByIdOrNull(1) } returns wingeryEntity
+        every { venueMapper.venueEntityToVenueDTO(wingeryEntity) } returns wingeryDTO
 
-        verify(exactly = 1) { venueRepository.findByIdOrNull(venueId) };
+        val expectedName: String = wingeryEntity.name
+        val actualName: String? = venueService.getVenueNew(1)?.name
+
+        verify(exactly = 1) { venueRepository.findByIdOrNull(1) };
         assertEquals(expectedName, actualName)
     }
 
     @Test
     fun `getVenue returns null when queried ID does not exist`() {
-        val venueId: Long = 3
-        val venueDTO: VenueDTO? = venueService.getVenueNew(venueId)
+        every { venueRepository.findByIdOrNull(2) } returns null
 
-        verify(exactly = 1) { venueRepository.findByIdOrNull(venueId) };
+        val venueDTO = venueService.getVenueNew(2)
+
+        verify(exactly = 1) { venueRepository.findByIdOrNull(2) };
         assertNull(venueDTO)
     }
 
     @Test
     fun `getAllVenus returns a list of venues`() {
+        every { venueRepository.findAll() } returns listOf(wingeryEntity, pastisEntity)
+        every { venueMapper.venueEntitiesToSimpleVenueDTOs(listOf(wingeryEntity, pastisEntity)) } returns listOf(simpleWingeryDTO, simplePastistDTO)
+
         val expectedList = listOf(simpleWingeryDTO, simplePastistDTO)
         val actualList = venueService.getAllVenues()
 
@@ -69,27 +65,67 @@ class VenueServiceTest {
 
     @Test
     fun `searchVenues returns a list of venues located in the queried neighbourhood `() {
-        val query = "KAARTINKAUPUNKI"
-        val expectedVenues = listOf(simplePastistDTO)
+        every { venueRepository.findByNameOrAddressOrPostalCodeOrCityOrNeighbourhood("%tapiola%") } returns listOf(wingeryEntity)
+        every { venueMapper.venueEntitiesToSimpleVenueDTOs(listOf(wingeryEntity)) } returns listOf(simpleWingeryDTO)
+
+        val query = "TAPIOLA"
+        val expectedVenues = listOf(simpleWingeryDTO)
         val actualVenues = venueService.searchVenues(query)
 
         assertEquals(expectedVenues, actualVenues)
     }
 
     @Test
-    fun `Result of searchVenues does not contain a venue located in a different city`() {
-        val query = "KAARTINKAUPUNKI"
-        val venues = venueService.searchVenues(query)
-
-        venues?.let { assertFalse(it.contains(simpleWingeryDTO)) }
-    }
-
-    @Test
     fun `searchVenues returns null if there is no venues that match the query`() {
+        every { venueRepository.findByNameOrAddressOrPostalCodeOrCityOrNeighbourhood("%reykjavik%") } returns null
+
         val query = "REYKJAVIK"
         val venues = venueService.searchVenues(query)
 
         assertNull(venues)
+    }
+
+    @Test
+    fun `createVenue saves venue`() {
+        every { venueRepository.existsByName(wingeryEntity.name) } returns false
+        every { venueRepository.save(wingeryEntity) } returns wingeryEntity
+        every { venueMapper.simpleVenueDTOToVenueEntity(simpleWingeryDTO) } returns wingeryEntity
+        every { venueMapper.venueEntityToVenueDTO(wingeryEntity) } returns wingeryDTO
+
+        val savedVenue = venueService.createVenue(simpleWingeryDTO)
+        val expectedVenue = wingeryDTO
+
+        assertEquals(expectedVenue, savedVenue)
+    }
+
+    @Test
+    fun `createVenue does not save venue`() {
+        every { venueRepository.existsByName(wingeryEntity.name) } returns true
+
+        val savedVenue = venueService.createVenue(simpleWingeryDTO)
+
+        assertNull(savedVenue)
+    }
+
+    @Test
+    fun `updateVenue saves venue`() {
+        every { venueRepository.findByIdOrNull(1) } returns wingeryEntity
+        every { venueMapper.updateVenueEntityFromSimpleVenueDTO(simpleWingeryDTO, wingeryEntity) } returns wingeryEntity
+        every { venueMapper.venueEntityToVenueDTO(wingeryEntity) } returns wingeryDTO
+
+        val updatedVenue = venueService.updateVenue(1, simpleWingeryDTO)
+        val expectedVenue = wingeryDTO
+
+        assertEquals(expectedVenue, updatedVenue)
+    }
+
+    @Test
+    fun `updateVenue does not save venue`() {
+        every { venueRepository.findByIdOrNull(1) } returns null
+
+        val updatedVenue = venueService.updateVenue(1, simpleWingeryDTO)
+
+        assertNull(updatedVenue)
     }
 
     private fun initTestData() {
