@@ -22,4 +22,5 @@ interface VenueRepository: JpaRepository<VenueEntity?, Long?> {
             """
     )
     fun findByNameOrAddressOrPostalCodeOrCityOrNeighbourhood(@Param("query") query: String): List<VenueEntity>?
+    fun existsByName(name: String): Boolean
 }

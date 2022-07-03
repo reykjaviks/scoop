@@ -19,12 +19,24 @@ class VenueController(private val venueService: VenueService) {
     @GetMapping("/all")
     fun getAllVenues(): Iterable<SimpleVenueDTO> {
         return venueService.getAllVenues()
-            ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "The result of getting all venues was empty.")
+            ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "The result of getting all venues was empty")
     }
 
     @GetMapping("/search")
     fun searchVenues(@RequestParam query: String): Iterable<SimpleVenueDTO> {
         return venueService.searchVenues(query)
             ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "No venues found for query $query")
+    }
+
+    @PostMapping("/add")
+    @ResponseStatus(HttpStatus.CREATED)
+    fun createVenue(@RequestBody simpleVenueDTO: SimpleVenueDTO) {
+        venueService.createVenue(simpleVenueDTO)
+            ?: throw ResponseStatusException(HttpStatus.CONFLICT, "Venue '${simpleVenueDTO.name}' already exists")
+    }
+
+    @PatchMapping("/{id}")
+    fun updateVenue(@PathVariable id: Long, @RequestBody simpleVenueDTO: SimpleVenueDTO) {
+        // todo: implement later
     }
 }

@@ -85,7 +85,7 @@ class VenueServiceTest {
     }
 
     @Test
-    fun `searchVenues return null if there is no venues that match the query`() {
+    fun `searchVenues returns null if there is no venues that match the query`() {
         val query = "REYKJAVIK"
         val venues = venueService.searchVenues(query)
 

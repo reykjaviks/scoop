@@ -4,6 +4,7 @@ import com.marjorie.scoop.neighbourhood.NeighbourhoodDTO
 import com.marjorie.scoop.review.ReviewDTO
 
 data class VenueDTO(
+    var id: Long? = null,
     var name: String,
     var description: String? = null,
     var infoUrl: String? = null,

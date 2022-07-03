@@ -36,6 +36,16 @@ class VenueService(private val venueRepository: VenueRepository, private val ven
         }
     }
 
+    fun createVenue(simpleVenueDTO: SimpleVenueDTO): SimpleVenueDTO? {
+        val venueExists = venueRepository.existsByName(simpleVenueDTO.name)
+        return if (venueExists) {
+            null
+        } else {
+            venueRepository.save(venueMapper.simpleVenueDTOToVenueEntity(simpleVenueDTO))
+            simpleVenueDTO
+        }
+    }
+
     private fun prepareQueryString(query: String): String {
         return "%" + query.lowercase() + "%"
     }
