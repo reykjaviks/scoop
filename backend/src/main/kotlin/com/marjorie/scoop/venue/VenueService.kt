@@ -4,7 +4,7 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 
 /**
- * Handles communication between the Venue repository and Venue controller.
+ * Handles communication between the venue repository and venue controller.
  */
 @Service
 class VenueService(private val venueRepository: VenueRepository, private val venueMapper: VenueMapper) {
@@ -43,6 +43,17 @@ class VenueService(private val venueRepository: VenueRepository, private val ven
         } else {
             venueRepository.save(venueMapper.simpleVenueDTOToVenueEntity(simpleVenueDTO))
             simpleVenueDTO
+        }
+    }
+
+    fun updateVenue(id: Long, simpleVenueDTO: SimpleVenueDTO): SimpleVenueDTO? {
+        val venue = venueRepository.findByIdOrNull(id)
+        return if (venue == null) {
+            null
+        } else {
+            venueMapper.venueEntityToSimpleVenueDTO(
+                venueMapper.updateVenueEntityFromSimpleVenueDTO(simpleVenueDTO, venue)
+            )
         }
     }
 

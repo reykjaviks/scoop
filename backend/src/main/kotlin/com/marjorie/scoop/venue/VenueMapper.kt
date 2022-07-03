@@ -1,6 +1,7 @@
 package com.marjorie.scoop.venue
 
 import org.mapstruct.Mapper
+import org.mapstruct.MappingTarget
 import org.mapstruct.ReportingPolicy
 
 @Mapper(
@@ -13,4 +14,8 @@ interface VenueMapper {
     fun venueEntityToSimpleVenueDTO(venueEntity: VenueEntity): SimpleVenueDTO
     fun simpleVenueDTOToVenueEntity(simpleVenueDTO: SimpleVenueDTO): VenueEntity
     fun venueEntitiesToSimpleVenueDTOs(venueEntities: List<VenueEntity>): List<SimpleVenueDTO>
+    fun updateVenueEntityFromSimpleVenueDTO(
+        simpleVenueDTO: SimpleVenueDTO,
+        @MappingTarget venueEntity: VenueEntity
+    ): VenueEntity
 }

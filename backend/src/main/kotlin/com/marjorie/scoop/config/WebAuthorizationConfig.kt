@@ -73,10 +73,12 @@ class WebAuthorizationConfig(
 
             .mvcMatchers(HttpMethod.GET, "/api/user/*").authenticated()
             .mvcMatchers(HttpMethod.POST, "/api/user/add").authenticated()
+            .mvcMatchers(HttpMethod.PATCH, "/api/user/*").authenticated()
             .mvcMatchers(HttpMethod.DELETE, "/api/user/*").authenticated()
 
             .mvcMatchers(HttpMethod.GET, "/api/venue/*").permitAll()
             .mvcMatchers(HttpMethod.POST, "/api/venue/add").authenticated()
+            .mvcMatchers(HttpMethod.PATCH, "/api/venue/*").authenticated()
             .mvcMatchers(HttpMethod.DELETE, "/api/venue/*").authenticated()
 
             .mvcMatchers(HttpMethod.GET, "/api/review/*").permitAll()

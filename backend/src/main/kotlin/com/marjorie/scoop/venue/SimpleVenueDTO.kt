@@ -3,7 +3,7 @@ package com.marjorie.scoop.venue
 import com.marjorie.scoop.neighbourhood.NeighbourhoodDTO
 
 /**
- * Simplified version of the venue entity. Does not transfer venue's reviews.
+ * Simplified version of the venue entity. Does not transfer information regarding venue's reviews.
  */
 data class SimpleVenueDTO (
     var id: Long? = null,
