@@ -1,4 +1,4 @@
-package com.marjorie.scoop.auth
+package com.marjorie.scoop.auth.user
 
 import com.marjorie.scoop.auth.authority.Authority
 import com.marjorie.scoop.auth.user.User

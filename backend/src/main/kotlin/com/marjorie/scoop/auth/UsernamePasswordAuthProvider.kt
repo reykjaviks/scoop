@@ -1,5 +1,7 @@
 package com.marjorie.scoop.auth
 
+import com.marjorie.scoop.auth.user.JpaUserDetailsService
+import com.marjorie.scoop.auth.user.SecurityUser
 import org.springframework.security.authentication.AuthenticationProvider
 import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
