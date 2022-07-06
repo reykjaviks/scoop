@@ -20,7 +20,7 @@ class ReviewEntity(
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "venue_id")
     @JsonBackReference
-    var venueEntity: VenueEntity,
+    var venue: VenueEntity,
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)

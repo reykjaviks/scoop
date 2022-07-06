@@ -1,7 +1,8 @@
-package com.marjorie.scoop.venue
+package com.marjorie.scoop.venue.dto
 
 import com.marjorie.scoop.neighbourhood.NeighbourhoodDTO
-import com.marjorie.scoop.review.ReviewDTO
+import com.marjorie.scoop.review.dto.ReviewDTONoVenue
+import java.time.Instant
 
 data class VenueDTO(
     var id: Long? = null,
@@ -13,5 +14,7 @@ data class VenueDTO(
     var postalCode: String,
     var city: String,
     var neighbourhood: NeighbourhoodDTO? = null,
-    var reviewList: List<ReviewDTO>? = null,
+    var reviewList: List<ReviewDTONoVenue>? = null,
+    var createdAt: Instant? = null,
+    var modifiedAt: Instant? = null,
 )

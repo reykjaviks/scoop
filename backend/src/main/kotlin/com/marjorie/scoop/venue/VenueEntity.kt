@@ -46,7 +46,7 @@ class VenueEntity(
     @ManyToOne
     var neighbourhood: Neighbourhood? = null,
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "venueEntity", cascade = [CascadeType.ALL])
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "venue", cascade = [CascadeType.ALL])
     @Nullable
     @Where(clause = "deleted = false")
     @JsonManagedReference

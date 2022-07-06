@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.marjorie.scoop.common.Constants.CSRF_IDENTIFIER
 import com.marjorie.scoop.common.Constants.REQUEST_ID
 import com.marjorie.scoop.neighbourhood.NeighbourhoodDTO
+import com.marjorie.scoop.venue.dto.VenueDTONoReviews
+import com.marjorie.scoop.venue.dto.VenueDTO
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
 import org.hamcrest.Matchers.*
@@ -35,9 +37,9 @@ class VenueControllerTest {
 
     lateinit var tapiolaDTO: VenueDTO
     lateinit var kallioDTO: VenueDTO
-    lateinit var simpleTapiolaDTO: SimpleVenueDTO
-    lateinit var simpleKallioDTO: SimpleVenueDTO
-    lateinit var simpleWackyDTO: SimpleVenueDTO
+    lateinit var simpleTapiolaDTO: VenueDTONoReviews
+    lateinit var simpleKallioDTO: VenueDTONoReviews
+    lateinit var simpleWackyDTO: VenueDTONoReviews
 
     val kallioQuery = "kallio"
     val wackyQuery = "qwerty1234"
@@ -213,7 +215,7 @@ class VenueControllerTest {
             neighbourhood = NeighbourhoodDTO(name = "Kallio"),
         )
 
-        simpleTapiolaDTO = SimpleVenueDTO(
+        simpleTapiolaDTO = VenueDTONoReviews(
             name = "Pretty Boy Wingery",
             streetAddress = "Piispansilta 11",
             postalCode = "02230",
@@ -221,7 +223,7 @@ class VenueControllerTest {
             neighbourhood = NeighbourhoodDTO(name = "Tapiola"),
         )
 
-        simpleKallioDTO = SimpleVenueDTO(
+        simpleKallioDTO = VenueDTONoReviews(
             name = "Momochi",
             streetAddress = "Mannerheimintie 20",
             postalCode = "00100",
@@ -229,7 +231,7 @@ class VenueControllerTest {
             neighbourhood = NeighbourhoodDTO(name = "Kallio"),
         )
 
-        simpleWackyDTO = SimpleVenueDTO(
+        simpleWackyDTO = VenueDTONoReviews(
             name = "Wacky-Venue",
             streetAddress = "Nowhere",
             postalCode = "77777",

@@ -2,6 +2,8 @@ package com.marjorie.scoop.venue
 
 import com.marjorie.scoop.neighbourhood.Neighbourhood
 import com.marjorie.scoop.neighbourhood.NeighbourhoodDTO
+import com.marjorie.scoop.venue.dto.VenueDTONoReviews
+import com.marjorie.scoop.venue.dto.VenueDTO
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -21,8 +23,8 @@ class VenueServiceTest {
     lateinit var wingeryEntity: VenueEntity
     lateinit var pastisEntity: VenueEntity
     lateinit var wingeryDTO: VenueDTO
-    lateinit var simpleWingeryDTO: SimpleVenueDTO
-    lateinit var simplePastistDTO: SimpleVenueDTO
+    lateinit var simpleWingeryDTO: VenueDTONoReviews
+    lateinit var simplePastistDTO: VenueDTONoReviews
 
     @BeforeEach
     fun setUp() {
@@ -153,14 +155,14 @@ class VenueServiceTest {
             neighbourhood = NeighbourhoodDTO(name = "Tapiola"),
         )
 
-        simpleWingeryDTO = SimpleVenueDTO(
+        simpleWingeryDTO = VenueDTONoReviews(
             name = "Pretty Boy Wingery",
             streetAddress = "Piispansilta 11",
             postalCode = "02230",
             city = "Espoo",
         )
 
-        simplePastistDTO = SimpleVenueDTO(
+        simplePastistDTO = VenueDTONoReviews(
             name = "Pastis",
             streetAddress = "Pieni Roobertinkatu 2",
             postalCode = "00130",

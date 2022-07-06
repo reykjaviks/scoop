@@ -1,5 +1,8 @@
 package com.marjorie.scoop.review
 
+import com.marjorie.scoop.review.dto.ReviewDTO
+import com.marjorie.scoop.review.dto.ReviewDTOPost
+import com.marjorie.scoop.review.dto.ReviewDTOUpdate
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.server.ResponseStatusException
@@ -11,32 +14,36 @@ import org.springframework.web.server.ResponseStatusException
 @RequestMapping("/api/review")
 class ReviewController(private val reviewService: ReviewService) {
     @GetMapping("/{id}")
-    fun getReview(@PathVariable id: Long): ReviewEntity? {
+    @ResponseStatus(HttpStatus.OK)
+    fun getReview(@PathVariable id: Long): ReviewDTO {
         return reviewService.getReview(id)
             ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "No review found for id $id")
     }
 
     @GetMapping("/all")
-    fun getAllReviews(): Iterable<ReviewEntity?> = reviewService.getAllReviews()
+    @ResponseStatus(HttpStatus.OK)
+    fun getAllReviews(): Iterable<ReviewDTO> {
+        return reviewService.getAllReviews()
+            ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "The result of getting all reviews was empty")
+    }
 
     @PostMapping("/add")
     @ResponseStatus(HttpStatus.CREATED)
-    fun createReview(@RequestBody reviewData: ReviewData) {
-        when {
-            reviewData.review.isNullOrBlank() -> throw ResponseStatusException(
-                HttpStatus.BAD_REQUEST, "Invalid request: review can't be null or blank"
-            )
-            reviewData.rating == null || reviewData.rating.isNaN() -> throw ResponseStatusException(
-                HttpStatus.BAD_REQUEST, "Invalid request: rating can't be null or other than a number"
-            )
-            else -> reviewService.createReview(reviewData)
+    fun createReview(@RequestBody reviewDTOPost: ReviewDTOPost): ReviewDTO {
+        try {
+            return reviewService.createReview(reviewDTOPost)
+        } catch (e: Exception) {
+            throw ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error in creating a review: ${e.message}")
         }
     }
 
-    @PatchMapping("/{id}")
-    fun updateReview(@PathVariable id: Long, @RequestBody reviewData: ReviewData) {
-        val review = reviewService.getReview(id)
-        if (review == null) throw ResponseStatusException(HttpStatus.NOT_FOUND, "No review found for id $id")
-        else reviewService.updateReview(review, reviewData)
+    @PatchMapping("/{reviewId}")
+    fun updateReview(@PathVariable reviewId: Long, @RequestBody reviewDTOUpdate: ReviewDTOUpdate): ReviewDTO {
+        try {
+            return reviewService.updateReview(reviewId, reviewDTOUpdate)
+        } catch (e: Exception) {
+            throw ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error in updating a review: ${e.message}")
+        }
     }
+
 }

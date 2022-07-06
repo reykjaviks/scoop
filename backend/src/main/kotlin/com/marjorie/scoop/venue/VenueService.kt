@@ -1,5 +1,7 @@
 package com.marjorie.scoop.venue
 
+import com.marjorie.scoop.venue.dto.VenueDTONoReviews
+import com.marjorie.scoop.venue.dto.VenueDTO
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 
@@ -17,16 +19,16 @@ class VenueService(private val venueRepository: VenueRepository, private val ven
         }
     }
 
-    fun getAllVenues(): List<SimpleVenueDTO>? {
-        val venueEntities = venueRepository.findAll() as List<VenueEntity>
-        return if (venueEntities.isEmpty()) {
+    fun getAllVenues(): List<VenueDTONoReviews>? {
+        val allVenues = venueRepository.findAll() as List<VenueEntity>
+        return if (allVenues.isEmpty()) {
             null
         } else {
-            venueMapper.venueEntitiesToSimpleVenueDTOs(venueEntities)
+            venueMapper.venueEntitiesToSimpleVenueDTOs(allVenues)
         }
     }
 
-    fun searchVenues(query: String): List<SimpleVenueDTO>? {
+    fun searchVenues(query: String): List<VenueDTONoReviews>? {
         val preparedQuery: String = prepareQueryString(query)
         val venueEntities = venueRepository.findByNameOrAddressOrPostalCodeOrCityOrNeighbourhood(preparedQuery)
         return if (venueEntities.isNullOrEmpty()) {
@@ -36,24 +38,25 @@ class VenueService(private val venueRepository: VenueRepository, private val ven
         }
     }
 
-    fun createVenue(simpleVenueDTO: SimpleVenueDTO): VenueDTO? {
-        val venueExists = venueRepository.existsByName(simpleVenueDTO.name)
+    // todo: return entity
+    fun createVenue(venueDTONoReviews: VenueDTONoReviews): VenueDTO? {
+        val venueExists = venueRepository.existsByName(venueDTONoReviews.name)
         return if (venueExists) {
             null
         } else {
             venueMapper.venueEntityToVenueDTO(
-                venueRepository.save(venueMapper.simpleVenueDTOToVenueEntity(simpleVenueDTO))
+                venueRepository.save(venueMapper.simpleVenueDTOToVenueEntity(venueDTONoReviews))
             )
         }
     }
 
-    fun updateVenue(id: Long, simpleVenueDTO: SimpleVenueDTO): VenueDTO? {
+    fun updateVenue(id: Long, venueDTONoReviews: VenueDTONoReviews): VenueDTO? {
         val venue = venueRepository.findByIdOrNull(id)
         return if (venue == null) {
             null
         } else {
             venueMapper.venueEntityToVenueDTO(
-                venueMapper.updateVenueEntityFromSimpleVenueDTO(simpleVenueDTO, venue)
+                venueMapper.updateVenueEntityFromSimpleVenueDTO(venueDTONoReviews, venue)
             )
         }
     }
