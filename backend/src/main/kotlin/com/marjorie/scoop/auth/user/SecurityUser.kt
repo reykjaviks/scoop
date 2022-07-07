@@ -1,8 +1,6 @@
 package com.marjorie.scoop.auth.user
 
 import com.marjorie.scoop.auth.authority.Authority
-import com.marjorie.scoop.auth.user.User
-import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 import java.util.stream.Collectors
@@ -10,7 +8,7 @@ import java.util.stream.Collectors
 /**
  * Wraps the User entity inside SecurityUser in order to implement's Spring Security's UserDetails interface.
  */
-class SecurityUser(private val user: User): UserDetails {
+class SecurityUser(private val user: UserEntity): UserDetails {
     override fun getUsername(): String {
         return user.username
     }

@@ -18,12 +18,12 @@ class UserService(
     private val passwordEncoder: BCryptPasswordEncoder,
 ) {
     @PreAuthorize("hasAuthority('ROLE_ADMIN') or #username == authentication.name")
-    fun getUser(username: String): User? = userRepository.findByUsername(username)
+    fun getUser(username: String): UserEntity? = userRepository.findByUsername(username)
 
     @Transactional
-    fun createUserWithDefaultUserRole(registrationData: User) {
+    fun createUserWithDefaultUserRole(registrationData: UserEntity) {
         val newUser = userRepository.save(
-            User(
+            UserEntity(
                 name = registrationData.name,
                 username = registrationData.username,
                 password = this.passwordEncoder.encode(registrationData.password),

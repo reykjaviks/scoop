@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository
  * API for basic CRUD operations on 'User'
  */
 @Repository
-interface UserRepository: JpaRepository<User?, Long?> {
-    fun findByUsername(username: String): User?
+interface UserRepository: JpaRepository<UserEntity?, Long?> {
+    fun findByUsername(username: String): UserEntity?
     fun existsByUsername(username: String): Boolean
 }

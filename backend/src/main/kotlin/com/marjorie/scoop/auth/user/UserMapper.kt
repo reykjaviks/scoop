@@ -9,6 +9,6 @@ import org.mapstruct.ReportingPolicy
     unmappedTargetPolicy = ReportingPolicy.IGNORE
 )
 interface UserMapper {
-    fun userEntityToSimplestUserDTO(userEntitiy: User): UserDTOIdUsername
-    fun simplestUserDTOToUserEntity(userDTOIdUsername: UserDTOIdUsername): User
+    fun userEntityToSimplestUserDTO(userEntitiy: UserEntity): UserDTOIdUsername
+    fun simplestUserDTOToUserEntity(userDTOIdUsername: UserDTOIdUsername): UserEntity
 }

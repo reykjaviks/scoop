@@ -9,10 +9,10 @@ import org.jetbrains.annotations.Nullable
 import javax.persistence.*
 import javax.validation.constraints.NotNull
 import javax.validation.constraints.Size
-
+//todo: rename to UserEntity
 @Entity
 @Table(name = "user", schema = "scoop")
-class User(
+class UserEntity(
     @NotNull
     var name: String,
 

@@ -14,13 +14,13 @@ private val logger = KotlinLogging.logger {}
 @RequestMapping("/api/user")
 class UserController(private val userService: UserService) {
     @GetMapping("/{username}")
-    fun getUser(@PathVariable username: String): User? {
+    fun getUser(@PathVariable username: String): UserEntity? {
         return userService.getUser(username)
             ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "No user found for username $username")
     }
 
     @PostMapping("/add")
-    fun createUser(@RequestBody registrationData: User) {
+    fun createUser(@RequestBody registrationData: UserEntity) {
         val usernameExists: Boolean = userService.usernameExists(registrationData.username)
         if (usernameExists) {
             throw ResponseStatusException(HttpStatus.CONFLICT, "Username ${registrationData.username} already exists.")
