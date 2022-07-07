@@ -2,6 +2,7 @@ package com.marjorie.scoop.venue
 
 import com.marjorie.scoop.venue.dto.VenueDTONoReviews
 import com.marjorie.scoop.venue.dto.VenueDTO
+import com.marjorie.scoop.venue.dto.VenueDTOPost
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.server.ResponseStatusException
@@ -15,7 +16,7 @@ class VenueController(private val venueService: VenueService) {
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     fun getVenue(@PathVariable id: Long): VenueDTO {
-        return venueService.getVenueNew(id)
+        return venueService.getVenueDTO(id)
             ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "No venue found for id $id")
     }
 
@@ -35,11 +36,14 @@ class VenueController(private val venueService: VenueService) {
 
     @PostMapping("/add")
     @ResponseStatus(HttpStatus.CREATED)
-    fun createVenue(@RequestBody venueDTONoReviews: VenueDTONoReviews): VenueDTO {
-        return venueService.createVenue(venueDTONoReviews)
-            ?: throw ResponseStatusException(HttpStatus.CONFLICT, "Venue '${venueDTONoReviews.name}' already exists")
+    fun createVenue(@RequestBody venueDTOPost: VenueDTOPost): VenueDTO? {
+        if (venueService.venueExists(venueDTOPost.name)) {
+            throw ResponseStatusException(HttpStatus.CONFLICT, "Venue '${venueDTOPost.name}' already exists")
+        }
+        return venueService.createVenue(venueDTOPost)
     }
 
+    // todo: fix
     @PatchMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     fun updateVenue(@PathVariable id: Long, @RequestBody venueDTONoReviews: VenueDTONoReviews): VenueDTO {

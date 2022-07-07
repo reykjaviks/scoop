@@ -1,11 +1,11 @@
 package com.marjorie.scoop.venue.dto
 
-import com.marjorie.scoop.neighbourhood.NeighbourhoodDTO
+import com.marjorie.scoop.neighbourhood.dto.NeighbourhoodDTO
 import com.marjorie.scoop.review.dto.ReviewDTONoVenue
 import java.time.Instant
 
 data class VenueDTO(
-    var id: Long? = null,
+    var id: Long,
     var name: String,
     var description: String? = null,
     var infoUrl: String? = null,
@@ -15,6 +15,6 @@ data class VenueDTO(
     var city: String,
     var neighbourhood: NeighbourhoodDTO? = null,
     var reviewList: List<ReviewDTONoVenue>? = null,
-    var createdAt: Instant? = null,
+    var createdAt: Instant,
     var modifiedAt: Instant? = null,
 )

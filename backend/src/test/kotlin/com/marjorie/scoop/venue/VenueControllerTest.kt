@@ -3,9 +3,10 @@ package com.marjorie.scoop.venue
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.marjorie.scoop.common.Constants.CSRF_IDENTIFIER
 import com.marjorie.scoop.common.Constants.REQUEST_ID
-import com.marjorie.scoop.neighbourhood.NeighbourhoodDTO
+import com.marjorie.scoop.neighbourhood.dto.NeighbourhoodDTO
 import com.marjorie.scoop.venue.dto.VenueDTONoReviews
 import com.marjorie.scoop.venue.dto.VenueDTO
+import com.marjorie.scoop.venue.dto.VenueDTOPost
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
 import org.hamcrest.Matchers.*
@@ -22,6 +23,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers.print
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
+import java.time.Instant
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
@@ -37,9 +39,11 @@ class VenueControllerTest {
 
     lateinit var tapiolaDTO: VenueDTO
     lateinit var kallioDTO: VenueDTO
-    lateinit var simpleTapiolaDTO: VenueDTONoReviews
-    lateinit var simpleKallioDTO: VenueDTONoReviews
-    lateinit var simpleWackyDTO: VenueDTONoReviews
+    lateinit var tapiolaDTONoReviews: VenueDTONoReviews
+    lateinit var kallioDTONoReviews: VenueDTONoReviews
+    lateinit var wackyDTONoReviews: VenueDTONoReviews
+    lateinit var kallioDTOPost: VenueDTOPost
+    lateinit var tapiolaDTOPost: VenueDTOPost
 
     val kallioQuery = "kallio"
     val wackyQuery = "qwerty1234"
@@ -49,16 +53,16 @@ class VenueControllerTest {
     @BeforeEach
     fun setUp() {
         this.initTestData()
-        every { venueService.getVenueNew(1) } returns tapiolaDTO
-        every { venueService.getVenueNew(2) } returns kallioDTO
-        every { venueService.getVenueNew(3) } returns null
-        every { venueService.getAllVenues() } returns listOf(simpleTapiolaDTO, simpleKallioDTO)
-        every { venueService.searchVenues(kallioQuery) } returns listOf(simpleKallioDTO)
+        every { venueService.getVenueDTO(1) } returns tapiolaDTO
+        every { venueService.getVenueDTO(2) } returns kallioDTO
+        every { venueService.getVenueDTO(3) } returns null
+        every { venueService.getAllVenues() } returns listOf(tapiolaDTONoReviews, kallioDTONoReviews)
+        every { venueService.searchVenues(kallioQuery) } returns listOf(kallioDTONoReviews)
         every { venueService.searchVenues(wackyQuery) } returns null
-        every { venueService.createVenue(simpleKallioDTO) } returns kallioDTO
-        every { venueService.createVenue(simpleTapiolaDTO) } returns null
-        every { venueService.updateVenue(1, simpleTapiolaDTO) } returns tapiolaDTO
-        every { venueService.updateVenue(3, simpleWackyDTO) } returns null
+        every { venueService.createVenue(kallioDTOPost) } returns kallioDTO
+        every { venueService.createVenue(tapiolaDTOPost) } returns null
+        every { venueService.updateVenue(1, tapiolaDTONoReviews) } returns tapiolaDTO
+        every { venueService.updateVenue(3, wackyDTONoReviews) } returns null
     }
 
     @Test
@@ -92,8 +96,8 @@ class VenueControllerTest {
             .andExpect(status().isOk)
             .andExpect(jsonPath("$[*].name").value(
                 containsInAnyOrder(
-                    simpleKallioDTO.name,
-                    simpleTapiolaDTO.name
+                    kallioDTONoReviews.name,
+                    tapiolaDTONoReviews.name
                 )
             ))
     }
@@ -108,8 +112,8 @@ class VenueControllerTest {
             .andExpect(status().isOk)
             .andExpect(jsonPath("$[*].neighbourhood.name").value(
                 containsInAnyOrder(
-                    simpleKallioDTO.neighbourhood?.name,
-                    simpleTapiolaDTO.neighbourhood?.name
+                    kallioDTONoReviews.neighbourhood?.name,
+                    tapiolaDTONoReviews.neighbourhood?.name
                 )
             ))
     }
@@ -123,8 +127,8 @@ class VenueControllerTest {
             .accept(MediaType.APPLICATION_JSON)
         ).andDo(print())
             .andExpect(status().isOk)
-            .andExpect(jsonPath("$[*].name").value(contains(simpleKallioDTO.name)))
-            .andExpect(jsonPath("$[*].name").value(not(contains(simpleTapiolaDTO.name))))
+            .andExpect(jsonPath("$[*].name").value(contains(kallioDTONoReviews.name)))
+            .andExpect(jsonPath("$[*].name").value(not(contains(tapiolaDTONoReviews.name))))
     }
 
     @Test
@@ -147,7 +151,7 @@ class VenueControllerTest {
             .contentType(MediaType.APPLICATION_JSON)
             .header(REQUEST_ID, requestId)
             .header(CSRF_IDENTIFIER, csrfIdentifier)
-            .content(objectMapper.writeValueAsString(simpleKallioDTO))
+            .content(objectMapper.writeValueAsString(kallioDTONoReviews))
             .accept(MediaType.APPLICATION_JSON)
         ).andDo(print())
             .andExpect(status().isCreated)
@@ -162,7 +166,7 @@ class VenueControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .header(REQUEST_ID, requestId)
                 .header(CSRF_IDENTIFIER, csrfIdentifier)
-                .content(objectMapper.writeValueAsString(simpleTapiolaDTO))
+                .content(objectMapper.writeValueAsString(tapiolaDTONoReviews))
                 .accept(MediaType.APPLICATION_JSON)
         ).andDo(print())
             .andExpect(status().isConflict)
@@ -177,7 +181,7 @@ class VenueControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .header(REQUEST_ID, requestId)
                 .header(CSRF_IDENTIFIER, csrfIdentifier)
-                .content(objectMapper.writeValueAsString(simpleTapiolaDTO))
+                .content(objectMapper.writeValueAsString(tapiolaDTONoReviews))
                 .accept(MediaType.APPLICATION_JSON)
         ).andDo(print())
             .andExpect(status().isOk)
@@ -192,7 +196,7 @@ class VenueControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .header(REQUEST_ID, requestId)
                 .header(CSRF_IDENTIFIER, csrfIdentifier)
-                .content(objectMapper.writeValueAsString(simpleWackyDTO))
+                .content(objectMapper.writeValueAsString(wackyDTONoReviews))
                 .accept(MediaType.APPLICATION_JSON)
         ).andDo(print())
             .andExpect(status().isNotFound)
@@ -200,42 +204,66 @@ class VenueControllerTest {
 
     private fun initTestData() {
         tapiolaDTO = VenueDTO(
+            id = 1,
             name = "Pretty Boy Wingery",
             streetAddress = "Piispansilta 11",
             postalCode = "02230",
             city = "Espoo",
-            neighbourhood = NeighbourhoodDTO(name = "Tapiola"),
+            neighbourhood = NeighbourhoodDTO(id = 1, name = "Tapiola"),
+            createdAt = Instant.now()
         )
 
         kallioDTO = VenueDTO(
+            id = 2,
             name = "Momochi",
             streetAddress = "Mannerheimintie 20",
             postalCode = "00100",
             city = "Helsinki",
-            neighbourhood = NeighbourhoodDTO(name = "Kallio"),
+            neighbourhood = NeighbourhoodDTO(id = 2, name = "Kallio"),
+            createdAt = Instant.now()
         )
 
-        simpleTapiolaDTO = VenueDTONoReviews(
+        tapiolaDTONoReviews = VenueDTONoReviews(
+            id = 1,
             name = "Pretty Boy Wingery",
             streetAddress = "Piispansilta 11",
             postalCode = "02230",
             city = "Espoo",
-            neighbourhood = NeighbourhoodDTO(name = "Tapiola"),
+            neighbourhood = NeighbourhoodDTO(id = 1, name = "Tapiola"),
+            createdAt = Instant.now()
         )
 
-        simpleKallioDTO = VenueDTONoReviews(
+        kallioDTONoReviews = VenueDTONoReviews(
+            id = 2,
             name = "Momochi",
             streetAddress = "Mannerheimintie 20",
             postalCode = "00100",
             city = "Helsinki",
-            neighbourhood = NeighbourhoodDTO(name = "Kallio"),
+            neighbourhood = NeighbourhoodDTO(id = 2, name = "Kallio"),
+            createdAt = Instant.now()
         )
 
-        simpleWackyDTO = VenueDTONoReviews(
+        wackyDTONoReviews = VenueDTONoReviews(
+            id = 3,
             name = "Wacky-Venue",
             streetAddress = "Nowhere",
             postalCode = "77777",
-            city = "Imagiland"
+            city = "Imagiland",
+            createdAt = Instant.now()
+        )
+
+        tapiolaDTOPost = VenueDTOPost(
+            name = "Pretty Boy Wingery",
+            streetAddress = "Piispansilta 11",
+            postalCode = "02230",
+            city = "Espoo",
+        )
+
+        kallioDTOPost = VenueDTOPost(
+            name = "Momochi",
+            streetAddress = "Mannerheimintie 20",
+            postalCode = "00100",
+            city = "Helsinki",
         )
     }
 }
