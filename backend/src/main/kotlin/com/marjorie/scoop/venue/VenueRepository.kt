@@ -13,7 +13,7 @@ interface VenueRepository: JpaRepository<VenueEntity?, Long?> {
     @Query(
         """
             SELECT v FROM VenueEntity v
-            LEFT JOIN Neighbourhood n ON n.id = v.neighbourhood.id
+            LEFT JOIN NeighbourhoodEntity n ON n.id = v.neighbourhood.id
             WHERE LOWER(v.name) LIKE :query
             OR LOWER(v.streetAddress) LIKE :query
             OR LOWER(v.postalCode) LIKE :query

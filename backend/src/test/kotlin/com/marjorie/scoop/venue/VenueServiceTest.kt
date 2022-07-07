@@ -1,6 +1,6 @@
 package com.marjorie.scoop.venue
 
-import com.marjorie.scoop.neighbourhood.Neighbourhood
+import com.marjorie.scoop.neighbourhood.NeighbourhoodEntity
 import com.marjorie.scoop.neighbourhood.dto.NeighbourhoodDTO
 import com.marjorie.scoop.venue.dto.VenueDTONoReviews
 import com.marjorie.scoop.venue.dto.VenueDTO
@@ -140,7 +140,7 @@ class VenueServiceTest {
             streetAddress = "Piispansilta 11",
             postalCode = "02230",
             city = "Espoo",
-            neighbourhood = Neighbourhood("Tapiola"),
+            neighbourhood = NeighbourhoodEntity("Tapiola"),
         )
 
         pastisEntity = VenueEntity(
@@ -148,7 +148,7 @@ class VenueServiceTest {
             streetAddress = "Pieni Roobertinkatu 2",
             postalCode = "00130",
             city = "Helsinki",
-            neighbourhood = Neighbourhood("Kaartinkaupunki"),
+            neighbourhood = NeighbourhoodEntity("Kaartinkaupunki"),
         )
 
         wingeryDTO = VenueDTO(

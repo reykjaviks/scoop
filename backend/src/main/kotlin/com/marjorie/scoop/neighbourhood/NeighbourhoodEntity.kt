@@ -8,7 +8,7 @@ import javax.validation.constraints.NotNull
 
 @Entity
 @Table(name = "neighbourhood")
-class Neighbourhood(
+class NeighbourhoodEntity(
     @NotNull
     @Column(unique = true)
     var name: String,
