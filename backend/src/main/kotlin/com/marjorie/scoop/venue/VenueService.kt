@@ -24,7 +24,7 @@ class VenueService(private val venueRepository: VenueRepository, private val ven
         return if (allVenues.isEmpty()) {
             null
         } else {
-            venueMapper.venueEntitiesToSimpleVenueDTOs(allVenues)
+            venueMapper.venueEntitiesToVenueDTONoReviews(allVenues)
         }
     }
 
@@ -34,7 +34,7 @@ class VenueService(private val venueRepository: VenueRepository, private val ven
         return if (venueEntities.isNullOrEmpty()) {
             null
         } else {
-            venueMapper.venueEntitiesToSimpleVenueDTOs(venueEntities)
+            venueMapper.venueEntitiesToVenueDTONoReviews(venueEntities)
         }
     }
 
@@ -45,7 +45,7 @@ class VenueService(private val venueRepository: VenueRepository, private val ven
             null
         } else {
             venueMapper.venueEntityToVenueDTO(
-                venueRepository.save(venueMapper.simpleVenueDTOToVenueEntity(venueDTONoReviews))
+                venueRepository.save(venueMapper.venueDTONoReviewsToVenueEntity(venueDTONoReviews))
             )
         }
     }
@@ -56,7 +56,7 @@ class VenueService(private val venueRepository: VenueRepository, private val ven
             null
         } else {
             venueMapper.venueEntityToVenueDTO(
-                venueMapper.updateVenueEntityFromSimpleVenueDTO(venueDTONoReviews, venue)
+                venueMapper.updateVenueEntityFromVenueDTONoReviews(venueDTONoReviews, venue)
             )
         }
     }

@@ -14,12 +14,12 @@ import org.mapstruct.ReportingPolicy
 interface VenueMapper {
     fun venueEntityToVenueDTO(venueEntity: VenueEntity): VenueDTO
     fun venueDTOToVenueEntity(venueDTO: VenueDTO): VenueEntity
-    fun venueEntityToSimpleVenueDTO(venueEntity: VenueEntity): VenueDTONoReviews
-    fun simpleVenueDTOToVenueEntity(venueDTONoReviews: VenueDTONoReviews): VenueEntity
-    fun simplestVenueDTOToVenueEntity(venueDTOIdName: VenueDTOIdName): VenueEntity
-    fun venueEntityToSimplestVenueDTO(venueEntity: VenueEntity): VenueDTOIdName
-    fun venueEntitiesToSimpleVenueDTOs(venueEntities: List<VenueEntity>): List<VenueDTONoReviews>
-    fun updateVenueEntityFromSimpleVenueDTO(
+    fun venueEntityToVenueDTONoReviews(venueEntity: VenueEntity): VenueDTONoReviews
+    fun venueDTONoReviewsToVenueEntity(venueDTONoReviews: VenueDTONoReviews): VenueEntity
+    fun venueDTOIdNameToVenueEntity(venueDTOIdName: VenueDTOIdName): VenueEntity
+    fun venueEntityToVenueDTOIdName(venueEntity: VenueEntity): VenueDTOIdName
+    fun venueEntitiesToVenueDTONoReviews(venueEntities: List<VenueEntity>): List<VenueDTONoReviews>
+    fun updateVenueEntityFromVenueDTONoReviews(
         venueDTONoReviews: VenueDTONoReviews,
         @MappingTarget venueEntity: VenueEntity
     ): VenueEntity

@@ -56,7 +56,7 @@ class VenueServiceTest {
     @Test
     fun `getAllVenus returns a list of venues`() {
         every { venueRepository.findAll() } returns listOf(wingeryEntity, pastisEntity)
-        every { venueMapper.venueEntitiesToSimpleVenueDTOs(listOf(wingeryEntity, pastisEntity)) } returns listOf(simpleWingeryDTO, simplePastistDTO)
+        every { venueMapper.venueEntitiesToVenueDTONoReviews(listOf(wingeryEntity, pastisEntity)) } returns listOf(simpleWingeryDTO, simplePastistDTO)
 
         val expectedList = listOf(simpleWingeryDTO, simplePastistDTO)
         val actualList = venueService.getAllVenues()
@@ -68,7 +68,7 @@ class VenueServiceTest {
     @Test
     fun `searchVenues returns a list of venues located in the queried neighbourhood `() {
         every { venueRepository.findByNameOrAddressOrPostalCodeOrCityOrNeighbourhood("%tapiola%") } returns listOf(wingeryEntity)
-        every { venueMapper.venueEntitiesToSimpleVenueDTOs(listOf(wingeryEntity)) } returns listOf(simpleWingeryDTO)
+        every { venueMapper.venueEntitiesToVenueDTONoReviews(listOf(wingeryEntity)) } returns listOf(simpleWingeryDTO)
 
         val query = "TAPIOLA"
         val expectedVenues = listOf(simpleWingeryDTO)
@@ -91,7 +91,7 @@ class VenueServiceTest {
     fun `createVenue saves venue`() {
         every { venueRepository.existsByName(wingeryEntity.name) } returns false
         every { venueRepository.save(wingeryEntity) } returns wingeryEntity
-        every { venueMapper.simpleVenueDTOToVenueEntity(simpleWingeryDTO) } returns wingeryEntity
+        every { venueMapper.venueDTONoReviewsToVenueEntity(simpleWingeryDTO) } returns wingeryEntity
         every { venueMapper.venueEntityToVenueDTO(wingeryEntity) } returns wingeryDTO
 
         val savedVenue = venueService.createVenue(simpleWingeryDTO)
@@ -112,7 +112,7 @@ class VenueServiceTest {
     @Test
     fun `updateVenue saves venue`() {
         every { venueRepository.findByIdOrNull(1) } returns wingeryEntity
-        every { venueMapper.updateVenueEntityFromSimpleVenueDTO(simpleWingeryDTO, wingeryEntity) } returns wingeryEntity
+        every { venueMapper.updateVenueEntityFromVenueDTONoReviews(simpleWingeryDTO, wingeryEntity) } returns wingeryEntity
         every { venueMapper.venueEntityToVenueDTO(wingeryEntity) } returns wingeryDTO
 
         val updatedVenue = venueService.updateVenue(1, simpleWingeryDTO)

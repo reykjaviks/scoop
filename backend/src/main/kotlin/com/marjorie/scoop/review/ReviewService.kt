@@ -67,7 +67,7 @@ class ReviewService(
         } else if (reviewDTOUpdate.review == null && reviewDTOUpdate.rating == null) {
             throw KotlinNullPointerException("Can't update a review when both review and rating are null")
         }
-        val updatedReviewEntity = reviewMapper.updateReviewEntityFromReviewUpdateDTO(reviewDTOUpdate, review)
+        val updatedReviewEntity = reviewMapper.updateReviewEntityFromReviewDTOUpdate(reviewDTOUpdate, review)
         return reviewMapper.reviewEntityToReviewDTO(updatedReviewEntity)
     }
 

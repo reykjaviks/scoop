@@ -14,10 +14,10 @@ import org.mapstruct.ReportingPolicy
 interface ReviewMapper {
     fun reviewEntityToReviewDTO(reviewEntity: ReviewEntity): ReviewDTO
     fun reviewDTOToReviewEntity(reviewDTO: ReviewDTO): ReviewEntity
-    fun reviewEntityToSimplerReviewDTO(reviewEntity: ReviewEntity): ReviewDTONoVenue
-    fun simplerReviewDTOToReviewEntity(reviewDTONoVenue: ReviewDTONoVenue): ReviewEntity
+    fun reviewEntityToReviewDTONoVenue(reviewEntity: ReviewEntity): ReviewDTONoVenue
+    fun reviewDTONoVenueToReviewEntity(reviewDTONoVenue: ReviewDTONoVenue): ReviewEntity
     fun reviewEntitiesToReviewDTOs(reviewEntities: List<ReviewEntity>): List<ReviewDTO>
-    fun updateReviewEntityFromReviewUpdateDTO(
+    fun updateReviewEntityFromReviewDTOUpdate(
         reviewDTOUpdate: ReviewDTOUpdate,
         @MappingTarget reviewEntity: ReviewEntity,
     ): ReviewEntity
