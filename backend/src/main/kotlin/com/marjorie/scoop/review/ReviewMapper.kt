@@ -12,13 +12,10 @@ import org.mapstruct.ReportingPolicy
     unmappedTargetPolicy = ReportingPolicy.IGNORE
 )
 interface ReviewMapper {
-    fun reviewEntityToReviewDTO(reviewEntity: ReviewEntity): ReviewDTO
-    fun reviewDTOToReviewEntity(reviewDTO: ReviewDTO): ReviewEntity
-    fun reviewEntityToReviewDTONoVenue(reviewEntity: ReviewEntity): ReviewDTONoVenue
-    fun reviewDTONoVenueToReviewEntity(reviewDTONoVenue: ReviewDTONoVenue): ReviewEntity
-    fun reviewEntitiesToReviewDTOs(reviewEntities: List<ReviewEntity>): List<ReviewDTO>
-    fun updateReviewEntityFromReviewDTOUpdate(
-        reviewDTOUpdate: ReviewDTOUpdate,
-        @MappingTarget reviewEntity: ReviewEntity,
-    ): ReviewEntity
+    fun mapToReviewDTO(reviewEntity: ReviewEntity): ReviewDTO
+    fun mapToReviewDTOList(reviewEntities: List<ReviewEntity>): List<ReviewDTO>
+    fun mapToReviewEntity(reviewDTO: ReviewDTO): ReviewEntity
+    fun mapToReviewEntity(reviewDTONoVenue: ReviewDTONoVenue): ReviewEntity
+    fun mapToReviewDTONoVenue(reviewEntity: ReviewEntity): ReviewDTONoVenue
+    fun updateReviewEntity(reviewDTOUpdate: ReviewDTOUpdate, @MappingTarget reviewEntity: ReviewEntity): ReviewEntity
 }
