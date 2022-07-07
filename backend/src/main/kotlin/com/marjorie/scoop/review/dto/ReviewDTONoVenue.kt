@@ -7,10 +7,10 @@ import java.time.Instant
  * Does not contain information regarding the venue.
  */
 data class ReviewDTONoVenue(
-    var id: Long? = null,
+    var id: Long,
     var review: String,
     var rating: Double,
     var user: UserDTOIdUsername,
-    var createdAt: Instant? = null,
+    var createdAt: Instant,
     var modifiedAt: Instant? = null,
 )

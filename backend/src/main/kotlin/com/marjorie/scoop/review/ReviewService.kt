@@ -41,7 +41,7 @@ class ReviewService(
 
     @PreAuthorize("#reviewDTOPost.username == authentication.name")
     fun createReview(reviewDTOPost: ReviewDTOPost): ReviewDTO {
-        val venue = venueService.getVenue(reviewDTOPost.venueId)
+        val venue = venueService.getVenueEntity(reviewDTOPost.venueId)
         val user = userService.getUser(reviewDTOPost.username)
         if (venue == null) {
             throw KotlinNullPointerException("Could not find a venue associated with the ID ${reviewDTOPost.venueId}")

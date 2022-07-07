@@ -1,6 +1,6 @@
-package com.marjorie.scoop.neighbourhood
+package com.marjorie.scoop.neighbourhood.dto
 
 data class NeighbourhoodDTO(
-    var id: Long? = null,
-    var name: String? = null,
+    var id: Long,
+    var name: String,
 )
