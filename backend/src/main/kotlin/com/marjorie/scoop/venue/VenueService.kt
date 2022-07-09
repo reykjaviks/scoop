@@ -1,10 +1,7 @@
 package com.marjorie.scoop.venue
 
 import com.marjorie.scoop.common.ScoopException
-import com.marjorie.scoop.neighbourhood.NeighbourhoodService
-import com.marjorie.scoop.venue.dto.VenueDTONoReviews
-import com.marjorie.scoop.venue.dto.VenueDTO
-import com.marjorie.scoop.venue.dto.VenueDTOPost
+import com.marjorie.scoop.venue.dto.*
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 
@@ -29,42 +26,42 @@ class VenueService(
         return venueRepository.findByIdOrNull(id)
     }
 
-    fun getAllVenues(): List<VenueDTONoReviews>? {
+    fun getAllVenues(): List<VenueSearchDTO>? {
         val allVenues = venueRepository.findAll() as List<VenueEntity>
         return if (allVenues.isEmpty()) {
             null
         } else {
-            venueMapper.mapToVenueDTONoReviewsList(allVenues)
+            venueMapper.mapToVenueSearchDTOs(allVenues)
         }
     }
 
-    fun searchVenues(query: String): List<VenueDTONoReviews>? {
+    fun searchVenues(query: String): List<VenueSearchDTO>? {
         val preparedQuery: String = prepareQueryString(query)
         val venueEntities = venueRepository.findByNameOrAddressOrPostalCodeOrCityOrNeighbourhood(preparedQuery)
         return if (venueEntities.isNullOrEmpty()) {
             null
         } else {
-            venueMapper.mapToVenueDTONoReviewsList(venueEntities)
+            venueMapper.mapToVenueSearchDTOs(venueEntities)
         }
     }
 
-    fun createVenue(venueDTOPost: VenueDTOPost): VenueDTO? {
-        if (this.venueExists(venueDTOPost.name)) {
-            throw ScoopException("Venue '${venueDTOPost.name}' already exists")
+    fun createVenue(venuePostDTO: VenuePostDTO): VenueDTO? {
+        if (this.venueExists(venuePostDTO.name)) {
+            throw ScoopException("Venue '${venuePostDTO.name}' already exists")
         } else {
-            val savedVenue = venueRepository.save(venueMapper.mapToVenueEntity(venueDTOPost))
+            val savedVenue = venueRepository.save(venueMapper.mapToVenueEntity(venuePostDTO))
             return venueMapper.mapToVenueDTO(savedVenue)
         }
     }
 
-    fun updateVenue(id: Long, venueDTONoReviews: VenueDTONoReviews): VenueDTO? {
-        val venue = venueRepository.findByIdOrNull(id)
+    // todo: update to throw exception
+    fun updateVenue(id: Long, venueUpdateDTO: VenueUpdateDTO): VenueDTO? {
+        val venue = this.getVenueEntity(id)
         return if (venue == null) {
             null
         } else {
-            venueMapper.mapToVenueDTO(
-                venueMapper.updateVenueEntity(venueDTONoReviews, venue)
-            )
+            val updatedVenueEntity = venueMapper.updateVenueEntity(venueUpdateDTO, venue)
+            venueMapper.mapToVenueDTO(updatedVenueEntity)
         }
     }
 

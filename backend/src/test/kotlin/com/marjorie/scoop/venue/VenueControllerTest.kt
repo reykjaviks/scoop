@@ -4,9 +4,10 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.marjorie.scoop.common.Constants.CSRF_IDENTIFIER
 import com.marjorie.scoop.common.Constants.REQUEST_ID
 import com.marjorie.scoop.neighbourhood.dto.NeighbourhoodDTO
-import com.marjorie.scoop.venue.dto.VenueDTONoReviews
 import com.marjorie.scoop.venue.dto.VenueDTO
-import com.marjorie.scoop.venue.dto.VenueDTOPost
+import com.marjorie.scoop.venue.dto.VenuePostDTO
+import com.marjorie.scoop.venue.dto.VenueSearchDTO
+import com.marjorie.scoop.venue.dto.VenueUpdateDTO
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
 import org.hamcrest.Matchers.*
@@ -39,35 +40,26 @@ class VenueControllerTest {
 
     lateinit var tapiolaDTO: VenueDTO
     lateinit var kallioDTO: VenueDTO
-    lateinit var tapiolaDTONoReviews: VenueDTONoReviews
-    lateinit var kallioDTONoReviews: VenueDTONoReviews
-    lateinit var wackyDTONoReviews: VenueDTONoReviews
-    lateinit var kallioDTOPost: VenueDTOPost
-    lateinit var tapiolaDTOPost: VenueDTOPost
+    lateinit var tapiolaSearchDTO: VenueSearchDTO
+    lateinit var kallioSearchDTO: VenueSearchDTO
 
-    val kallioQuery = "kallio"
-    val wackyQuery = "qwerty1234"
     val requestId = "01_01_001"
     val csrfIdentifier = "scoop-client"
 
     @BeforeEach
     fun setUp() {
         this.initTestData()
-        every { venueService.getVenueDTO(1) } returns tapiolaDTO
-        every { venueService.getVenueDTO(2) } returns kallioDTO
-        every { venueService.getVenueDTO(3) } returns null
-        every { venueService.getAllVenues() } returns listOf(tapiolaDTONoReviews, kallioDTONoReviews)
-        every { venueService.searchVenues(kallioQuery) } returns listOf(kallioDTONoReviews)
-        every { venueService.searchVenues(wackyQuery) } returns null
-        every { venueService.createVenue(kallioDTOPost) } returns kallioDTO
-        every { venueService.createVenue(tapiolaDTOPost) } returns null
-        every { venueService.updateVenue(1, tapiolaDTONoReviews) } returns tapiolaDTO
-        every { venueService.updateVenue(3, wackyDTONoReviews) } returns null
+
+        every { venueService.updateVenue(3, any()) } returns null
     }
 
     @Test
     fun `Get venue returns a venue when queried ID exists`() {
-        mockMvc.perform(get("/api/venue/1")
+        val id: Long = 1
+
+        every { venueService.getVenueDTO(1) } returns tapiolaDTO
+
+        mockMvc.perform(get("/api/venue/".plus(id))
             .header(REQUEST_ID, requestId)
             .header(CSRF_IDENTIFIER, csrfIdentifier)
             .accept(MediaType.APPLICATION_JSON)
@@ -78,7 +70,11 @@ class VenueControllerTest {
 
     @Test
     fun `Get venue returns status code 404 when queried ID does not exist`() {
-        mockMvc.perform(get("/api/venue/3")
+        val id: Long = 3
+
+        every { venueService.getVenueDTO(id) } returns null
+
+        mockMvc.perform(get("/api/venue/".plus(id))
             .header(REQUEST_ID, requestId)
             .header(CSRF_IDENTIFIER, csrfIdentifier)
             .accept(MediaType.APPLICATION_JSON)
@@ -88,6 +84,8 @@ class VenueControllerTest {
 
     @Test
     fun `Get all venues returns at least two results with correct name fields`() {
+        every { venueService.getAllVenues() } returns listOf(kallioSearchDTO, tapiolaSearchDTO)
+
         mockMvc.perform(get("/api/venue/all")
             .header(REQUEST_ID, requestId)
             .header(CSRF_IDENTIFIER, csrfIdentifier)
@@ -96,14 +94,16 @@ class VenueControllerTest {
             .andExpect(status().isOk)
             .andExpect(jsonPath("$[*].name").value(
                 containsInAnyOrder(
-                    kallioDTONoReviews.name,
-                    tapiolaDTONoReviews.name
+                    kallioSearchDTO.name,
+                    tapiolaSearchDTO.name
                 )
             ))
     }
 
     @Test
     fun `Get all venues returns at least two results with correct neighbourhood fields`() {
+        every { venueService.getAllVenues() } returns listOf(kallioSearchDTO, tapiolaSearchDTO)
+
         mockMvc.perform(get("/api/venue/all")
             .header(REQUEST_ID, requestId)
             .header(CSRF_IDENTIFIER, csrfIdentifier)
@@ -112,14 +112,18 @@ class VenueControllerTest {
             .andExpect(status().isOk)
             .andExpect(jsonPath("$[*].neighbourhood.name").value(
                 containsInAnyOrder(
-                    kallioDTONoReviews.neighbourhood?.name,
-                    tapiolaDTONoReviews.neighbourhood?.name
+                    kallioSearchDTO.neighbourhood?.name,
+                    tapiolaSearchDTO.neighbourhood?.name
                 )
             ))
     }
 
     @Test
     fun `Search returns a list of venues located in Kallio`() {
+        val kallioQuery = "kallio"
+
+        every { venueService.searchVenues(kallioQuery) } returns listOf(kallioSearchDTO)
+
         mockMvc.perform(get("/api/venue/search")
             .queryParam("query", kallioQuery)
             .header(REQUEST_ID, requestId)
@@ -127,14 +131,18 @@ class VenueControllerTest {
             .accept(MediaType.APPLICATION_JSON)
         ).andDo(print())
             .andExpect(status().isOk)
-            .andExpect(jsonPath("$[*].name").value(contains(kallioDTONoReviews.name)))
-            .andExpect(jsonPath("$[*].name").value(not(contains(tapiolaDTONoReviews.name))))
+            .andExpect(jsonPath("$[*].name").value(contains(kallioSearchDTO.name)))
+            .andExpect(jsonPath("$[*].name").value(not(contains(tapiolaSearchDTO.name))))
     }
 
     @Test
     fun `Search returns status code 404 Not Found when there are no results for the query`() {
+        every { venueService.searchVenues(any()) } returns null
+
+        val query = "Jali's Chocolate Factory"
+
         mockMvc.perform(get("/api/venue/search")
-            .queryParam("query", wackyQuery)
+            .queryParam("query", query)
             .header(REQUEST_ID, requestId)
             .header(CSRF_IDENTIFIER, csrfIdentifier)
             .accept(MediaType.APPLICATION_JSON)
@@ -145,13 +153,23 @@ class VenueControllerTest {
     @Test
     @WithMockUser(username="Marjorie", authorities = ["ROLE_USER", "ROLE_ADMIN"])
     fun `Create venue returns status code 201 Created when new venue is created`() {
+        val postDTO = VenuePostDTO(
+            name = "Pretty Boy Wingery",
+            streetAddress = "Piispansilta 11",
+            postalCode = "02230",
+            city = "Espoo",
+        )
+
+        every { venueService.createVenue(postDTO) } returns tapiolaDTO
+        every { venueService.venueExists(any()) } returns false
+
         mockMvc.perform(
             MockMvcRequestBuilders.post("/api/venue/add")
             .with(csrf())
             .contentType(MediaType.APPLICATION_JSON)
             .header(REQUEST_ID, requestId)
             .header(CSRF_IDENTIFIER, csrfIdentifier)
-            .content(objectMapper.writeValueAsString(kallioDTONoReviews))
+            .content(objectMapper.writeValueAsString(postDTO))
             .accept(MediaType.APPLICATION_JSON)
         ).andDo(print())
             .andExpect(status().isCreated)
@@ -160,13 +178,22 @@ class VenueControllerTest {
     @Test
     @WithMockUser(username="Marjorie", authorities = ["ROLE_USER", "ROLE_ADMIN"])
     fun `Create venue returns status code 209 Conflict when venue already exists`() {
+        val postDTO = VenuePostDTO(
+            name = "Momochi",
+            streetAddress = "Mannerheimintie 20",
+            postalCode = "00100",
+            city = "Helsinki",
+        )
+
+        every { venueService.venueExists(any()) } returns true
+
         mockMvc.perform(
             MockMvcRequestBuilders.post("/api/venue/add")
                 .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
                 .header(REQUEST_ID, requestId)
                 .header(CSRF_IDENTIFIER, csrfIdentifier)
-                .content(objectMapper.writeValueAsString(tapiolaDTONoReviews))
+                .content(objectMapper.writeValueAsString(postDTO))
                 .accept(MediaType.APPLICATION_JSON)
         ).andDo(print())
             .andExpect(status().isConflict)
@@ -175,13 +202,20 @@ class VenueControllerTest {
     @Test
     @WithMockUser(username="Marjorie", authorities = ["ROLE_USER", "ROLE_ADMIN"])
     fun `Update venue returns status code 200 OK when an existing venue is updated`() {
+        val id: Long = 1
+        val updateDTO = VenueUpdateDTO(
+            name = "My name is new"
+        )
+
+        every { venueService.updateVenue(id, updateDTO) } returns tapiolaDTO
+
         mockMvc.perform(
-            MockMvcRequestBuilders.patch("/api/venue/1")
+            MockMvcRequestBuilders.patch("/api/venue/".plus(id))
                 .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
                 .header(REQUEST_ID, requestId)
                 .header(CSRF_IDENTIFIER, csrfIdentifier)
-                .content(objectMapper.writeValueAsString(tapiolaDTONoReviews))
+                .content(objectMapper.writeValueAsString(updateDTO))
                 .accept(MediaType.APPLICATION_JSON)
         ).andDo(print())
             .andExpect(status().isOk)
@@ -190,13 +224,17 @@ class VenueControllerTest {
     @Test
     @WithMockUser(username="Marjorie", authorities = ["ROLE_USER", "ROLE_ADMIN"])
     fun `Update venue returns status code 404 Not Found when the venue does not exist`() {
+        val updateDTO = VenueUpdateDTO()
+
+        every { venueService.updateVenue(1, updateDTO) } returns null
+
         mockMvc.perform(
             MockMvcRequestBuilders.patch("/api/venue/3")
                 .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
                 .header(REQUEST_ID, requestId)
                 .header(CSRF_IDENTIFIER, csrfIdentifier)
-                .content(objectMapper.writeValueAsString(wackyDTONoReviews))
+                .content(objectMapper.writeValueAsString(updateDTO))
                 .accept(MediaType.APPLICATION_JSON)
         ).andDo(print())
             .andExpect(status().isNotFound)
@@ -223,7 +261,7 @@ class VenueControllerTest {
             createdAt = Instant.now()
         )
 
-        tapiolaDTONoReviews = VenueDTONoReviews(
+        tapiolaSearchDTO = VenueSearchDTO(
             id = 1,
             name = "Pretty Boy Wingery",
             streetAddress = "Piispansilta 11",
@@ -233,7 +271,7 @@ class VenueControllerTest {
             createdAt = Instant.now()
         )
 
-        kallioDTONoReviews = VenueDTONoReviews(
+        kallioSearchDTO = VenueSearchDTO(
             id = 2,
             name = "Momochi",
             streetAddress = "Mannerheimintie 20",
@@ -241,29 +279,6 @@ class VenueControllerTest {
             city = "Helsinki",
             neighbourhood = NeighbourhoodDTO(id = 2, name = "Kallio"),
             createdAt = Instant.now()
-        )
-
-        wackyDTONoReviews = VenueDTONoReviews(
-            id = 3,
-            name = "Wacky-Venue",
-            streetAddress = "Nowhere",
-            postalCode = "77777",
-            city = "Imagiland",
-            createdAt = Instant.now()
-        )
-
-        tapiolaDTOPost = VenueDTOPost(
-            name = "Pretty Boy Wingery",
-            streetAddress = "Piispansilta 11",
-            postalCode = "02230",
-            city = "Espoo",
-        )
-
-        kallioDTOPost = VenueDTOPost(
-            name = "Momochi",
-            streetAddress = "Mannerheimintie 20",
-            postalCode = "00100",
-            city = "Helsinki",
         )
     }
 }

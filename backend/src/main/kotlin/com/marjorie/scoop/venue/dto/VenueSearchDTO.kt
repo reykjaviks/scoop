@@ -4,12 +4,14 @@ import com.marjorie.scoop.neighbourhood.dto.NeighbourhoodDTO
 import java.time.Instant
 
 /**
- * Simplified version of the venue entity. Does not transfer information regarding venue's reviews.
+ * Results displayed by the venue search. Does not transfer information regarding venue's reviews.
  */
-data class VenueDTONoReviews (
+data class VenueSearchDTO(
     var id: Long,
     var name: String,
     var description: String? = null,
+    var infoUrl: String? = null,
+    var imgUrl: String? = null,
     var streetAddress: String,
     var postalCode: String,
     var city: String,

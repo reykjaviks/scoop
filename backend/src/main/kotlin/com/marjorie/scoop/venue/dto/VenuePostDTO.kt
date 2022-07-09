@@ -3,7 +3,7 @@ package com.marjorie.scoop.venue.dto
 /**
  * Information needed to create a new venue.
  */
-data class VenueDTOPost(
+data class VenuePostDTO(
     var name: String,
     var description: String? = null,
     var infoUrl: String? = null,

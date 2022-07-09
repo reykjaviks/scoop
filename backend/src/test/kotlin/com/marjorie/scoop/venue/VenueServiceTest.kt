@@ -1,10 +1,12 @@
 package com.marjorie.scoop.venue
 
+import com.marjorie.scoop.common.ScoopException
 import com.marjorie.scoop.neighbourhood.NeighbourhoodEntity
 import com.marjorie.scoop.neighbourhood.dto.NeighbourhoodDTO
-import com.marjorie.scoop.venue.dto.VenueDTONoReviews
 import com.marjorie.scoop.venue.dto.VenueDTO
-import com.marjorie.scoop.venue.dto.VenueDTOPost
+import com.marjorie.scoop.venue.dto.VenuePostDTO
+import com.marjorie.scoop.venue.dto.VenueSearchDTO
+import com.marjorie.scoop.venue.dto.VenueUpdateDTO
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -14,6 +16,7 @@ import org.junit.jupiter.api.Test
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.data.repository.findByIdOrNull
 import java.time.Instant
+import kotlin.test.assertFailsWith
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 //@ContextConfiguration(classes = [VenueMapperImpl::class, ])
@@ -24,11 +27,14 @@ class VenueServiceTest {
 
     lateinit var wingeryEntity: VenueEntity
     lateinit var pastisEntity: VenueEntity
+
     lateinit var wingeryDTO: VenueDTO
-    lateinit var wingeryDTONoReviews: VenueDTONoReviews
-    lateinit var pastisDTONoReviews: VenueDTONoReviews
-    lateinit var wingeryDtoPost: VenueDTOPost
-    lateinit var pastisDtoPost: VenueDTOPost
+
+    lateinit var wingerySearchDTO: VenueSearchDTO
+    lateinit var pastisSearchDTO: VenueSearchDTO
+
+    lateinit var wingeryPostDTO: VenuePostDTO
+    lateinit var passtisPostDTO: VenuePostDTO
 
     @BeforeEach
     fun setUp() {
@@ -37,32 +43,36 @@ class VenueServiceTest {
 
     @Test
     fun `getVenue returns a venue when queried ID exists`() {
-        every { venueRepository.findByIdOrNull(1) } returns wingeryEntity
-        every { venueMapper.mapToVenueDTO(wingeryEntity) } returns wingeryDTO
+        val id: Long = 1
+
+        every { venueRepository.findByIdOrNull(id) } returns wingeryEntity
+        every { venueMapper.mapToVenueDTO(any()) } returns wingeryDTO
 
         val expectedName: String = wingeryEntity.name
-        val actualName: String? = venueService.getVenueDTO(1)?.name
+        val actualName: String? = venueService.getVenueDTO(id)?.name
 
-        verify(exactly = 1) { venueRepository.findByIdOrNull(1) };
+        verify(exactly = 1) { venueRepository.findByIdOrNull(id) };
         assertEquals(expectedName, actualName)
     }
 
     @Test
     fun `getVenue returns null when queried ID does not exist`() {
-        every { venueRepository.findByIdOrNull(2) } returns null
+        val id: Long = 2
 
-        val venueDTO = venueService.getVenueDTO(2)
+        every { venueRepository.findByIdOrNull(id) } returns null
 
-        verify(exactly = 1) { venueRepository.findByIdOrNull(2) };
+        val venueDTO = venueService.getVenueDTO(id)
+
+        verify(exactly = 1) { venueRepository.findByIdOrNull(id) };
         assertNull(venueDTO)
     }
 
     @Test
     fun `getAllVenus returns a list of venues`() {
         every { venueRepository.findAll() } returns listOf(wingeryEntity, pastisEntity)
-        every { venueMapper.mapToVenueDTONoReviewsList(listOf(wingeryEntity, pastisEntity)) } returns listOf(wingeryDTONoReviews, pastisDTONoReviews)
+        every { venueMapper.mapToVenueSearchDTOs(listOf(wingeryEntity, pastisEntity)) } returns listOf(wingerySearchDTO, pastisSearchDTO)
 
-        val expectedList = listOf(wingeryDTONoReviews, pastisDTONoReviews)
+        val expectedList = listOf(wingerySearchDTO, pastisSearchDTO)
         val actualList = venueService.getAllVenues()
 
         verify(exactly = 1) { venueRepository.findAll() }
@@ -72,10 +82,10 @@ class VenueServiceTest {
     @Test
     fun `searchVenues returns a list of venues located in the queried neighbourhood `() {
         every { venueRepository.findByNameOrAddressOrPostalCodeOrCityOrNeighbourhood("%tapiola%") } returns listOf(wingeryEntity)
-        every { venueMapper.mapToVenueDTONoReviewsList(listOf(wingeryEntity)) } returns listOf(wingeryDTONoReviews)
+        every { venueMapper.mapToVenueSearchDTOs(listOf(wingeryEntity)) } returns listOf(wingerySearchDTO)
 
         val query = "TAPIOLA"
-        val expectedVenues = listOf(wingeryDTONoReviews)
+        val expectedVenues = listOf(wingerySearchDTO)
         val actualVenues = venueService.searchVenues(query)
 
         assertEquals(expectedVenues, actualVenues)
@@ -93,12 +103,12 @@ class VenueServiceTest {
 
     @Test
     fun `createVenue saves venue`() {
-        every { venueRepository.existsByName(wingeryEntity.name) } returns false
-        every { venueRepository.save(wingeryEntity) } returns wingeryEntity
-        every { venueMapper.mapToVenueEntity(wingeryDTONoReviews) } returns wingeryEntity
-        every { venueMapper.mapToVenueDTO(wingeryEntity) } returns wingeryDTO
+        every { venueRepository.existsByName(any()) } returns false
+        every { venueRepository.save(any()) } returns wingeryEntity
+        every { venueMapper.mapToVenueDTO(any()) } returns wingeryDTO
+        every { venueMapper.mapToVenueEntity(wingeryPostDTO) } returns wingeryEntity
 
-        val savedVenue = venueService.createVenue(wingeryDtoPost)
+        val savedVenue = venueService.createVenue(wingeryPostDTO)
         val expectedVenue = wingeryDTO
 
         assertEquals(expectedVenue, savedVenue)
@@ -106,20 +116,21 @@ class VenueServiceTest {
 
     @Test
     fun `createVenue does not save venue`() {
-        every { venueRepository.existsByName(wingeryEntity.name) } returns true
+        every { venueRepository.existsByName(any()) } returns true
 
-        val savedVenue = venueService.createVenue(wingeryDtoPost)
-
-        assertNull(savedVenue)
+        assertFailsWith(
+            exceptionClass = ScoopException::class,
+            block = { venueService.createVenue(wingeryPostDTO) }
+        )
     }
 
     @Test
     fun `updateVenue saves venue`() {
-        every { venueRepository.findByIdOrNull(1) } returns wingeryEntity
-        every { venueMapper.updateVenueEntity(wingeryDTONoReviews, wingeryEntity) } returns wingeryEntity
+        every { venueRepository.findByIdOrNull(any()) } returns wingeryEntity
+        every { venueMapper.updateVenueEntity(any(), any()) } returns wingeryEntity
         every { venueMapper.mapToVenueDTO(wingeryEntity) } returns wingeryDTO
 
-        val updatedVenue = venueService.updateVenue(1, wingeryDTONoReviews)
+        val updatedVenue = venueService.updateVenue(1, VenueUpdateDTO())
         val expectedVenue = wingeryDTO
 
         assertEquals(expectedVenue, updatedVenue)
@@ -127,9 +138,9 @@ class VenueServiceTest {
 
     @Test
     fun `updateVenue does not save venue`() {
-        every { venueRepository.findByIdOrNull(1) } returns null
+        every { venueRepository.findByIdOrNull(any()) } returns null
 
-        val updatedVenue = venueService.updateVenue(1, wingeryDTONoReviews)
+        val updatedVenue = venueService.updateVenue(1, VenueUpdateDTO())
 
         assertNull(updatedVenue)
     }
@@ -161,7 +172,7 @@ class VenueServiceTest {
             createdAt = Instant.now(),
         )
 
-        wingeryDTONoReviews = VenueDTONoReviews(
+        wingerySearchDTO = VenueSearchDTO(
             id = 1,
             name = "Pretty Boy Wingery",
             streetAddress = "Piispansilta 11",
@@ -170,7 +181,7 @@ class VenueServiceTest {
             createdAt = Instant.now(),
         )
 
-        pastisDTONoReviews = VenueDTONoReviews(
+        pastisSearchDTO = VenueSearchDTO(
             id = 2,
             name = "Pastis",
             streetAddress = "Pieni Roobertinkatu 2",
@@ -179,14 +190,14 @@ class VenueServiceTest {
             createdAt = Instant.now(),
         )
 
-        wingeryDtoPost = VenueDTOPost(
+        wingeryPostDTO = VenuePostDTO(
             name = "Pretty Boy Wingery",
             streetAddress = "Piispansilta 11",
             postalCode = "02230",
             city = "Espoo",
         )
 
-        pastisDtoPost = VenueDTOPost(
+        passtisPostDTO = VenuePostDTO(
             name = "Pastis",
             streetAddress = "Pieni Roobertinkatu 2",
             postalCode = "00130",

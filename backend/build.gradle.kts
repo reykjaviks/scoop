@@ -31,7 +31,6 @@ allOpen {
 dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-security")
 	//implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
-	//implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.springframework.boot:spring-boot-starter-validation")
 	implementation("org.springframework.boot:spring-boot-starter-web")
@@ -40,7 +39,7 @@ dependencies {
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 	implementation("org.junit.jupiter:junit-jupiter:5.8.2")
-	implementation("io.github.microutils:kotlin-logging-jvm:2.1.21")
+	implementation("io.github.microutils:kotlin-logging-jvm:2.1.23")
 	implementation("org.mapstruct:mapstruct:1.5.1.Final")
 	annotationProcessor("org.mapstruct:mapstruct-processor:1.5.1.Final")
 	runtimeOnly("org.postgresql:postgresql")
@@ -48,12 +47,12 @@ dependencies {
 		exclude(module = "mockito-core")
 	}
 	testImplementation("org.junit.jupiter:junit-jupiter-api")
-	testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
 	testImplementation("com.ninja-squad:springmockk:3.1.1")
+	testImplementation(kotlin("test"))
 	testImplementation("org.springframework.security:spring-security-test")
+	testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
 	kapt("org.mapstruct:mapstruct-processor:1.5.2.Final")
 	kapt("org.springframework.boot:spring-boot-configuration-processor")
-	//kapt("org.hibernate:hibernate-jpamodelgen:6.1.0.Final")
 }
 //======================= Tasks =============================================
 tasks.withType<KotlinCompile> {
