@@ -1,5 +1,7 @@
 package com.marjorie.scoop.venue
 
+import com.marjorie.scoop.common.ScoopResourceAlreadyExistsException
+import com.marjorie.scoop.common.ScoopResourceNotFoundException
 import com.marjorie.scoop.venue.dto.*
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
@@ -35,17 +37,20 @@ class VenueController(private val venueService: VenueService) {
     @PostMapping("/add")
     @ResponseStatus(HttpStatus.CREATED)
     fun createVenue(@RequestBody venuePostDTO: VenuePostDTO): VenueDTO? {
-        if (venueService.venueExists(venuePostDTO.name)) {
+        try {
+            return venueService.createVenue(venuePostDTO)
+        } catch (e: ScoopResourceAlreadyExistsException) {
             throw ResponseStatusException(HttpStatus.CONFLICT, "Venue '${venuePostDTO.name}' already exists")
         }
-        return venueService.createVenue(venuePostDTO)
     }
 
-    // todo: fix exception handling
     @PatchMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     fun updateVenue(@PathVariable id: Long, @RequestBody venueUpdateDTO: VenueUpdateDTO): VenueDTO {
-        return venueService.updateVenue(id, venueUpdateDTO)
-            ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "Could not update the review because review $id does not exist")
+        try {
+            return venueService.updateVenue(id, venueUpdateDTO)
+        } catch (e: ScoopResourceNotFoundException) {
+            throw ResponseStatusException(HttpStatus.NOT_FOUND, "Error in updating a review: ${e.message}")
+        }
     }
 }

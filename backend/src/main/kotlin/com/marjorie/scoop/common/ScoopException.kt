@@ -1,3 +1,4 @@
 package com.marjorie.scoop.common
 
-class ScoopException(message: String): Exception(message)
+class ScoopResourceAlreadyExistsException(message: String): Exception(message)
+class ScoopResourceNotFoundException(message: String): Exception(message)

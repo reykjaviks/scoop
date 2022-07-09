@@ -1,6 +1,7 @@
 package com.marjorie.scoop.venue
 
-import com.marjorie.scoop.common.ScoopException
+import com.marjorie.scoop.common.ScoopResourceAlreadyExistsException
+import com.marjorie.scoop.common.ScoopResourceNotFoundException
 import com.marjorie.scoop.venue.dto.*
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
@@ -45,23 +46,22 @@ class VenueService(
         }
     }
 
-    fun createVenue(venuePostDTO: VenuePostDTO): VenueDTO? {
+    fun createVenue(venuePostDTO: VenuePostDTO): VenueDTO {
         if (this.venueExists(venuePostDTO.name)) {
-            throw ScoopException("Venue '${venuePostDTO.name}' already exists")
+            throw ScoopResourceAlreadyExistsException("Venue '${venuePostDTO.name}' already exists")
         } else {
             val savedVenue = venueRepository.save(venueMapper.mapToVenueEntity(venuePostDTO))
             return venueMapper.mapToVenueDTO(savedVenue)
         }
     }
 
-    // todo: update to throw exception
-    fun updateVenue(id: Long, venueUpdateDTO: VenueUpdateDTO): VenueDTO? {
+    fun updateVenue(id: Long, venueUpdateDTO: VenueUpdateDTO): VenueDTO {
         val venue = this.getVenueEntity(id)
-        return if (venue == null) {
-            null
+        if (venue == null) {
+            throw ScoopResourceNotFoundException("No venue found for ID $id")
         } else {
             val updatedVenueEntity = venueMapper.updateVenueEntity(venueUpdateDTO, venue)
-            venueMapper.mapToVenueDTO(updatedVenueEntity)
+            return venueMapper.mapToVenueDTO(updatedVenueEntity)
         }
     }
 
@@ -72,5 +72,4 @@ class VenueService(
     private fun prepareQueryString(query: String): String {
         return "%" + query.lowercase() + "%"
     }
-
 }

@@ -1,6 +1,7 @@
 package com.marjorie.scoop.venue
 
-import com.marjorie.scoop.common.ScoopException
+import com.marjorie.scoop.common.ScoopResourceAlreadyExistsException
+import com.marjorie.scoop.common.ScoopResourceNotFoundException
 import com.marjorie.scoop.neighbourhood.NeighbourhoodEntity
 import com.marjorie.scoop.neighbourhood.dto.NeighbourhoodDTO
 import com.marjorie.scoop.venue.dto.VenueDTO
@@ -119,7 +120,7 @@ class VenueServiceTest {
         every { venueRepository.existsByName(any()) } returns true
 
         assertFailsWith(
-            exceptionClass = ScoopException::class,
+            exceptionClass = ScoopResourceAlreadyExistsException::class,
             block = { venueService.createVenue(wingeryPostDTO) }
         )
     }
@@ -140,9 +141,10 @@ class VenueServiceTest {
     fun `updateVenue does not save venue`() {
         every { venueRepository.findByIdOrNull(any()) } returns null
 
-        val updatedVenue = venueService.updateVenue(1, VenueUpdateDTO())
-
-        assertNull(updatedVenue)
+        assertFailsWith(
+            exceptionClass = ScoopResourceNotFoundException::class,
+            block = { venueService.updateVenue(1, VenueUpdateDTO(name = "Im a test venue")) }
+        )
     }
 
     private fun initTestData() {

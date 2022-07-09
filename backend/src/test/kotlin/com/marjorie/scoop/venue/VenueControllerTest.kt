@@ -3,6 +3,8 @@ package com.marjorie.scoop.venue
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.marjorie.scoop.common.Constants.CSRF_IDENTIFIER
 import com.marjorie.scoop.common.Constants.REQUEST_ID
+import com.marjorie.scoop.common.ScoopResourceAlreadyExistsException
+import com.marjorie.scoop.common.ScoopResourceNotFoundException
 import com.marjorie.scoop.neighbourhood.dto.NeighbourhoodDTO
 import com.marjorie.scoop.venue.dto.VenueDTO
 import com.marjorie.scoop.venue.dto.VenuePostDTO
@@ -29,19 +31,15 @@ import java.time.Instant
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
 class VenueControllerTest {
-    @MockkBean
-    lateinit var venueService: VenueService
-
-    @Autowired
-    lateinit var mockMvc: MockMvc
-
-    @Autowired
-    lateinit var objectMapper: ObjectMapper
+    @MockkBean lateinit var venueService: VenueService
+    @Autowired lateinit var mockMvc: MockMvc
+    @Autowired lateinit var objectMapper: ObjectMapper
 
     lateinit var tapiolaDTO: VenueDTO
     lateinit var kallioDTO: VenueDTO
     lateinit var tapiolaSearchDTO: VenueSearchDTO
     lateinit var kallioSearchDTO: VenueSearchDTO
+    lateinit var postDTO: VenuePostDTO
 
     val requestId = "01_01_001"
     val csrfIdentifier = "scoop-client"
@@ -49,8 +47,6 @@ class VenueControllerTest {
     @BeforeEach
     fun setUp() {
         this.initTestData()
-
-        every { venueService.updateVenue(3, any()) } returns null
     }
 
     @Test
@@ -137,9 +133,9 @@ class VenueControllerTest {
 
     @Test
     fun `Search returns status code 404 Not Found when there are no results for the query`() {
-        every { venueService.searchVenues(any()) } returns null
-
         val query = "Jali's Chocolate Factory"
+
+        every { venueService.searchVenues(any()) } returns null
 
         mockMvc.perform(get("/api/venue/search")
             .queryParam("query", query)
@@ -153,15 +149,7 @@ class VenueControllerTest {
     @Test
     @WithMockUser(username="Marjorie", authorities = ["ROLE_USER", "ROLE_ADMIN"])
     fun `Create venue returns status code 201 Created when new venue is created`() {
-        val postDTO = VenuePostDTO(
-            name = "Pretty Boy Wingery",
-            streetAddress = "Piispansilta 11",
-            postalCode = "02230",
-            city = "Espoo",
-        )
-
         every { venueService.createVenue(postDTO) } returns tapiolaDTO
-        every { venueService.venueExists(any()) } returns false
 
         mockMvc.perform(
             MockMvcRequestBuilders.post("/api/venue/add")
@@ -175,17 +163,10 @@ class VenueControllerTest {
             .andExpect(status().isCreated)
     }
 
-    @Test
+    @Test // todo: fix
     @WithMockUser(username="Marjorie", authorities = ["ROLE_USER", "ROLE_ADMIN"])
     fun `Create venue returns status code 209 Conflict when venue already exists`() {
-        val postDTO = VenuePostDTO(
-            name = "Momochi",
-            streetAddress = "Mannerheimintie 20",
-            postalCode = "00100",
-            city = "Helsinki",
-        )
-
-        every { venueService.venueExists(any()) } returns true
+        every { venueService.createVenue(postDTO) } throws Exception("This is a test")
 
         mockMvc.perform(
             MockMvcRequestBuilders.post("/api/venue/add")
@@ -221,12 +202,12 @@ class VenueControllerTest {
             .andExpect(status().isOk)
     }
 
-    @Test
+    @Test // todo: fix
     @WithMockUser(username="Marjorie", authorities = ["ROLE_USER", "ROLE_ADMIN"])
     fun `Update venue returns status code 404 Not Found when the venue does not exist`() {
         val updateDTO = VenueUpdateDTO()
 
-        every { venueService.updateVenue(1, updateDTO) } returns null
+        every { venueService.updateVenue(any(), any()) }.throws(ScoopResourceAlreadyExistsException("Resource already exists"))
 
         mockMvc.perform(
             MockMvcRequestBuilders.patch("/api/venue/3")
@@ -279,6 +260,13 @@ class VenueControllerTest {
             city = "Helsinki",
             neighbourhood = NeighbourhoodDTO(id = 2, name = "Kallio"),
             createdAt = Instant.now()
+        )
+
+        postDTO = VenuePostDTO(
+            name = "Pretty Boy Wingery",
+            streetAddress = "Piispansilta 11",
+            postalCode = "02230",
+            city = "Espoo",
         )
     }
 }
