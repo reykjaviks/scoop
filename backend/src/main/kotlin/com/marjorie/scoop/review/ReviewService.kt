@@ -59,7 +59,7 @@ class ReviewService(
 
     private fun isAuthUserAllowedToEdit(review: ReviewEntity): Boolean {
         val authUser = SecurityContextHolder.getContext().authentication
-        return authUser.principal == review.user.username
+        return authUser.name == review.user.username
     }
 
     private fun getReviewEntity(id: Long): ReviewEntity? {

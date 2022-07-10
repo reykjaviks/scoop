@@ -48,7 +48,7 @@ class ReviewController(private val reviewService: ReviewService) {
         } catch (e: ScoopBadRequestException) {
             throw ResponseStatusException(HttpStatus.BAD_REQUEST, "${e.message}")
         } catch (e: IllegalAccessException) {
-            throw ResponseStatusException(HttpStatus.UNAUTHORIZED, "${e.message}")
+            throw ResponseStatusException(HttpStatus.FORBIDDEN, "${e.message}")
         }
     }
 
