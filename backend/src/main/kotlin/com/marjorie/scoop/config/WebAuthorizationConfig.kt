@@ -33,19 +33,16 @@ class WebAuthorizationConfig(
          authManagerBuilder.authenticationProvider(usernamePasswordAuthProvider)
     }
 
+
     override fun configure(httpSecurity: HttpSecurity) {
-        /**
-         * General configuration info (login type, CSRF, CORS...)
-         */
+        /** General configuration info (login type, CSRF, CORS...) */
         httpSecurity.httpBasic()
         httpSecurity.formLogin().defaultSuccessUrl("/auth", true)
         httpSecurity.csrf { csrfConfigurer: CsrfConfigurer<HttpSecurity?> ->
             csrfConfigurer.csrfTokenRepository(csrfTokenRepository())
         }
 
-        /**
-         * Filter chain
-         */
+        /** Filter chain */
         httpSecurity.addFilterBefore(
             CsrfIdentifierValidationFilter(),
             CsrfFilter::class.java

@@ -53,7 +53,7 @@ class VenueControllerTest {
     fun `Get venue returns a venue when queried ID exists`() {
         val id: Long = 1
 
-        every { venueService.getVenueDTO(1) } returns tapiolaDTO
+        every { venueService.getVenueDTO(id) } returns tapiolaDTO
 
         mockMvc.perform(get("/api/venue/".plus(id))
             .header(REQUEST_ID, requestId)
