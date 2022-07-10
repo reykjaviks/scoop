@@ -1,5 +1,6 @@
 package com.marjorie.scoop.review
 
+import com.marjorie.scoop.common.ScoopBadRequestException
 import com.marjorie.scoop.common.ScoopResourceNotFoundException
 import com.marjorie.scoop.review.dto.ReviewDTO
 import com.marjorie.scoop.review.dto.ReviewPostDTO
@@ -42,8 +43,12 @@ class ReviewController(private val reviewService: ReviewService) {
     fun updateReview(@PathVariable reviewId: Long, @RequestBody reviewUpdateDTO: ReviewUpdateDTO): ReviewDTO {
         try {
             return reviewService.updateReview(reviewId, reviewUpdateDTO)
-        } catch (e: Exception) {
-            throw ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error in updating a review: ${e.message}")
+        } catch (e: ScoopResourceNotFoundException) {
+            throw ResponseStatusException(HttpStatus.NOT_FOUND, "${e.message}")
+        } catch (e: ScoopBadRequestException) {
+            throw ResponseStatusException(HttpStatus.BAD_REQUEST, "${e.message}")
+        } catch (e: IllegalAccessException) {
+            throw ResponseStatusException(HttpStatus.UNAUTHORIZED, "${e.message}")
         }
     }
 

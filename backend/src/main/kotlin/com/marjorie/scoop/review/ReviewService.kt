@@ -1,6 +1,7 @@
 package com.marjorie.scoop.review
 
 import com.marjorie.scoop.auth.user.UserService
+import com.marjorie.scoop.common.ScoopBadRequestException
 import com.marjorie.scoop.common.ScoopResourceNotFoundException
 import com.marjorie.scoop.review.dto.ReviewDTO
 import com.marjorie.scoop.review.dto.ReviewPostDTO
@@ -44,13 +45,13 @@ class ReviewService(
     }
 
     fun updateReview(reviewId: Long, reviewUpdateDTO: ReviewUpdateDTO): ReviewDTO {
-        val reviewEntity = reviewRepository.findByIdOrNull(reviewId)
+        val reviewEntity = this.getReviewEntity(reviewId)
         if (reviewEntity == null) {
-            throw KotlinNullPointerException("No review found for ID $reviewId")
+            throw ScoopResourceNotFoundException("No review found for ID $reviewId")
         } else if (!this.isAuthUserAllowedToEdit(reviewEntity))  {
             throw IllegalAccessException("Not allowed to update other users' reviews")
         } else if (reviewUpdateDTO.review == null && reviewUpdateDTO.rating == null) {
-            throw KotlinNullPointerException("Can't update a review when both review and rating are null")
+            throw ScoopBadRequestException("Review and rating are both null")
         }
         val updatedReviewEntity = reviewMapper.updateReviewEntity(reviewUpdateDTO, reviewEntity)
         return reviewMapper.mapToReviewDTO(updatedReviewEntity)
@@ -59,5 +60,9 @@ class ReviewService(
     private fun isAuthUserAllowedToEdit(review: ReviewEntity): Boolean {
         val authUser = SecurityContextHolder.getContext().authentication
         return authUser.principal == review.user.username
+    }
+
+    private fun getReviewEntity(id: Long): ReviewEntity? {
+        return reviewRepository.findByIdOrNull(id)
     }
 }
