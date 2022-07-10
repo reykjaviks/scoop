@@ -1,9 +1,10 @@
 package com.marjorie.scoop.review
 
 import com.marjorie.scoop.auth.user.UserService
+import com.marjorie.scoop.common.ScoopResourceNotFoundException
 import com.marjorie.scoop.review.dto.ReviewDTO
-import com.marjorie.scoop.review.dto.ReviewDTOPost
-import com.marjorie.scoop.review.dto.ReviewDTOUpdate
+import com.marjorie.scoop.review.dto.ReviewPostDTO
+import com.marjorie.scoop.review.dto.ReviewUpdateDTO
 import com.marjorie.scoop.venue.VenueService
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.access.prepost.PreAuthorize
@@ -18,57 +19,40 @@ class ReviewService(
     private val reviewRepository: ReviewRepository,
     private val reviewMapper: ReviewMapper,
     private val venueService: VenueService,
-    private val userService: UserService,
 ) {
     fun getReview(id: Long): ReviewDTO? {
-        val reviewEntity = reviewRepository.findByIdOrNull(id)
-        return if (reviewEntity == null) {
-            null
-        } else {
-            reviewMapper.mapToReviewDTO(reviewEntity)
-        }
+        val reviewEntity = reviewRepository.findByIdOrNull(id) ?: return null
+        return reviewMapper.mapToReviewDTO(reviewEntity)
     }
 
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     fun getAllReviews(): List<ReviewDTO>? {
         val allReviewEntities = reviewRepository.findAll() as List<ReviewEntity>
-        return if (allReviewEntities.isEmpty()) {
-            null
-        } else {
-            return reviewMapper.mapToReviewDTOList(allReviewEntities)
+        if (allReviewEntities.isNotEmpty()) {
+            return reviewMapper.mapToReviewDTOs(allReviewEntities)
         }
+        return null
     }
 
-    // todo: fix to use mapper
-    @PreAuthorize("#reviewDTOPost.username == authentication.name")
-    fun createReview(reviewDTOPost: ReviewDTOPost): ReviewDTO {
-        val venueEntity = venueService.getVenueEntity(reviewDTOPost.venueId)
-        val userEntity = userService.getUser(reviewDTOPost.username)
-        if (venueEntity == null) {
-            throw KotlinNullPointerException("Could not find a venue associated with the ID ${reviewDTOPost.venueId}")
-        } else {
-            val reviewEntity = reviewRepository.save(
-                ReviewEntity(
-                    review = reviewDTOPost.review,
-                    rating = reviewDTOPost.rating,
-                    venue = venueEntity,
-                    user = userEntity!!
-                )
-            )
-            return reviewMapper.mapToReviewDTO(reviewEntity)
+    @PreAuthorize("#reviewPostDTO.username == authentication.name")
+    fun createReview(reviewPostDTO: ReviewPostDTO): ReviewDTO {
+        if (!venueService.venueExists(reviewPostDTO.venueId)) {
+            throw ScoopResourceNotFoundException("Could not find a venue associated with the ID ${reviewPostDTO.venueId}")
         }
+        val savedReview = reviewRepository.save(reviewMapper.mapToReviewEntity(reviewPostDTO))
+        return reviewMapper.mapToReviewDTO(savedReview)
     }
 
-    fun updateReview(reviewId: Long, reviewDTOUpdate: ReviewDTOUpdate): ReviewDTO {
+    fun updateReview(reviewId: Long, reviewUpdateDTO: ReviewUpdateDTO): ReviewDTO {
         val reviewEntity = reviewRepository.findByIdOrNull(reviewId)
         if (reviewEntity == null) {
             throw KotlinNullPointerException("No review found for ID $reviewId")
         } else if (!this.isAuthUserAllowedToEdit(reviewEntity))  {
             throw IllegalAccessException("Not allowed to update other users' reviews")
-        } else if (reviewDTOUpdate.review == null && reviewDTOUpdate.rating == null) {
+        } else if (reviewUpdateDTO.review == null && reviewUpdateDTO.rating == null) {
             throw KotlinNullPointerException("Can't update a review when both review and rating are null")
         }
-        val updatedReviewEntity = reviewMapper.updateReviewEntity(reviewDTOUpdate, reviewEntity)
+        val updatedReviewEntity = reviewMapper.updateReviewEntity(reviewUpdateDTO, reviewEntity)
         return reviewMapper.mapToReviewDTO(updatedReviewEntity)
     }
 

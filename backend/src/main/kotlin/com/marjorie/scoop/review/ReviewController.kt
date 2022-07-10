@@ -1,8 +1,9 @@
 package com.marjorie.scoop.review
 
+import com.marjorie.scoop.common.ScoopResourceNotFoundException
 import com.marjorie.scoop.review.dto.ReviewDTO
-import com.marjorie.scoop.review.dto.ReviewDTOPost
-import com.marjorie.scoop.review.dto.ReviewDTOUpdate
+import com.marjorie.scoop.review.dto.ReviewPostDTO
+import com.marjorie.scoop.review.dto.ReviewUpdateDTO
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.server.ResponseStatusException
@@ -29,18 +30,18 @@ class ReviewController(private val reviewService: ReviewService) {
 
     @PostMapping("/add")
     @ResponseStatus(HttpStatus.CREATED)
-    fun createReview(@RequestBody reviewDTOPost: ReviewDTOPost): ReviewDTO {
+    fun createReview(@RequestBody reviewPostDTO: ReviewPostDTO): ReviewDTO {
         try {
-            return reviewService.createReview(reviewDTOPost)
-        } catch (e: Exception) {
-            throw ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error in creating a review: ${e.message}")
+            return reviewService.createReview(reviewPostDTO)
+        } catch (e: ScoopResourceNotFoundException) {
+            throw ResponseStatusException(HttpStatus.NOT_FOUND, "Error in creating a review: ${e.message}")
         }
     }
 
     @PatchMapping("/{reviewId}")
-    fun updateReview(@PathVariable reviewId: Long, @RequestBody reviewDTOUpdate: ReviewDTOUpdate): ReviewDTO {
+    fun updateReview(@PathVariable reviewId: Long, @RequestBody reviewUpdateDTO: ReviewUpdateDTO): ReviewDTO {
         try {
-            return reviewService.updateReview(reviewId, reviewDTOUpdate)
+            return reviewService.updateReview(reviewId, reviewUpdateDTO)
         } catch (e: Exception) {
             throw ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error in updating a review: ${e.message}")
         }

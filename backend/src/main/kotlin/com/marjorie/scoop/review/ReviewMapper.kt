@@ -1,21 +1,29 @@
 package com.marjorie.scoop.review
 
+import com.marjorie.scoop.auth.user.UserService
 import com.marjorie.scoop.review.dto.ReviewDTO
-import com.marjorie.scoop.review.dto.ReviewDTOUpdate
+import com.marjorie.scoop.review.dto.ReviewUpdateDTO
 import com.marjorie.scoop.review.dto.ReviewDTONoVenue
+import com.marjorie.scoop.review.dto.ReviewPostDTO
+import com.marjorie.scoop.venue.VenueService
 import org.mapstruct.Mapper
+import org.mapstruct.Mapping
 import org.mapstruct.MappingTarget
 import org.mapstruct.ReportingPolicy
 
 @Mapper(
     componentModel = "spring",
+    uses = [VenueService::class, UserService::class],
     unmappedTargetPolicy = ReportingPolicy.IGNORE
 )
 interface ReviewMapper {
     fun mapToReviewDTO(reviewEntity: ReviewEntity): ReviewDTO
-    fun mapToReviewDTOList(reviewEntities: List<ReviewEntity>): List<ReviewDTO>
+    fun mapToReviewDTOs(reviewEntities: List<ReviewEntity>): List<ReviewDTO>
     fun mapToReviewEntity(reviewDTO: ReviewDTO): ReviewEntity
     fun mapToReviewEntity(reviewDTONoVenue: ReviewDTONoVenue): ReviewEntity
+    @Mapping(source = "venueId", target = "venue")
+    @Mapping(source = "username", target = "user")
+    fun mapToReviewEntity(reviewPostDTO: ReviewPostDTO): ReviewEntity
     fun mapToReviewDTONoVenue(reviewEntity: ReviewEntity): ReviewDTONoVenue
-    fun updateReviewEntity(reviewDTOUpdate: ReviewDTOUpdate, @MappingTarget reviewEntity: ReviewEntity): ReviewEntity
+    fun updateReviewEntity(reviewUpdateDTO: ReviewUpdateDTO, @MappingTarget reviewEntity: ReviewEntity): ReviewEntity
 }

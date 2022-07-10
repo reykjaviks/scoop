@@ -69,6 +69,10 @@ class VenueService(
         return venueRepository.existsByName(name)
     }
 
+    fun venueExists(id: Long): Boolean {
+        return venueRepository.existsById(id)
+    }
+
     private fun prepareQueryString(query: String): String {
         return "%" + query.lowercase() + "%"
     }
