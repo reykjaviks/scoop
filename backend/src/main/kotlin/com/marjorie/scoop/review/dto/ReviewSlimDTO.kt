@@ -6,7 +6,7 @@ import java.time.Instant
 /**
  * Does not contain information regarding the venue.
  */
-data class ReviewDTONoVenue(
+data class ReviewSlimDTO(
     var id: Long,
     var review: String,
     var rating: Double,
