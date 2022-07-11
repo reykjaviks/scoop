@@ -24,7 +24,7 @@ import java.time.Instant
 import kotlin.test.assertFailsWith
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class ReviewServiceTest {
+internal class ReviewServiceTest {
     final var reviewRepository: ReviewRepository = mockk()
     final val reviewMapper: ReviewMapper = mockk()
     final var venueService: VenueService = mockk()

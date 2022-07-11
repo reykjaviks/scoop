@@ -21,7 +21,7 @@ import kotlin.test.assertFailsWith
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 //@ContextConfiguration(classes = [VenueMapperImpl::class, ])
-class VenueServiceTest {
+internal class VenueServiceTest {
     val venueRepository: VenueRepository = mockk()
     val venueMapper: VenueMapper = mockk()
     val venueService = VenueService(venueRepository, venueMapper)

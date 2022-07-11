@@ -30,7 +30,7 @@ import java.time.Instant
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
-class VenueControllerTest {
+internal class VenueControllerTest {
     @MockkBean lateinit var venueService: VenueService
     @Autowired lateinit var mockMvc: MockMvc
     @Autowired lateinit var objectMapper: ObjectMapper

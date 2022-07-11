@@ -27,7 +27,7 @@ import java.time.Instant
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
-class ReviewControllerTest {
+internal class ReviewControllerTest {
     @MockkBean lateinit var reviewService: ReviewService
     @Autowired lateinit var mockMvc: MockMvc
     @Autowired lateinit var objectMapper: ObjectMapper
