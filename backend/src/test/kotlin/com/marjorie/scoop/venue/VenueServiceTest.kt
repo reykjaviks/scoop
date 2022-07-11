@@ -126,7 +126,7 @@ class VenueServiceTest {
     }
 
     @Test
-    fun `updateVenue saves venue`() {
+    fun `updateVenue updates venue`() {
         every { venueRepository.findByIdOrNull(any()) } returns wingeryEntity
         every { venueMapper.updateVenueEntity(any(), any()) } returns wingeryEntity
         every { venueMapper.mapToVenueDTO(wingeryEntity) } returns wingeryDTO
@@ -138,7 +138,7 @@ class VenueServiceTest {
     }
 
     @Test
-    fun `updateVenue does not save venue`() {
+    fun `updateVenue does not update venue`() {
         every { venueRepository.findByIdOrNull(any()) } returns null
 
         assertFailsWith(

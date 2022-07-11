@@ -1,6 +1,6 @@
 package com.marjorie.scoop.review.dto
 
-import com.marjorie.scoop.auth.user.dto.UserDTOIdUsername
+import com.marjorie.scoop.auth.user.dto.UserSlimDTO
 import java.time.Instant
 
 /**
@@ -10,7 +10,7 @@ data class ReviewSlimDTO(
     var id: Long,
     var review: String,
     var rating: Double,
-    var user: UserDTOIdUsername,
+    var user: UserSlimDTO,
     var createdAt: Instant,
     var modifiedAt: Instant? = null,
 )
