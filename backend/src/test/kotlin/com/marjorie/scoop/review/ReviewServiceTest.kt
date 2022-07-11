@@ -1,9 +1,8 @@
 package com.marjorie.scoop.review
 
 import com.marjorie.scoop.auth.user.UserEntity
-import com.marjorie.scoop.auth.user.dto.UserDTOIdUsername
+import com.marjorie.scoop.auth.user.dto.UserSlimDTO
 import com.marjorie.scoop.common.ScoopBadRequestException
-import com.marjorie.scoop.common.ScoopResourceAlreadyExistsException
 import com.marjorie.scoop.common.ScoopResourceNotFoundException
 import com.marjorie.scoop.review.dto.ReviewDTO
 import com.marjorie.scoop.review.dto.ReviewPostDTO
@@ -11,7 +10,6 @@ import com.marjorie.scoop.review.dto.ReviewUpdateDTO
 import com.marjorie.scoop.venue.VenueEntity
 import com.marjorie.scoop.venue.VenueService
 import com.marjorie.scoop.venue.dto.VenueSlimDTO
-import com.marjorie.scoop.venue.dto.VenueUpdateDTO
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -183,7 +181,7 @@ class ReviewServiceTest {
             review = "It was okay, I guess.",
             rating = 3.0,
             venue = VenueSlimDTO(id = 1, name = "Test place"),
-            user = UserDTOIdUsername(1, username = marjorie.username),
+            user = UserSlimDTO(1, username = marjorie.username),
             createdAt = Instant.now()
         )
 
@@ -192,7 +190,7 @@ class ReviewServiceTest {
             review = "I appreciated how the staff was friendly without being overly chatty.",
             rating = 4.0,
             venue = VenueSlimDTO(id = 1, name = "Test place"),
-            user = UserDTOIdUsername(1, username = marjorie.username),
+            user = UserSlimDTO(1, username = marjorie.username),
             createdAt = Instant.now()
         )
 

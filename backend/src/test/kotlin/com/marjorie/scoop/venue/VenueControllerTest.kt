@@ -184,9 +184,7 @@ class VenueControllerTest {
     @WithMockUser(username="Marjorie", authorities = ["ROLE_USER", "ROLE_ADMIN"])
     fun `Update venue returns status code 200 OK when an existing venue is updated`() {
         val id: Long = 1
-        val updateDTO = VenueUpdateDTO(
-            name = "My name is new"
-        )
+        val updateDTO = VenueUpdateDTO(name = "My name is new")
 
         every { venueService.updateVenue(id, updateDTO) } returns tapiolaDTO
 
