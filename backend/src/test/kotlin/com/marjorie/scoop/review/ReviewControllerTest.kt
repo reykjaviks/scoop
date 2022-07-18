@@ -69,8 +69,7 @@ internal class ReviewControllerTest {
             .header(REQUEST_ID, requestId)
             .header(CSRF_IDENTIFIER, csrfIdentifier)
             .accept(MediaType.APPLICATION_JSON)
-        ).andDo(print())
-            .andExpect(status().isNotFound)
+        ).andExpect(status().isNotFound)
     }
 
     @Test
@@ -110,7 +109,7 @@ internal class ReviewControllerTest {
     }
 
     @Test
-    @WithMockUser(username="Marjorie", authorities = ["ROLE_USER", "ROLE_ADMIN"])
+    @WithMockUser
     fun `Create review return status code 201 when review is saved`() {
         every { reviewService.createReview(reviewPostDTO) } returns reviewDTO1
 
@@ -121,15 +120,24 @@ internal class ReviewControllerTest {
             .header(CSRF_IDENTIFIER, csrfIdentifier)
             .content(objectMapper.writeValueAsString(reviewPostDTO))
             .accept(MediaType.APPLICATION_JSON)
-        ).andDo(print())
-            .andExpect(status().isCreated)
+        ).andExpect(status().isCreated)
     }
 
     @Test
-    @WithMockUser(username="Marjorie", authorities = ["ROLE_USER", "ROLE_ADMIN"])
+    fun `Create review returns 401 Unauthorized when user is not authenticated`() {
+        mockMvc.perform(post("/api/review/add")
+            .with(csrf())
+            .contentType(MediaType.APPLICATION_JSON)
+            .header(REQUEST_ID, requestId)
+            .header(CSRF_IDENTIFIER, csrfIdentifier)
+        ).andExpect(status().isUnauthorized)
+    }
+
+    @Test
+    @WithMockUser
     fun `Update review returns status code 200 when review is updated`() {
         val id: Long = 1
-        val updateDTO = ReviewUpdateDTO(review = "This is a new review")
+        val updateDTO = ReviewUpdateDTO(review = "I have changed my mind. It was good overall.")
 
         every { reviewService.updateReview(id, updateDTO) } returns reviewDTO1
 
@@ -140,8 +148,7 @@ internal class ReviewControllerTest {
             .header(CSRF_IDENTIFIER, csrfIdentifier)
             .content(objectMapper.writeValueAsString(updateDTO))
             .accept(MediaType.APPLICATION_JSON)
-        ).andDo(print())
-            .andExpect(status().isOk)
+        ).andExpect(status().isOk)
     }
 
     private fun initTestData() {
