@@ -19,7 +19,7 @@ class HomeController {
 
     @GetMapping("/auth")
     fun auth(): String {
-        val auth: Authentication = SecurityContextHolder.getContext().authentication;
+        val auth: Authentication = SecurityContextHolder.getContext().authentication
         return "Auth info: $auth"
     }
 }

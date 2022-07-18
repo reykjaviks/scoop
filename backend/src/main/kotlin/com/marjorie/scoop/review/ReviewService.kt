@@ -1,6 +1,5 @@
 package com.marjorie.scoop.review
 
-import com.marjorie.scoop.auth.user.UserService
 import com.marjorie.scoop.common.ScoopBadRequestException
 import com.marjorie.scoop.common.ScoopResourceNotFoundException
 import com.marjorie.scoop.review.dto.ReviewDTO
