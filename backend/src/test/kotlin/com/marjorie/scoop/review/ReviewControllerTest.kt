@@ -18,7 +18,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType
 import org.springframework.security.test.context.support.WithMockUser
-import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf
+import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.*
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers.print
@@ -149,6 +149,21 @@ internal class ReviewControllerTest {
             .content(objectMapper.writeValueAsString(updateDTO))
             .accept(MediaType.APPLICATION_JSON)
         ).andExpect(status().isOk)
+    }
+
+    @Test
+    fun `Create review returns 401 Unauthorized when auth user and review user don't match`() {
+        val postDTO = ReviewPostDTO(review = "Ok.", rating = 2.0, username = "Marjorie", venueId = 1)
+
+        mockMvc.perform(post("/api/review/add")
+            .with(httpBasic("Marjorie", "12345"))
+            .with(csrf())
+            .contentType(MediaType.APPLICATION_JSON)
+            .header(REQUEST_ID, requestId)
+            .header(CSRF_IDENTIFIER, csrfIdentifier)
+            .content(objectMapper.writeValueAsString(postDTO))
+            .accept(MediaType.APPLICATION_JSON)
+        ).andExpect(status().isUnauthorized)
     }
 
     private fun initTestData() {

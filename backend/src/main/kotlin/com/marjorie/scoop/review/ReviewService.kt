@@ -28,10 +28,8 @@ class ReviewService(
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     fun getAllReviews(): List<ReviewDTO>? {
         val allReviewEntities = reviewRepository.findAll() as List<ReviewEntity>
-        if (allReviewEntities.isNotEmpty()) {
-            return reviewMapper.mapToReviewDTOs(allReviewEntities)
-        }
-        return null
+        if (allReviewEntities.isEmpty()) return null
+        return reviewMapper.mapToReviewDTOs(allReviewEntities)
     }
 
     @PreAuthorize("#reviewPostDTO.username == authentication.name")

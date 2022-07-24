@@ -15,12 +15,8 @@ class VenueService(
     private val venueMapper: VenueMapper,
 ) {
     fun getVenueDTO(id: Long): VenueDTO? {
-        val venueEntity = venueRepository.findByIdOrNull(id)
-        return if (venueEntity == null) {
-            null
-        } else {
-            venueMapper.mapToVenueDTO(venueEntity)
-        }
+        val venueEntity = venueRepository.findByIdOrNull(id) ?: return null
+        return venueMapper.mapToVenueDTO(venueEntity)
     }
 
     fun getVenueEntity(id: Long): VenueEntity? {
@@ -29,40 +25,29 @@ class VenueService(
 
     fun getAllVenues(): List<VenueSearchDTO>? {
         val allVenues = venueRepository.findAll() as List<VenueEntity>
-        return if (allVenues.isEmpty()) {
-            null
-        } else {
-            venueMapper.mapToVenueSearchDTOs(allVenues)
-        }
+        if (allVenues.isEmpty()) return null
+        return venueMapper.mapToVenueSearchDTOs(allVenues)
     }
 
     fun searchVenues(query: String): List<VenueSearchDTO>? {
         val preparedQuery: String = prepareQueryString(query)
         val venueEntities = venueRepository.findByNameOrAddressOrPostalCodeOrCityOrNeighbourhood(preparedQuery)
-        return if (venueEntities.isNullOrEmpty()) {
-            null
-        } else {
-            venueMapper.mapToVenueSearchDTOs(venueEntities)
-        }
+        if (venueEntities.isNullOrEmpty()) return null
+        return venueMapper.mapToVenueSearchDTOs(venueEntities)
     }
 
     fun createVenue(venuePostDTO: VenuePostDTO): VenueDTO {
         if (this.venueExists(venuePostDTO.name)) {
             throw ScoopResourceAlreadyExistsException("Venue '${venuePostDTO.name}' already exists")
-        } else {
-            val savedVenue = venueRepository.save(venueMapper.mapToVenueEntity(venuePostDTO))
-            return venueMapper.mapToVenueDTO(savedVenue)
         }
+        val savedVenue = venueRepository.save(venueMapper.mapToVenueEntity(venuePostDTO))
+        return venueMapper.mapToVenueDTO(savedVenue)
     }
 
     fun updateVenue(id: Long, venueUpdateDTO: VenueUpdateDTO): VenueDTO {
-        val venue = this.getVenueEntity(id)
-        if (venue == null) {
-            throw ScoopResourceNotFoundException("No venue found for ID $id")
-        } else {
-            val updatedVenueEntity = venueMapper.updateVenueEntity(venueUpdateDTO, venue)
-            return venueMapper.mapToVenueDTO(updatedVenueEntity)
-        }
+        val venue = this.getVenueEntity(id) ?: throw ScoopResourceNotFoundException("No venue found for ID $id")
+        val updatedVenueEntity = venueMapper.updateVenueEntity(venueUpdateDTO, venue)
+        return venueMapper.mapToVenueDTO(updatedVenueEntity)
     }
 
     fun venueExists(name: String): Boolean {
