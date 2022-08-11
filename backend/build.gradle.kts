@@ -29,20 +29,30 @@ allOpen {
 
 //======================= Dependencies =============================================
 dependencies {
+	// Spring
 	implementation("org.springframework.boot:spring-boot-starter-security")
-	//implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.springframework.boot:spring-boot-starter-validation")
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("org.springframework.boot:spring-boot-starter-webflux")
+
+	// Kotlin
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-	implementation("org.junit.jupiter:junit-jupiter:5.8.2")
 	implementation("io.github.microutils:kotlin-logging-jvm:2.1.23")
-	implementation("org.mapstruct:mapstruct:1.5.1.Final")
+	kapt("org.mapstruct:mapstruct-processor:1.5.2.Final")
+	kapt("org.springframework.boot:spring-boot-configuration-processor")
+
+	// Other
 	annotationProcessor("org.mapstruct:mapstruct-processor:1.5.1.Final")
+	implementation("org.junit.jupiter:junit-jupiter:5.8.2")
+	implementation("org.mapstruct:mapstruct:1.5.1.Final")
+	implementation("junit:junit:4.13.1")
 	runtimeOnly("org.postgresql:postgresql")
+	implementation("org.junit.jupiter:junit-jupiter:5.8.2")
+
+	// Test
 	testImplementation("org.springframework.boot:spring-boot-starter-test") {
 		exclude(module = "mockito-core")
 	}
@@ -51,9 +61,8 @@ dependencies {
 	testImplementation(kotlin("test"))
 	testImplementation("org.springframework.security:spring-security-test")
 	testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
-	kapt("org.mapstruct:mapstruct-processor:1.5.2.Final")
-	kapt("org.springframework.boot:spring-boot-configuration-processor")
 }
+
 //======================= Tasks =============================================
 tasks.withType<KotlinCompile> {
 	kotlinOptions {
