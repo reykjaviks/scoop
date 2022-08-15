@@ -1,10 +1,30 @@
-import { Component } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
+import {VenueGetDTO} from "./common/data";
+import {VenueService} from "./venue/venue.service";
+import {HttpErrorResponse} from "@angular/common/http";
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.sass']
 })
-export class AppComponent {
-  title = 'frontend-angular';
+export class AppComponent implements OnInit {
+  public venues: VenueGetDTO[] | undefined;
+
+  constructor(private venueService: VenueService) {}
+
+  ngOnInit() {
+    this.getVenues();
+  }
+
+  public getVenues(): void {
+    this.venueService.getVenues().subscribe(
+      (response: VenueGetDTO[]) => {
+        this.venues = response;
+      },
+      (error: HttpErrorResponse) => {
+        alert(error.message);
+      }
+    )
+  }
 }

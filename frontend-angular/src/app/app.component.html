@@ -1,5 +1,8 @@
 <div>
   <h1>Hello!</h1>
+  <div *ngFor="let venue of venues">
+    <div>{{ venue.name }}</div>
+  </div>
 </div>
 
 <router-outlet></router-outlet>
