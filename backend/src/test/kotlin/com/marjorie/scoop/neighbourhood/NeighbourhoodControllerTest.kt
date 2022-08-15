@@ -1,7 +1,7 @@
 package com.marjorie.scoop.neighbourhood
 
 import com.marjorie.scoop.common.Constants
-import com.marjorie.scoop.neighbourhood.dto.NeighbourhoodDTO
+import com.marjorie.scoop.neighbourhood.dto.NeighbourhoodGetDTO
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
 import org.hamcrest.Matchers
@@ -23,8 +23,8 @@ internal class NeighbourhoodControllerTest {
     @MockkBean lateinit var neighbourhoodService: NeighbourhoodService
     @Autowired lateinit var mockMvc: MockMvc
 
-    lateinit var kallioDTO: NeighbourhoodDTO
-    lateinit var kluuviDTO: NeighbourhoodDTO
+    lateinit var kallioDTO: NeighbourhoodGetDTO
+    lateinit var kluuviDTO: NeighbourhoodGetDTO
 
     val requestId = "01_01_001"
     val csrfIdentifier = "scoop-client"
@@ -99,7 +99,7 @@ internal class NeighbourhoodControllerTest {
     }
 
     private fun initTestData() {
-        kallioDTO = NeighbourhoodDTO(id = 1, name = "Kallio")
-        kluuviDTO = NeighbourhoodDTO(id = 1, name = "Kluuvi")
+        kallioDTO = NeighbourhoodGetDTO(id = 1, name = "Kallio")
+        kluuviDTO = NeighbourhoodGetDTO(id = 1, name = "Kluuvi")
     }
 }

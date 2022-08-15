@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.marjorie.scoop.common.Constants.CSRF_IDENTIFIER
 import com.marjorie.scoop.common.Constants.REQUEST_ID
 import com.marjorie.scoop.common.ScoopResourceAlreadyExistsException
-import com.marjorie.scoop.neighbourhood.dto.NeighbourhoodDTO
+import com.marjorie.scoop.neighbourhood.dto.NeighbourhoodGetDTO
 import com.marjorie.scoop.venue.dto.VenueGetDTO
 import com.marjorie.scoop.venue.dto.VenuePostDTO
 import com.marjorie.scoop.venue.dto.VenueSearchDTO
@@ -225,7 +225,7 @@ internal class VenueControllerTest {
             streetAddress = "Piispansilta 11",
             postalCode = "02230",
             city = "Espoo",
-            neighbourhood = NeighbourhoodDTO(id = 1, name = "Tapiola"),
+            neighbourhood = NeighbourhoodGetDTO(id = 1, name = "Tapiola"),
             createdAt = Instant.now()
         )
 
@@ -235,7 +235,7 @@ internal class VenueControllerTest {
             streetAddress = "Mannerheimintie 20",
             postalCode = "00100",
             city = "Helsinki",
-            neighbourhood = NeighbourhoodDTO(id = 2, name = "Kallio"),
+            neighbourhood = NeighbourhoodGetDTO(id = 2, name = "Kallio"),
             createdAt = Instant.now()
         )
 
@@ -245,7 +245,7 @@ internal class VenueControllerTest {
             streetAddress = "Piispansilta 11",
             postalCode = "02230",
             city = "Espoo",
-            neighbourhood = NeighbourhoodDTO(id = 1, name = "Tapiola"),
+            neighbourhood = NeighbourhoodGetDTO(id = 1, name = "Tapiola"),
             createdAt = Instant.now()
         )
 
@@ -255,7 +255,7 @@ internal class VenueControllerTest {
             streetAddress = "Mannerheimintie 20",
             postalCode = "00100",
             city = "Helsinki",
-            neighbourhood = NeighbourhoodDTO(id = 2, name = "Kallio"),
+            neighbourhood = NeighbourhoodGetDTO(id = 2, name = "Kallio"),
             createdAt = Instant.now()
         )
 

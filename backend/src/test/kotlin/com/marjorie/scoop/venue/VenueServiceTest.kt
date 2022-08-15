@@ -3,7 +3,7 @@ package com.marjorie.scoop.venue
 import com.marjorie.scoop.common.ScoopResourceAlreadyExistsException
 import com.marjorie.scoop.common.ScoopResourceNotFoundException
 import com.marjorie.scoop.neighbourhood.NeighbourhoodEntity
-import com.marjorie.scoop.neighbourhood.dto.NeighbourhoodDTO
+import com.marjorie.scoop.neighbourhood.dto.NeighbourhoodGetDTO
 import com.marjorie.scoop.venue.dto.VenueGetDTO
 import com.marjorie.scoop.venue.dto.VenuePostDTO
 import com.marjorie.scoop.venue.dto.VenueSearchDTO
@@ -170,7 +170,7 @@ internal class VenueServiceTest {
             streetAddress = "Piispansilta 11",
             postalCode = "02230",
             city = "Espoo",
-            neighbourhood = NeighbourhoodDTO(id = 1, name = "Tapiola"),
+            neighbourhood = NeighbourhoodGetDTO(id = 1, name = "Tapiola"),
             createdAt = Instant.now(),
         )
 

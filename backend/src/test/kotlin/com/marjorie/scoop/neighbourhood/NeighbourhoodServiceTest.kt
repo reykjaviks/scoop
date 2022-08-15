@@ -1,6 +1,6 @@
 package com.marjorie.scoop.neighbourhood
 
-import com.marjorie.scoop.neighbourhood.dto.NeighbourhoodDTO
+import com.marjorie.scoop.neighbourhood.dto.NeighbourhoodGetDTO
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -19,8 +19,8 @@ internal class NeighbourhoodServiceTest {
 
     lateinit var kallioEntity: NeighbourhoodEntity
     lateinit var kluuviEntity: NeighbourhoodEntity
-    lateinit var kallioDTO: NeighbourhoodDTO
-    lateinit var kluuviDTO: NeighbourhoodDTO
+    lateinit var kallioDTO: NeighbourhoodGetDTO
+    lateinit var kluuviDTO: NeighbourhoodGetDTO
 
     @BeforeEach
     fun setUp() {
@@ -32,7 +32,7 @@ internal class NeighbourhoodServiceTest {
         val id: Long = 1
 
         every { neighbourhoodRepository.findByIdOrNull(id) } returns kluuviEntity
-        every { neighbourhoodMapper.mapToNeighbourhoodDTO(kluuviEntity) } returns kluuviDTO
+        every { neighbourhoodMapper.mapToNeighbourhoodGetDTO(kluuviEntity) } returns kluuviDTO
 
         val expectedNeighbourhoodDTO = kluuviDTO
         val actualNeighbourhoodDTO = neighbourhoodService.getNeighbourhood(id)
@@ -103,7 +103,7 @@ internal class NeighbourhoodServiceTest {
     private fun initTestData() {
         kallioEntity = NeighbourhoodEntity(name = "Kallio")
         kluuviEntity = NeighbourhoodEntity(name = "Kallio")
-        kallioDTO = NeighbourhoodDTO(id = 1, name = "Kallio")
-        kluuviDTO = NeighbourhoodDTO(id = 1, name = "Kluuvi")
+        kallioDTO = NeighbourhoodGetDTO(id = 1, name = "Kallio")
+        kluuviDTO = NeighbourhoodGetDTO(id = 1, name = "Kluuvi")
     }
 }

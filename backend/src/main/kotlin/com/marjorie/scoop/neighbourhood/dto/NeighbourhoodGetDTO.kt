@@ -1,6 +1,6 @@
 package com.marjorie.scoop.neighbourhood.dto
 
-data class NeighbourhoodDTO(
+data class NeighbourhoodGetDTO(
     var id: Long,
     var name: String,
 )
