@@ -4,7 +4,7 @@ import com.marjorie.scoop.common.ScoopResourceAlreadyExistsException
 import com.marjorie.scoop.common.ScoopResourceNotFoundException
 import com.marjorie.scoop.neighbourhood.NeighbourhoodEntity
 import com.marjorie.scoop.neighbourhood.dto.NeighbourhoodDTO
-import com.marjorie.scoop.venue.dto.VenueDTO
+import com.marjorie.scoop.venue.dto.VenueGetDTO
 import com.marjorie.scoop.venue.dto.VenuePostDTO
 import com.marjorie.scoop.venue.dto.VenueSearchDTO
 import com.marjorie.scoop.venue.dto.VenueUpdateDTO
@@ -29,7 +29,7 @@ internal class VenueServiceTest {
     lateinit var wingeryEntity: VenueEntity
     lateinit var pastisEntity: VenueEntity
 
-    lateinit var wingeryDTO: VenueDTO
+    lateinit var wingeryDTO: VenueGetDTO
 
     lateinit var wingerySearchDTO: VenueSearchDTO
     lateinit var pastisSearchDTO: VenueSearchDTO
@@ -47,7 +47,7 @@ internal class VenueServiceTest {
         val id: Long = 1
 
         every { venueRepository.findByIdOrNull(id) } returns wingeryEntity
-        every { venueMapper.mapToVenueDTO(any()) } returns wingeryDTO
+        every { venueMapper.mapToVenueGetDTO(any()) } returns wingeryDTO
 
         val expectedName: String = wingeryEntity.name
         val actualName: String? = venueService.getVenueDTO(id)?.name
@@ -106,7 +106,7 @@ internal class VenueServiceTest {
     fun `createVenue saves venue`() {
         every { venueRepository.existsByName(any()) } returns false
         every { venueRepository.save(any()) } returns wingeryEntity
-        every { venueMapper.mapToVenueDTO(any()) } returns wingeryDTO
+        every { venueMapper.mapToVenueGetDTO(any()) } returns wingeryDTO
         every { venueMapper.mapToVenueEntity(wingeryPostDTO) } returns wingeryEntity
 
         val savedVenue = venueService.createVenue(wingeryPostDTO)
@@ -129,7 +129,7 @@ internal class VenueServiceTest {
     fun `updateVenue updates venue`() {
         every { venueRepository.findByIdOrNull(any()) } returns wingeryEntity
         every { venueMapper.updateVenueEntity(any(), any()) } returns wingeryEntity
-        every { venueMapper.mapToVenueDTO(wingeryEntity) } returns wingeryDTO
+        every { venueMapper.mapToVenueGetDTO(wingeryEntity) } returns wingeryDTO
 
         val updatedVenue = venueService.updateVenue(1, VenueUpdateDTO())
         val expectedVenue = wingeryDTO
@@ -164,7 +164,7 @@ internal class VenueServiceTest {
             neighbourhood = NeighbourhoodEntity("Kaartinkaupunki"),
         )
 
-        wingeryDTO = VenueDTO(
+        wingeryDTO = VenueGetDTO(
             id = 1,
             name = "Pretty Boy Wingery",
             streetAddress = "Piispansilta 11",

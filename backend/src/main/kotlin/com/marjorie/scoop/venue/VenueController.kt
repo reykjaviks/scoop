@@ -15,7 +15,7 @@ import org.springframework.web.server.ResponseStatusException
 class VenueController(private val venueService: VenueService) {
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    fun getVenue(@PathVariable id: Long): VenueDTO {
+    fun getVenue(@PathVariable id: Long): VenueGetDTO {
         return venueService.getVenueDTO(id)
             ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "No venue found for id $id")
     }
@@ -36,7 +36,7 @@ class VenueController(private val venueService: VenueService) {
 
     @PostMapping("/add")
     @ResponseStatus(HttpStatus.CREATED)
-    fun createVenue(@RequestBody venuePostDTO: VenuePostDTO): VenueDTO? {
+    fun createVenue(@RequestBody venuePostDTO: VenuePostDTO): VenueGetDTO? {
         try {
             return venueService.createVenue(venuePostDTO)
         } catch (e: ScoopResourceAlreadyExistsException) {
@@ -46,7 +46,7 @@ class VenueController(private val venueService: VenueService) {
 
     @PatchMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    fun updateVenue(@PathVariable id: Long, @RequestBody venueUpdateDTO: VenueUpdateDTO): VenueDTO {
+    fun updateVenue(@PathVariable id: Long, @RequestBody venueUpdateDTO: VenueUpdateDTO): VenueGetDTO {
         try {
             return venueService.updateVenue(id, venueUpdateDTO)
         } catch (e: ScoopResourceNotFoundException) {

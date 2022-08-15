@@ -4,9 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.marjorie.scoop.common.Constants.CSRF_IDENTIFIER
 import com.marjorie.scoop.common.Constants.REQUEST_ID
 import com.marjorie.scoop.common.ScoopResourceAlreadyExistsException
-import com.marjorie.scoop.common.ScoopResourceNotFoundException
 import com.marjorie.scoop.neighbourhood.dto.NeighbourhoodDTO
-import com.marjorie.scoop.venue.dto.VenueDTO
+import com.marjorie.scoop.venue.dto.VenueGetDTO
 import com.marjorie.scoop.venue.dto.VenuePostDTO
 import com.marjorie.scoop.venue.dto.VenueSearchDTO
 import com.marjorie.scoop.venue.dto.VenueUpdateDTO
@@ -35,8 +34,8 @@ internal class VenueControllerTest {
     @Autowired lateinit var mockMvc: MockMvc
     @Autowired lateinit var objectMapper: ObjectMapper
 
-    lateinit var tapiolaDTO: VenueDTO
-    lateinit var kallioDTO: VenueDTO
+    lateinit var tapiolaDTO: VenueGetDTO
+    lateinit var kallioDTO: VenueGetDTO
     lateinit var tapiolaSearchDTO: VenueSearchDTO
     lateinit var kallioSearchDTO: VenueSearchDTO
     lateinit var postDTO: VenuePostDTO
@@ -220,7 +219,7 @@ internal class VenueControllerTest {
     }
 
     private fun initTestData() {
-        tapiolaDTO = VenueDTO(
+        tapiolaDTO = VenueGetDTO(
             id = 1,
             name = "Pretty Boy Wingery",
             streetAddress = "Piispansilta 11",
@@ -230,7 +229,7 @@ internal class VenueControllerTest {
             createdAt = Instant.now()
         )
 
-        kallioDTO = VenueDTO(
+        kallioDTO = VenueGetDTO(
             id = 2,
             name = "Momochi",
             streetAddress = "Mannerheimintie 20",

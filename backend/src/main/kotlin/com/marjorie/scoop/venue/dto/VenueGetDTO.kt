@@ -4,7 +4,7 @@ import com.marjorie.scoop.neighbourhood.dto.NeighbourhoodDTO
 import com.marjorie.scoop.review.dto.ReviewSlimDTO
 import java.time.Instant
 
-data class VenueDTO(
+data class VenueGetDTO(
     var id: Long,
     var name: String,
     var description: String? = null,

@@ -14,9 +14,9 @@ class VenueService(
     private val venueRepository: VenueRepository,
     private val venueMapper: VenueMapper,
 ) {
-    fun getVenueDTO(id: Long): VenueDTO? {
+    fun getVenueDTO(id: Long): VenueGetDTO? {
         val venueEntity = venueRepository.findByIdOrNull(id) ?: return null
-        return venueMapper.mapToVenueDTO(venueEntity)
+        return venueMapper.mapToVenueGetDTO(venueEntity)
     }
 
     fun getVenueEntity(id: Long): VenueEntity? {
@@ -36,18 +36,18 @@ class VenueService(
         return venueMapper.mapToVenueSearchDTOs(venueEntities)
     }
 
-    fun createVenue(venuePostDTO: VenuePostDTO): VenueDTO {
+    fun createVenue(venuePostDTO: VenuePostDTO): VenueGetDTO {
         if (this.venueExists(venuePostDTO.name)) {
             throw ScoopResourceAlreadyExistsException("Venue '${venuePostDTO.name}' already exists")
         }
         val savedVenue = venueRepository.save(venueMapper.mapToVenueEntity(venuePostDTO))
-        return venueMapper.mapToVenueDTO(savedVenue)
+        return venueMapper.mapToVenueGetDTO(savedVenue)
     }
 
-    fun updateVenue(id: Long, venueUpdateDTO: VenueUpdateDTO): VenueDTO {
+    fun updateVenue(id: Long, venueUpdateDTO: VenueUpdateDTO): VenueGetDTO {
         val venue = this.getVenueEntity(id) ?: throw ScoopResourceNotFoundException("No venue found for ID $id")
         val updatedVenueEntity = venueMapper.updateVenueEntity(venueUpdateDTO, venue)
-        return venueMapper.mapToVenueDTO(updatedVenueEntity)
+        return venueMapper.mapToVenueGetDTO(updatedVenueEntity)
     }
 
     fun venueExists(name: String): Boolean {

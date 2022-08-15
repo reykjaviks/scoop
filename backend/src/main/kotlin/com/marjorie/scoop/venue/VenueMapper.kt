@@ -13,11 +13,11 @@ import org.mapstruct.ReportingPolicy
     unmappedTargetPolicy = ReportingPolicy.IGNORE
 )
 interface VenueMapper {
-    fun mapToVenueEntity(venueDTO: VenueDTO): VenueEntity
+    fun mapToVenueEntity(venueGetDTO: VenueGetDTO): VenueEntity
     @Mapping(source = "neighbourhoodId", target = "neighbourhood")
     fun mapToVenueEntity(venuePostDTO: VenuePostDTO): VenueEntity
     fun mapToVenueEntity(venueSlimDTO: VenueSlimDTO): VenueEntity
-    fun mapToVenueDTO(venueEntity: VenueEntity): VenueDTO
+    fun mapToVenueGetDTO(venueEntity: VenueEntity): VenueGetDTO
     fun mapToVenueSlimDTO(venueEntity: VenueEntity): VenueSlimDTO
     fun mapToVenueSearchDTOs(venueEntities: List<VenueEntity>): List<VenueSearchDTO>
     fun updateVenueEntity(venueUpdateDTO: VenueUpdateDTO, @MappingTarget venueEntity: VenueEntity): VenueEntity
