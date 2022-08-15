@@ -35,7 +35,7 @@ internal class VenueServiceTest {
     lateinit var pastisSearchDTO: VenueSearchDTO
 
     lateinit var wingeryPostDTO: VenuePostDTO
-    lateinit var passtisPostDTO: VenuePostDTO
+    lateinit var pastisPostDTO: VenuePostDTO
 
     @BeforeEach
     fun setUp() {
@@ -199,7 +199,7 @@ internal class VenueServiceTest {
             city = "Espoo",
         )
 
-        passtisPostDTO = VenuePostDTO(
+        pastisPostDTO = VenuePostDTO(
             name = "Pastis",
             streetAddress = "Pieni Roobertinkatu 2",
             postalCode = "00130",
