@@ -8,13 +8,15 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { HomeComponent } from './home/home.component';
 import { VenueComponent } from './venue/venue.component';
 import { ModalComponent } from './modal/modal.component';
+import { NavigationComponent } from './navigation/navigation.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
     VenueComponent,
-    ModalComponent
+    ModalComponent,
+    NavigationComponent
   ],
   imports: [
     BrowserModule,
