@@ -2,10 +2,6 @@ package com.marjorie.scoop.config
 
 import com.marjorie.scoop.auth.UsernamePasswordAuthProvider
 import com.marjorie.scoop.auth.csrf.CustomCsrfTokenRepository
-import com.marjorie.scoop.auth.filter.CsrfIdentifierValidationFilter
-import com.marjorie.scoop.auth.filter.CsrfLoggingFilter
-import com.marjorie.scoop.auth.filter.RequestLoggingFilter
-import com.marjorie.scoop.auth.filter.RequestValidationFilter
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpMethod
@@ -13,10 +9,12 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
-import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer
-import org.springframework.security.web.authentication.www.BasicAuthenticationFilter
-import org.springframework.security.web.csrf.CsrfFilter
 import org.springframework.security.web.csrf.CsrfTokenRepository
+import org.springframework.web.cors.CorsConfiguration
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource
+import org.springframework.web.filter.CorsFilter
+import java.util.*
+
 
 /**
  * Manages configuration info regarding web authorization.
@@ -39,11 +37,14 @@ class WebAuthorizationConfig(
 
         httpSecurity.formLogin().defaultSuccessUrl("/auth", true)
 
+        /* Disabled while testing
         httpSecurity.csrf { csrfConfigurer: CsrfConfigurer<HttpSecurity?> ->
             csrfConfigurer.csrfTokenRepository(csrfTokenRepository())
         }
+        */
 
         /** Filter chain */
+        /* Disabled while testing
         httpSecurity.addFilterBefore(
             CsrfIdentifierValidationFilter(),
             CsrfFilter::class.java
@@ -57,6 +58,7 @@ class WebAuthorizationConfig(
             RequestLoggingFilter(),
             BasicAuthenticationFilter::class.java
         )
+        */
 
         /**
          * Access rules for various endpoints. Please note that the application uses a combination of
