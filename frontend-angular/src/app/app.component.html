@@ -1,8 +1,11 @@
 <div>
   <h1>Hello!</h1>
-  <div *ngFor="let venue of venues">
-    <div>{{ venue.name }}</div>
-  </div>
+  <nav>
+    <ul>
+      <li><a routerLink="/home" routerLinkActive="active" ariaCurrentWhenActive="page">Home</a></li>
+      <li><a routerLink="/venues" routerLinkActive="active" ariaCurrentWhenActive="page">Venues</a></li>
+    </ul>
+  </nav>
 </div>
 
 <router-outlet></router-outlet>
