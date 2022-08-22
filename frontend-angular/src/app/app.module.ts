@@ -10,7 +10,6 @@ import {FormsModule} from "@angular/forms";
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { CoreModule } from './core/core.module';
 import { SharedModule } from './shared/shared.module';
-import { ScullyLibModule } from '@scullyio/ng-lib'
 
 @NgModule({
   declarations: [
@@ -25,7 +24,6 @@ import { ScullyLibModule } from '@scullyio/ng-lib'
     BrowserAnimationsModule,
     FormsModule,
     NgbModule,
-    ScullyLibModule,
     // Modules created by me
     CoreModule,
     SharedModule
