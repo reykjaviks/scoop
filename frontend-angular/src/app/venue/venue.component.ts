@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {VenueGetDTO} from "../common/data";
+import {VenueGetDTO} from "../core/data";
 import {VenueService} from "./venue.service";
 import {HttpErrorResponse} from "@angular/common/http";
 

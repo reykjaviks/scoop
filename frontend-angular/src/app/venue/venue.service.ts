@@ -1,7 +1,7 @@
 import { Observable } from "rxjs";
 import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
-import { VenueGetDTO } from "../common/data";
+import { VenueGetDTO } from "../core/data";
 import {environment} from "../../environments/environment";
 
 @Injectable({
