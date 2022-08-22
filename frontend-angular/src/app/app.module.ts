@@ -4,20 +4,18 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import {HttpClientModule} from "@angular/common/http";
 import { HomeComponent } from './home/home.component';
-import { VenueComponent } from './venue/venue.component';
-import { LoginComponent } from './account/login/login.component';
 import { RegisterComponent } from './account/register/register.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {FormsModule} from "@angular/forms";
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { CoreModule } from './core/core.module';
 import { SharedModule } from './shared/shared.module';
+import { ScullyLibModule } from '@scullyio/ng-lib'
 
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
-    VenueComponent,
     RegisterComponent,
   ],
   imports: [
@@ -27,6 +25,7 @@ import { SharedModule } from './shared/shared.module';
     BrowserAnimationsModule,
     FormsModule,
     NgbModule,
+    ScullyLibModule,
     // Modules created by me
     CoreModule,
     SharedModule
