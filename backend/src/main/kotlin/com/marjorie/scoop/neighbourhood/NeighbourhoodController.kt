@@ -24,4 +24,11 @@ class NeighbourhoodController(private val neighbourhoodService: NeighbourhoodSer
         return neighbourhoodService.getAllNeighbourhoods()
             ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "The result of getting all neighbourhoods was empty")
     }
+
+    @GetMapping("/venue-count")
+    @ResponseStatus(HttpStatus.OK)
+    fun getVenueCountByNeighbourhood(): Iterable<NeighbourhoodAggregate> {
+        return neighbourhoodService.getVenueCountByNeighbourhood()
+            ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "The result of counting venues by neighbourhood was empty")
+    }
 }
