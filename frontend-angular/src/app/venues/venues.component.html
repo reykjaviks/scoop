@@ -1,3 +1,17 @@
-<div *ngFor="let venue of venues">
-  <div>{{ venue.name }}</div>
+<div class="container">
+  <div class="wrapper">
+  <div *ngFor="let neighbourhoodInfo of neighbourhoodInfos">
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>{{ neighbourhoodInfo.neighbourhoodName }}</mat-card-title>
+      </mat-card-header>
+      <img mat-card-image src="{{ neighbourhoodInfo.imgUrl }}" alt="Photo of a restaurant located in the {{ neighbourhoodInfo.neighbourhoodName }}">
+      <mat-card-content>
+        <p>{{ neighbourhoodInfo.venueCount }} venues</p>
+      </mat-card-content>
+    </mat-card>  
+  </div>
+  </div>
 </div>
+
+
