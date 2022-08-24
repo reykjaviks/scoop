@@ -6,6 +6,6 @@ package com.marjorie.scoop.neighbourhood
  */
 interface NeighbourhoodAggregate {
     fun getNeighbourhoodName(): String
-    fun getImgLink(): String?
+    fun getImgUrl(): String?
     fun getVenueCount(): Long
 }

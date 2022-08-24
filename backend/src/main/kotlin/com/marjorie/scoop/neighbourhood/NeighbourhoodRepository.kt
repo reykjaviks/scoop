@@ -11,33 +11,20 @@ import org.springframework.stereotype.Repository
 interface NeighbourhoodRepository: JpaRepository<NeighbourhoodEntity?, Long?> {
     // todo: use a materialized view to calculate a random venue image representing a neighbourhood
     @Query("""
-        with neighbourhood_images as (
+        with venue_counts as (
 	        select 
 		        neighbourhood_id, 
-		        img_url, 
-    	        row_number() over (
-    		        partition by neighbourhood_id order by random()
-    	        ) as row_num
-            from scoop.venue 
-	        where neighbourhood_id is not null
-            and img_url is not null
-        ),
-        neighbourhood_venues as (
-	        select 
-		        neighbourhood_id, 
-		        count(*) as venues_count
+		        count(*) as venue_count
             from scoop.venue
             group by neighbourhood_id
         )
         select 
-	        nh.name as neighbourhoodName, 
-	        images.img_url as imgLink, 
-	        venues.venues_count as venueCount
-            from neighbourhood_images images
-            inner join neighbourhood_venues venues on venues.neighbourhood_id = images.neighbourhood_id
-            inner join scoop.neighbourhood nh on nh.id = images.neighbourhood_id
-            where images.row_num = 1
-            order by venues.venues_count desc;
+	        images.neighbourhood_name as neighbourhoodName, 
+	        images.img_url as imgUrl, 
+	        counts.venue_count as venueCount
+            from scoop.neighbourhood_images images -- Materialized view containing image urls
+            inner join venue_counts counts on counts.neighbourhood_id = images.neighbourhood_id
+            order by counts.venue_count desc;
     """, nativeQuery = true)
     fun countVenuesByNeighbourhood(): List<NeighbourhoodAggregate>?
 }

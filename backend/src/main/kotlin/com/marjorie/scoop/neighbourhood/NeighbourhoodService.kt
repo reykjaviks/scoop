@@ -31,7 +31,7 @@ class NeighbourhoodService(
         }
         return null
     }
-    
+
     fun getVenueCountByNeighbourhood(): List<NeighbourhoodAggregate>? {
         val venueCounts = neighbourhoodRepository.countVenuesByNeighbourhood()
         if (venueCounts.isNullOrEmpty()) return null
