@@ -9,7 +9,6 @@ import org.springframework.stereotype.Repository
  */
 @Repository
 interface NeighbourhoodRepository: JpaRepository<NeighbourhoodEntity?, Long?> {
-    // todo: use a materialized view to calculate a random venue image representing a neighbourhood
     @Query("""
         with venue_counts as (
 	        select 
