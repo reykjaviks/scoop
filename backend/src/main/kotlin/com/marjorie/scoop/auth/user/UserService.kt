@@ -21,14 +21,14 @@ class UserService(
     private val userMapper: UserMapper
 ) {
     @PreAuthorize("hasAuthority('ROLE_ADMIN') or #username == authentication.name")
-    fun getUser(username: String): UserEntity? {
-        return userRepository.findByUsername(username)
-    }
-
-    @PreAuthorize("hasAuthority('ROLE_ADMIN') or #username == authentication.name")
     fun getUserDTO(username: String): UserDTO? {
         val userEntity = userRepository.findByUsername(username) ?: return null
         return userMapper.mapToUserDTO(userEntity)
+    }
+
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or #username == authentication.name")
+    fun getUserEntity(username: String): UserEntity? {
+        return userRepository.findByUsername(username)
     }
 
     @Transactional
@@ -36,7 +36,7 @@ class UserService(
         val newUser = userRepository.save(
             UserEntity(
                 name = applicant.name,
-                username = applicant.username,
+                username = applicant.username.lowercase(),
                 password = this.passwordEncoder.encode(applicant.password),
                 authorities = null,
                 reviewList = null,

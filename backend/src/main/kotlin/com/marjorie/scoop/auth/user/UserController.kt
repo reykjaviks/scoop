@@ -23,9 +23,9 @@ class UserController(private val userService: UserService) {
 
     @PostMapping("/add")
     fun createUser(@RequestBody applicant: UserPostDTO) {
-        val usernameExists: Boolean = userService.usernameExists(applicant.username)
+        val usernameExists: Boolean = userService.usernameExists(applicant.username.lowercase()) // usernames need to be checked in a lower case format
         if (usernameExists) {
-            throw ResponseStatusException(HttpStatus.CONFLICT, "Username ${applicant.username} already exists.")
+            throw ResponseStatusException(HttpStatus.CONFLICT, "Username ${applicant.username.lowercase()} already exists.")
         } else {
             logger.info("Creating a new user '${applicant.username}'...")
             userService.createUserWithDefaultUserRole(applicant)
