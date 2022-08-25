@@ -28,7 +28,6 @@ class UserManagementConfig {
             inner join authority a on a.id = ua.authority_id
             where u.username = ?
         """
-
         return JdbcUserDetailsManager(dataSource).also {
             it.setAuthoritiesByUsernameQuery(authsByUserQuery)
         }

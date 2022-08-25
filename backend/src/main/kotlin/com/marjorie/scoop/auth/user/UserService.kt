@@ -1,6 +1,8 @@
 package com.marjorie.scoop.auth.user
 
 import com.marjorie.scoop.auth.authority.AuthorityService
+import com.marjorie.scoop.auth.user.dto.UserDTO
+import com.marjorie.scoop.auth.user.dto.UserPostDTO
 import com.marjorie.scoop.auth.userauthority.UserAuthorityService
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
@@ -16,17 +18,26 @@ class UserService(
     private val authorityService: AuthorityService,
     private val userAuthorityService: UserAuthorityService,
     private val passwordEncoder: BCryptPasswordEncoder,
+    private val userMapper: UserMapper
 ) {
     @PreAuthorize("hasAuthority('ROLE_ADMIN') or #username == authentication.name")
-    fun getUser(username: String): UserEntity? = userRepository.findByUsername(username)
+    fun getUser(username: String): UserEntity? {
+        return userRepository.findByUsername(username)
+    }
+
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or #username == authentication.name")
+    fun getUserDTO(username: String): UserDTO? {
+        val userEntity = userRepository.findByUsername(username) ?: return null
+        return userMapper.mapToUserDTO(userEntity)
+    }
 
     @Transactional
-    fun createUserWithDefaultUserRole(registrationData: UserEntity) {
+    fun createUserWithDefaultUserRole(applicant: UserPostDTO) {
         val newUser = userRepository.save(
             UserEntity(
-                name = registrationData.name,
-                username = registrationData.username,
-                password = this.passwordEncoder.encode(registrationData.password),
+                name = applicant.name,
+                username = applicant.username,
+                password = this.passwordEncoder.encode(applicant.password),
                 authorities = null,
                 reviewList = null,
             )

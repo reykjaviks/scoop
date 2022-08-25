@@ -1,5 +1,7 @@
 package com.marjorie.scoop.auth.user
 
+import com.marjorie.scoop.auth.user.dto.UserDTO
+import com.marjorie.scoop.auth.user.dto.UserPostDTO
 import mu.KotlinLogging
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
@@ -14,19 +16,19 @@ private val logger = KotlinLogging.logger {}
 @RequestMapping("/api/user")
 class UserController(private val userService: UserService) {
     @GetMapping("/{username}")
-    fun getUser(@PathVariable username: String): UserEntity? {
-        return userService.getUser(username)
+    fun getUser(@PathVariable username: String): UserDTO? {
+        return userService.getUserDTO(username)
             ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "No user found for username $username")
     }
 
     @PostMapping("/add")
-    fun createUser(@RequestBody registrationData: UserEntity) {
-        val usernameExists: Boolean = userService.usernameExists(registrationData.username)
+    fun createUser(@RequestBody applicant: UserPostDTO) {
+        val usernameExists: Boolean = userService.usernameExists(applicant.username)
         if (usernameExists) {
-            throw ResponseStatusException(HttpStatus.CONFLICT, "Username ${registrationData.username} already exists.")
+            throw ResponseStatusException(HttpStatus.CONFLICT, "Username ${applicant.username} already exists.")
         } else {
-            logger.info("Creating a new user '${registrationData.username}'...")
-            userService.createUserWithDefaultUserRole(registrationData)
+            logger.info("Creating a new user '${applicant.username}'...")
+            userService.createUserWithDefaultUserRole(applicant)
         }
     }
 }

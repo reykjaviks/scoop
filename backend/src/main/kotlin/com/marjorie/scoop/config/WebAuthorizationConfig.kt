@@ -72,7 +72,7 @@ class WebAuthorizationConfig(
             .mvcMatchers(HttpMethod.GET, "/auth").authenticated()
 
             .mvcMatchers(HttpMethod.GET, "/api/user/*").authenticated()
-            .mvcMatchers(HttpMethod.POST, "/api/user/add").authenticated()
+            .mvcMatchers(HttpMethod.POST, "/api/user/add").permitAll()
             .mvcMatchers(HttpMethod.PATCH, "/api/user/*").authenticated()
             .mvcMatchers(HttpMethod.DELETE, "/api/user/*").authenticated()
 
