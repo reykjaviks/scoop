@@ -7,6 +7,7 @@ import { SignupComponent } from './signup/signup.component';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { FormsModule } from '@angular/forms';
+import { MatInputModule } from '@angular/material/input'; 
 
 @NgModule({
   declarations: [
@@ -18,6 +19,7 @@ import { FormsModule } from '@angular/forms';
     UserRoutingModule,
     MatCardModule,
     MatFormFieldModule,
+    MatInputModule,
     FormsModule
   ],
   exports: [
