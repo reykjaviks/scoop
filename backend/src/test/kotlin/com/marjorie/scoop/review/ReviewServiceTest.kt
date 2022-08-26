@@ -205,7 +205,7 @@ internal class ReviewServiceTest {
             review = "It was okay, I guess.",
             rating = 3.0,
             venueId = 1,
-            userEmail = marjorie.username
+            username = marjorie.username
         )
     }
 }

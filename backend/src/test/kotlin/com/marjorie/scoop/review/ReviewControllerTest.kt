@@ -153,7 +153,7 @@ internal class ReviewControllerTest {
 
     @Test // todo fix
     fun `Create review returns 401 Unauthorized when auth user and review user don't match`() {
-        val postDTO = ReviewPostDTO(review = "Ok.", rating = 2.0, username = "Marjorie", venueId = 1)
+        val postDTO = ReviewPostDTO(review = "Ok.", rating = 2.0, username = "marjorie@mail.com", venueId = 1)
 
         mockMvc.perform(post("/api/review/add")
             .with(httpBasic("Marjorie", "12345"))
@@ -167,14 +167,15 @@ internal class ReviewControllerTest {
     }
 
     private fun initTestData() {
-        val username = "Marjorie"
+        val marjorie = UserSlimDTO(1, "Marjorie", "marjorie@mail.com")
+        val email = "marjorie@mail.com"
 
         reviewDTO1 = ReviewDTO(
             id = 1,
             review = "It was okay, I guess.",
             rating = 3.0,
             venue = VenueSlimDTO(id = 1, name = "Test place"),
-            user = UserSlimDTO(1, username = username),
+            user = marjorie,
             createdAt = Instant.now()
         )
 
@@ -183,7 +184,7 @@ internal class ReviewControllerTest {
             review = "I appreciated how the staff was friendly without being overly chatty.",
             rating = 4.0,
             venue = VenueSlimDTO(id = 1, name = "Test place"),
-            user = UserSlimDTO(1, username = username),
+            user = marjorie,
             createdAt = Instant.now()
         )
 
@@ -191,7 +192,7 @@ internal class ReviewControllerTest {
             review = "It was okay, I guess.",
             rating = 3.0,
             venueId = 1,
-            username = username
+            username = email
         )
     }
 }
