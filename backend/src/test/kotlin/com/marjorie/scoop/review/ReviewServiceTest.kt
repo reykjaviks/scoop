@@ -155,6 +155,13 @@ internal class ReviewServiceTest {
             password = "12345",
         )
 
+        val slimMarjorie = UserSlimDTO(
+            id = 1,
+            name = "Marjorie",
+            username = "marjorie@mail.com"
+
+        )
+
         val wingery = VenueEntity(
             name = "Pretty Boy Wingery",
             streetAddress = "Piispansilta 11",
@@ -181,7 +188,7 @@ internal class ReviewServiceTest {
             review = "It was okay, I guess.",
             rating = 3.0,
             venue = VenueSlimDTO(id = 1, name = "Test place"),
-            user = UserSlimDTO(1, username = marjorie.username),
+            user = slimMarjorie,
             createdAt = Instant.now()
         )
 
@@ -190,7 +197,7 @@ internal class ReviewServiceTest {
             review = "I appreciated how the staff was friendly without being overly chatty.",
             rating = 4.0,
             venue = VenueSlimDTO(id = 1, name = "Test place"),
-            user = UserSlimDTO(1, username = marjorie.username),
+            user = slimMarjorie,
             createdAt = Instant.now()
         )
 
@@ -198,7 +205,7 @@ internal class ReviewServiceTest {
             review = "It was okay, I guess.",
             rating = 3.0,
             venueId = 1,
-            username = marjorie.username
+            userEmail = marjorie.username
         )
     }
 }

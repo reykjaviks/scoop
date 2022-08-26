@@ -1,9 +1,10 @@
 package com.marjorie.scoop.auth.user.dto
 
 /**
- * The most simplified version of the user entity. Transfers only the id and username.
+ * The most simplified version of the user entity. Transfers only the id, name and username.
  */
 data class UserSlimDTO(
     var id: Long,
+    var name: String,
     var username: String,
 )

@@ -1,7 +1,5 @@
 package com.marjorie.scoop.auth.user
 
-import com.marjorie.scoop.auth.user.SecurityUser
-import com.marjorie.scoop.auth.user.UserRepository
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.stereotype.Service
