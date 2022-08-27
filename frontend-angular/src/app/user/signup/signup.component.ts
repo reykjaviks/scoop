@@ -6,6 +6,7 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./signup.component.sass']
 })
 export class SignupComponent implements OnInit {
+  public emailExists = false;
 
   constructor() { }
 

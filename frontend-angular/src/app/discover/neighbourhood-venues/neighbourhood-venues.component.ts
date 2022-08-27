@@ -1,27 +1,27 @@
 import { Component, OnInit } from '@angular/core';
-import { Venue } from './interfaces/venue';
-import { VenuesService } from './venues.service';
+import { NeighbourhoodVenuesService } from './neighbourhood-venues.service';
 import { HttpErrorResponse } from "@angular/common/http";
-import { NeighbourhoodInfo } from './interfaces/neighbourhood-info';
+import { Venue } from '../interfaces/venue';
+import { NeighbourhoodInfo } from '../interfaces/neighbourhood-info';
 
 @Component({
   selector: 'app-venues',
-  templateUrl: './venues.component.html',
-  styleUrls: ['./venues.component.sass']
+  templateUrl: './neighbourhood-venues.component.html',
+  styleUrls: ['./neighbourhood-venues.component.sass']
 })
-export class VenuesComponent implements OnInit {
+export class NeighbourhoodVenuesComponent implements OnInit {
 
   public venues: Venue[] | undefined;
   public neighbourhoodInfos: NeighbourhoodInfo[] | undefined;
 
-  constructor(private venuesService: VenuesService) { }
+  constructor(private nhVenuesService: NeighbourhoodVenuesService) { }
 
   ngOnInit() {
     this.getNeighbourhoodInfos();
   }
 
   public getVenues(): void {
-    this.venuesService.getVenues().subscribe(
+    this.nhVenuesService.getVenues().subscribe(
       (response: Venue[]) => {
         this.venues = response;
       },
@@ -32,7 +32,7 @@ export class VenuesComponent implements OnInit {
   }
 
   public getNeighbourhoodInfos(): void {
-    this.venuesService.getNeighbourhoodInfos().subscribe(
+    this.nhVenuesService.getNeighbourhoodInfos().subscribe(
       (response: NeighbourhoodInfo[]) => {
         this.neighbourhoodInfos = response;
       },

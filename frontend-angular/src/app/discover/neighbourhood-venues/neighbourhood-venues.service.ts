@@ -1,14 +1,14 @@
 import { Observable } from "rxjs";
 import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
-import { environment } from "../../environments/environment";
-import { Venue } from "./interfaces/venue";
-import { NeighbourhoodInfo } from "./interfaces/neighbourhood-info";
+import { Venue } from "../interfaces/venue";
+import { environment } from "src/environments/environment";
+import { NeighbourhoodInfo } from "../interfaces/neighbourhood-info";
 
 @Injectable({
   providedIn: 'root'
 })
-export class VenuesService {
+export class NeighbourhoodVenuesService {
   private apiServerUrl = environment.apiBaseUrl;
 
   constructor(private http: HttpClient) { }
