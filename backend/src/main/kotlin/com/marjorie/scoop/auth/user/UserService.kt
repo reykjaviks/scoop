@@ -1,6 +1,7 @@
 package com.marjorie.scoop.auth.user
 
 import com.marjorie.scoop.auth.authority.AuthorityService
+import com.marjorie.scoop.auth.user.dto.UserAuthDTO
 import com.marjorie.scoop.auth.user.dto.UserDTO
 import com.marjorie.scoop.auth.user.dto.UserPostDTO
 import com.marjorie.scoop.auth.userauthority.UserAuthorityService
