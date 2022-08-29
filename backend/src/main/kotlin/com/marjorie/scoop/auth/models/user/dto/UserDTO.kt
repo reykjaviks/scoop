@@ -1,6 +1,6 @@
-package com.marjorie.scoop.auth.user.dto
+package com.marjorie.scoop.auth.models.user.dto
 
-import com.marjorie.scoop.auth.authority.Authority
+import com.marjorie.scoop.auth.models.authority.Authority
 import com.marjorie.scoop.review.ReviewEntity
 
 data class UserDTO(

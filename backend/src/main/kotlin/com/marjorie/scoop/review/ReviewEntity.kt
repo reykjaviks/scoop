@@ -2,7 +2,7 @@ package com.marjorie.scoop.review
 
 import com.fasterxml.jackson.annotation.JsonBackReference
 import com.marjorie.scoop.common.BaseEntity
-import com.marjorie.scoop.auth.user.UserEntity
+import com.marjorie.scoop.auth.models.user.UserEntity
 import com.marjorie.scoop.venue.VenueEntity
 import javax.persistence.*
 import javax.validation.constraints.NotNull

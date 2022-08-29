@@ -1,10 +1,9 @@
-package com.marjorie.scoop.auth.user
+package com.marjorie.scoop.auth.models.user
 
-import com.marjorie.scoop.auth.authority.AuthorityService
-import com.marjorie.scoop.auth.user.dto.UserAuthDTO
-import com.marjorie.scoop.auth.user.dto.UserDTO
-import com.marjorie.scoop.auth.user.dto.UserPostDTO
-import com.marjorie.scoop.auth.userauthority.UserAuthorityService
+import com.marjorie.scoop.auth.models.authority.AuthorityService
+import com.marjorie.scoop.auth.models.user.dto.UserDTO
+import com.marjorie.scoop.auth.models.user.dto.UserPostDTO
+import com.marjorie.scoop.auth.models.userauthority.UserAuthorityService
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service

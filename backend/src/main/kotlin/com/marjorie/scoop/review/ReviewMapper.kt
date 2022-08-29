@@ -1,6 +1,6 @@
 package com.marjorie.scoop.review
 
-import com.marjorie.scoop.auth.user.UserService
+import com.marjorie.scoop.auth.models.user.UserService
 import com.marjorie.scoop.review.dto.ReviewDTO
 import com.marjorie.scoop.review.dto.ReviewUpdateDTO
 import com.marjorie.scoop.review.dto.ReviewSlimDTO

@@ -1,8 +1,8 @@
-package com.marjorie.scoop.auth.user
+package com.marjorie.scoop.auth.models.user
 
 import com.fasterxml.jackson.annotation.JsonManagedReference
 import com.marjorie.scoop.common.BaseEntity
-import com.marjorie.scoop.auth.authority.Authority
+import com.marjorie.scoop.auth.models.authority.Authority
 import com.marjorie.scoop.review.ReviewEntity
 import org.hibernate.annotations.Where
 import org.jetbrains.annotations.Nullable

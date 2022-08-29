@@ -1,4 +1,4 @@
-package com.marjorie.scoop.auth.authority
+package com.marjorie.scoop.auth.models.authority
 
 import org.springframework.stereotype.Service
 

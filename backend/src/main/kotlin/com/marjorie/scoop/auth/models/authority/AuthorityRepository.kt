@@ -1,4 +1,4 @@
-package com.marjorie.scoop.auth.authority
+package com.marjorie.scoop.auth.models.authority
 
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository

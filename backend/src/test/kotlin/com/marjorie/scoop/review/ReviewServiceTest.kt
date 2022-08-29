@@ -1,7 +1,7 @@
 package com.marjorie.scoop.review
 
-import com.marjorie.scoop.auth.user.UserEntity
-import com.marjorie.scoop.auth.user.dto.UserSlimDTO
+import com.marjorie.scoop.auth.models.user.UserEntity
+import com.marjorie.scoop.auth.models.user.dto.UserSlimDTO
 import com.marjorie.scoop.common.ScoopBadRequestException
 import com.marjorie.scoop.common.ScoopResourceNotFoundException
 import com.marjorie.scoop.review.dto.ReviewDTO

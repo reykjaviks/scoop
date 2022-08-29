@@ -1,6 +1,6 @@
 package com.marjorie.scoop.review.dto
 
-import com.marjorie.scoop.auth.user.dto.UserSlimDTO
+import com.marjorie.scoop.auth.models.user.dto.UserSlimDTO
 import com.marjorie.scoop.venue.dto.VenueSlimDTO
 import java.time.Instant
 

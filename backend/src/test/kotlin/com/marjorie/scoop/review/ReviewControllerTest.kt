@@ -1,7 +1,7 @@
 package com.marjorie.scoop.review
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.marjorie.scoop.auth.user.dto.UserSlimDTO
+import com.marjorie.scoop.auth.models.user.dto.UserSlimDTO
 import com.marjorie.scoop.common.Constants.CSRF_IDENTIFIER
 import com.marjorie.scoop.common.Constants.REQUEST_ID
 import com.marjorie.scoop.review.dto.ReviewDTO

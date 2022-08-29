@@ -1,7 +1,7 @@
-package com.marjorie.scoop.auth.user
+package com.marjorie.scoop.auth.models.user
 
-import com.marjorie.scoop.auth.user.dto.UserDTO
-import com.marjorie.scoop.auth.user.dto.UserSlimDTO
+import com.marjorie.scoop.auth.models.user.dto.UserDTO
+import com.marjorie.scoop.auth.models.user.dto.UserSlimDTO
 import org.mapstruct.Mapper
 import org.mapstruct.ReportingPolicy
 

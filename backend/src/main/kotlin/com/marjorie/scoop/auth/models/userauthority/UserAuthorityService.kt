@@ -1,7 +1,7 @@
-package com.marjorie.scoop.auth.userauthority
+package com.marjorie.scoop.auth.models.userauthority
 
-import com.marjorie.scoop.auth.authority.Authority
-import com.marjorie.scoop.auth.user.UserEntity
+import com.marjorie.scoop.auth.models.authority.Authority
+import com.marjorie.scoop.auth.models.user.UserEntity
 import org.springframework.stereotype.Service
 
 @Service

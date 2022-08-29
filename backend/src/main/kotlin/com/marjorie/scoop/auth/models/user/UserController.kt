@@ -1,8 +1,8 @@
-package com.marjorie.scoop.auth.user
+package com.marjorie.scoop.auth.models.user
 
-import com.marjorie.scoop.auth.user.dto.UserAuthDTO
-import com.marjorie.scoop.auth.user.dto.UserDTO
-import com.marjorie.scoop.auth.user.dto.UserPostDTO
+import com.marjorie.scoop.auth.models.user.dto.UserAuthDTO
+import com.marjorie.scoop.auth.models.user.dto.UserDTO
+import com.marjorie.scoop.auth.models.user.dto.UserPostDTO
 import mu.KotlinLogging
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*

@@ -1,4 +1,4 @@
-package com.marjorie.scoop.auth.user.dto
+package com.marjorie.scoop.auth.models.user.dto
 
 /**
  * The most simplified version of the user entity. Transfers only the id, name and username.

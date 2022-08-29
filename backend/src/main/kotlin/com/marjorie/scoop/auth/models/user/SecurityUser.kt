@@ -1,6 +1,6 @@
-package com.marjorie.scoop.auth.user
+package com.marjorie.scoop.auth.models.user
 
-import com.marjorie.scoop.auth.authority.Authority
+import com.marjorie.scoop.auth.models.authority.Authority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 import java.util.stream.Collectors
