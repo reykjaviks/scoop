@@ -44,6 +44,11 @@ dependencies {
 	kapt("org.mapstruct:mapstruct-processor:1.5.2.Final")
 	kapt("org.springframework.boot:spring-boot-configuration-processor")
 
+	// JWT
+	implementation("io.jsonwebtoken:jjwt-jackson:0.11.5")
+	implementation("io.jsonwebtoken:jjwt-api:0.11.5")
+	implementation("io.jsonwebtoken:jjwt-impl:0.11.5")
+
 	// Other
 	annotationProcessor("org.mapstruct:mapstruct-processor:1.5.1.Final")
 	implementation("org.junit.jupiter:junit-jupiter:5.8.2")
