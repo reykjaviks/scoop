@@ -1,20 +1,21 @@
 package com.marjorie.scoop.config
 
 import com.marjorie.scoop.auth.UsernamePasswordAuthProvider
-import com.marjorie.scoop.auth.csrf.CustomCsrfTokenRepository
+import com.marjorie.scoop.auth.filter.InitialAuthFilter
+import com.marjorie.scoop.auth.filter.JwtAuthFilter
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpMethod
+import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
-import org.springframework.security.web.csrf.CsrfTokenRepository
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter
 import org.springframework.web.cors.CorsConfiguration
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 import org.springframework.web.filter.CorsFilter
 import java.util.*
-
 
 /**
  * Manages configuration info regarding web authorization.
@@ -23,6 +24,8 @@ import java.util.*
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 class WebAuthorizationConfig(
     private val usernamePasswordAuthProvider: UsernamePasswordAuthProvider,
+    private val jwtAuthFilter: JwtAuthFilter,
+    private val initialAuthFilter: InitialAuthFilter
 ): WebSecurityConfigurerAdapter() {
     /**
      * Registers a custom authentication provider to Spring Security's authentication manager.
@@ -31,27 +34,22 @@ class WebAuthorizationConfig(
          authManagerBuilder.authenticationProvider(usernamePasswordAuthProvider)
     }
 
+    /** General configuration info (login type, CSRF, CORS...) */
     override fun configure(httpSecurity: HttpSecurity) {
-        /** General configuration info (login type, CSRF, CORS...) */
-        httpSecurity.httpBasic()
-
-        httpSecurity.formLogin().defaultSuccessUrl("/auth", true)
-
-        /* Disabled while testing
-        httpSecurity.csrf { csrfConfigurer: CsrfConfigurer<HttpSecurity?> ->
-            csrfConfigurer.csrfTokenRepository(csrfTokenRepository())
-        }
-        */
+        /** CSRF is not needed when using JWT tokens */
+        httpSecurity.csrf().disable()
 
         /** Filter chain */
+        httpSecurity.addFilterAt(
+            initialAuthFilter,
+            BasicAuthenticationFilter::class.java
+        ).addFilterAfter(
+            jwtAuthFilter,
+            BasicAuthenticationFilter::class.java
+        )
+
         /* Disabled while testing
         httpSecurity.addFilterBefore(
-            CsrfIdentifierValidationFilter(),
-            CsrfFilter::class.java
-        ).addFilterAfter(
-            CsrfLoggingFilter(),
-            CsrfFilter::class.java
-        ).addFilterBefore(
             RequestValidationFilter(),
             BasicAuthenticationFilter::class.java
         ).addFilterAfter(
@@ -87,9 +85,13 @@ class WebAuthorizationConfig(
             .mvcMatchers(HttpMethod.DELETE, "/api/review/*").authenticated()
     }
 
+    /**
+     * Adds the AuthenticationManager to the Spring context so that we can autowire
+     * it from the InitialAuthFilter class.
+     */
     @Bean
-    fun csrfTokenRepository(): CsrfTokenRepository {
-        return CustomCsrfTokenRepository()
+    override fun authenticationManager(): AuthenticationManager {
+        return super.authenticationManager()
     }
 
     @Bean
@@ -111,5 +113,4 @@ class WebAuthorizationConfig(
         urlBasedCorsConfigurationSource.registerCorsConfiguration("/**", corsConfiguration)
         return CorsFilter(urlBasedCorsConfigurationSource)
     }
-
 }

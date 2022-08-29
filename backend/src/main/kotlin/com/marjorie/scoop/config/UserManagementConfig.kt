@@ -12,6 +12,7 @@ import javax.sql.DataSource
  */
 @Configuration
 class UserManagementConfig {
+
     @Bean
     fun bCryptPasswordEncoder(): BCryptPasswordEncoder? {
         return BCryptPasswordEncoder()
