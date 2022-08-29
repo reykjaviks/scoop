@@ -1,4 +1,4 @@
-package com.marjorie.scoop.auth.filter
+package com.marjorie.scoop.auth.filters
 
 import com.marjorie.scoop.auth.UsernamePasswordAuth
 import io.jsonwebtoken.Claims

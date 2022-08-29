@@ -1,4 +1,4 @@
-package com.marjorie.scoop.auth.filter
+package com.marjorie.scoop.auth.filters
 
 import com.marjorie.scoop.common.Constants.REQUEST_ID
 import mu.KotlinLogging

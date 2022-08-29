@@ -1,8 +1,8 @@
 package com.marjorie.scoop.config
 
 import com.marjorie.scoop.auth.UsernamePasswordAuthProvider
-import com.marjorie.scoop.auth.filter.InitialAuthFilter
-import com.marjorie.scoop.auth.filter.JwtAuthFilter
+import com.marjorie.scoop.auth.filters.InitialAuthFilter
+import com.marjorie.scoop.auth.filters.JwtAuthFilter
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpMethod
