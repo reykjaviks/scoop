@@ -1,6 +1,7 @@
 package com.marjorie.scoop.auth.filters
 
 import com.marjorie.scoop.auth.UsernamePasswordAuth
+import com.marjorie.scoop.common.Paths
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.security.Keys
@@ -16,7 +17,7 @@ import javax.servlet.http.HttpServletResponse
 
 // todo: add exceptions and logging
 /**
- * First step in the authentication process.
+ * First step in the authentication process. Generates the JWT token if authentication is successful.
  */
 @Component
 class InitialAuthFilter(@Lazy private val authManager: AuthenticationManager): OncePerRequestFilter() {

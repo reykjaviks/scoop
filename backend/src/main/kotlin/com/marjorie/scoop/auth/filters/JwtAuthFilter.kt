@@ -1,6 +1,9 @@
 package com.marjorie.scoop.auth.filters
 
 import com.marjorie.scoop.auth.UsernamePasswordAuth
+import com.marjorie.scoop.common.Paths
+import com.marjorie.scoop.common.Constants.GET
+import com.marjorie.scoop.common.Constants.POST
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.security.Keys
@@ -44,11 +47,21 @@ class JwtAuthFilter: OncePerRequestFilter() {
     }
 
     /**
-     * Filter is not being triggered on the login path.
+     * Filter is not being triggered on paths that do not require authentication.
      */
     override fun shouldNotFilter(request: HttpServletRequest): Boolean {
-        val paths = arrayOf<String>("/login", "")
-        return request.servletPath.equals("/login")
-    }
+        val method = request.method
+        val path = request.servletPath
 
+        val pathsThatCanUseGETWithoutAuth = listOf(Paths.LOGIN, Paths.VENUE, Paths.REVIEW)
+        val pathsThatCanPOSTWithoutAuth = listOf(Paths.USER_ADD)
+
+        if (method == GET) {
+            if (path == Paths.HOME) return true
+            if (pathsThatCanUseGETWithoutAuth.any { path.startsWith(it) }) return true
+        } else if (method == POST) {
+            if (pathsThatCanPOSTWithoutAuth.any { path.startsWith(it) }) return true
+        }
+        return false
+    }
 }
